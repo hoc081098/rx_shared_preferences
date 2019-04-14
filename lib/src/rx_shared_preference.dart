@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+///
+/// Get [Observable]s by key from [SharedPreferences]
+///
 abstract class IRxSharedPreferences {
   Observable<dynamic> getObservable(String key);
 
@@ -17,6 +20,9 @@ abstract class IRxSharedPreferences {
   Observable<List<String>> getStringListObservable(String key);
 }
 
+///
+///
+///
 class RxSharedPreferences implements IRxSharedPreferences {
   // ignore: close_sinks
   final PublishSubject<Set<String>> _keyChanges = PublishSubject<Set<String>>();

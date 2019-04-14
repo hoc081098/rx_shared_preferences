@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0c55dfda-e1ba-4c4f-8935-9f1ea6684ad4" name="Default Changelist" comment="Initial">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preference.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preference.dart" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>preferences</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>rxSharedPreferences</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/lib/rx_shared_preference.dart" />
+        <option value="$PROJECT_DIR$/pubspec.yaml" />
+        <option value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+        <option value="$PROJECT_DIR$/lib/src/rx_shared_preference.dart" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="333" />
+    <option name="y" value="29" />
+    <option name="width" value="697" />
+    <option name="height" value="735" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555183322114" />
+    <property name="dart.analysis.tool.window.force.activate" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Flutter Test.Test Observer Stream">
+    <configuration name="Fucking" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Fucking" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test Observer Stream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Test Observer Stream" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="reading" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="reading" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in rx_shared_preference_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="writing" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="writing" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Flutter Test.Test Observer Stream" />
+        <item itemvalue="Flutter Test.tests in rx_shared_preference_test.dart" />
+        <item itemvalue="Flutter Test.writing" />
+        <item itemvalue="Flutter Test.Fucking" />
+        <item itemvalue="Flutter Test.reading" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0c55dfda-e1ba-4c4f-8935-9f1ea6684ad4" name="Default Changelist" comment="" />
+      <created>1555178497535</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1555178497535</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Initial">
+      <created>1555183312491</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1555183312491</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 13m 11s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 13m 48s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 14m 28s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 14m 52s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.14 at 02h 16m 06s.xml">
+      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.14 at 02h 16m 56s.xml">
+      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 18m 37s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 19m 13s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 19m 37s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_Observer_Stream - 2019.04.14 at 02h 20m 52s.xml">
+      <configuration name="Test Observer Stream" configurationId="FlutterTestConfigType" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="333" y="29" width="697" height="735" extended-state="0" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.51805335" />
+      <window_info anchor="bottom" id="Dart Analysis" weight="0.32991454" />
+      <window_info anchor="bottom" id="Run" weight="0.33680555" />
+      <window_info anchor="bottom" id="Debug" />
+      <window_info anchor="bottom" id="Find" weight="0.32991454" />
+      <window_info anchor="bottom" id="Messages" weight="0.41538462" />
+      <window_info anchor="right" id="Maven" />
+    </layout>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.2/android/src/main/java/io/flutter/plugins/sharedpreferences/SharedPreferencesPlugin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="6" column="7" lean-forward="true" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.2/android/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-771" />
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.2/android/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.flutter-plugins">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pubspec.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="13" column="2" selection-start-line="13" selection-start-column="2" selection-end-line="13" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/bin/cache/pkg/sky_engine/lib/async/future_impl.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="507" column="21" selection-start-line="507" selection-start-column="21" selection-end-line="507" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/bin/cache/pkg/sky_engine/lib/async/future.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="600" column="12" selection-start-line="600" selection-start-column="12" selection-end-line="600" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.2/test/shared_preferences_test.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="15" column="30" lean-forward="true" selection-end-line="159" />
+          <folding>
+            <element signature="e#0#5806#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/packages/flutter_test/lib/src/test_compat.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="266" column="27" selection-start-line="266" selection-start-column="23" selection-end-line="266" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.2/lib/src/frontend/expect_async.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="325" column="47" selection-start-line="325" selection-start-column="39" selection-end-line="325" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/packages/flutter_test/lib/src/widget_tester.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="216" column="26" lean-forward="true" selection-start-line="216" selection-start-column="26" selection-end-line="216" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/bin/cache/pkg/sky_engine/lib/async/stream.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="1635" column="42" selection-start-line="1635" selection-start-column="36" selection-end-line="1635" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.21.0/lib/src/observables/observable.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="1139" column="44" lean-forward="true" selection-start-line="1139" selection-start-column="44" selection-end-line="1139" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.3+1/lib/src/core_matchers.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="32" column="14" selection-start-line="32" selection-start-column="14" selection-end-line="32" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.2/lib/src/frontend/stream_matchers.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="77">
+          <caret line="15" column="32" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/packages/flutter/lib/src/services/message_codec.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-676">
+          <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/packages/flutter/lib/src/services/platform_channel.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="371" column="26" lean-forward="true" selection-start-line="371" selection-start-column="26" selection-end-line="371" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.2/lib/shared_preferences.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="43">
+          <caret line="119" column="39" selection-start-line="119" selection-start-column="39" selection-end-line="119" selection-end-column="39" />
+          <folding>
+            <element signature="e#311#352#0" />
+            <element signature="e#355#434#0" />
+            <element signature="e#729#1498#0" />
+            <element signature="e#821#908#0" />
+            <element signature="e#1449#1465#0" />
+            <element signature="e#1502#1543#0" />
+            <element signature="e#2139#2217#0" />
+            <element signature="e#2286#2362#0" />
+            <element signature="e#2431#2509#0" />
+            <element signature="e#2584#2662#0" />
+            <element signature="e#2878#2947#0" />
+            <element signature="e#3031#3234#0" />
+            <element signature="e#3238#3306#0" />
+            <element signature="e#3478#3547#0" />
+            <element signature="e#3716#3783#0" />
+            <element signature="e#4053#4120#0" />
+            <element signature="e#5363#5450#0" />
+            <element signature="e#5682#5706#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/rx_shared_preference_test.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="247" column="33" selection-start-line="247" selection-start-column="33" selection-end-line="247" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/rx_shared_preference.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="11" column="36" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/rx_shared_preference.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="29" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

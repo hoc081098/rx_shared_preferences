@@ -1,8 +1,8 @@
 name: rx_shared_preference
 description: Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter
-version: 0.0.1
-author:
-homepage:
+version: 0.0.9
+author: Petrus Nguy?n Thái H?c <hoc081098@gmail.com>
+homepage: https://github.com/hoc081098/rx_shared_preference.git
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
