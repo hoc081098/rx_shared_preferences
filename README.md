@@ -1,12 +1,10 @@
 # rx_shared_preference
---------------
 
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)]()
 
 Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences.
 
 ## Getting Started
---------------
 
 In your flutter project, add the dependency to your `pubspec.yaml`
 
@@ -17,7 +15,6 @@ dependencies:
 ```
 
 ## Usage
---------------
 
 Import `rx_shared_preference` and `shared_preferences`
 
