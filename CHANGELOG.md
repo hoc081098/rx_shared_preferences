@@ -1,3 +1,8 @@
+## [1.0.0] - April 15, 2019
+
+* Refactor and add comment for public API.
+* Add example.
+
 ## [0.0.9] - April 14, 2019
 
 * Initial
