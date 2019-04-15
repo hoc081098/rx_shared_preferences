@@ -38,10 +38,14 @@ void main() {
         if (methodCall.method == 'getAll') {
           return kTestValues;
         }
+        if (methodCall.method.startsWith('set') ||
+            methodCall.method == 'clear') {
+          return true;
+        }
         return null;
       });
       rxSharedPreferences =
-          RxSharedPreferences(await SharedPreferences.getInstance());
+          RxSharedPreferences(await SharedPreferences.getInstance(), print);
       log.clear();
     });
 
@@ -217,45 +221,90 @@ void main() {
       // ignore: strong_mode_implicit_dynamic_method
       expect(await channel.invokeMethod('getAll'), kTestValues2);
     });
+  });
 
-    test('Test Observer Stream', () async {
+  group('Test Stream', () {
+    const MethodChannel channel = MethodChannel(
+      'plugins.flutter.io/shared_preferences',
+    );
+
+    const Map<String, dynamic> kTestValues = <String, dynamic>{
+      'flutter.String': 'hello world',
+      'flutter.bool': true,
+      'flutter.int': 42,
+      'flutter.double': 3.14159,
+      'flutter.List': <String>['foo', 'bar'],
+    };
+
+    const Map<String, dynamic> kTestValues2 = <String, dynamic>{
+      'flutter.String': 'goodbye world',
+      'flutter.bool': false,
+      'flutter.int': 1337,
+      'flutter.double': 2.71828,
+      'flutter.List': <String>['baz', 'quox'],
+    };
+
+    final List<MethodCall> log = <MethodCall>[];
+    RxSharedPreferences rxSharedPreferences;
+
+    setUp(() async {
       channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        log.add(methodCall);
+        if (methodCall.method == 'getAll') {
+          return kTestValues;
+        }
         if (methodCall.method.startsWith('set') ||
-            methodCall.method == 'clear') {
+            methodCall.method == 'clear' ||
+            methodCall.method == 'remove') {
           return true;
         }
         return null;
       });
+      rxSharedPreferences =
+          RxSharedPreferences(await SharedPreferences.getInstance(), print);
+      log.clear();
+    });
 
+    tearDown(() {
+      rxSharedPreferences.clear();
+    });
+
+    test('Test Observer Stream', () async {
       await expectLater(
           rxSharedPreferences.getObservable('No such key'), emits(isNull));
 
-      final streamBool = rxSharedPreferences.getBoolObservable('bool').share();
-      await expectLater(streamBool, emits(true));
+      final streamBool = rxSharedPreferences.getBoolObservable('bool');
+      final expectStreamBoolFuture = expectLater(
+        streamBool,
+        emitsInOrder([
+          anything,
+          false,
+          true,
+          false,
+          true,
+          false,
+        ]),
+      );
       await rxSharedPreferences.setBool('bool', false);
-      await expectLater(streamBool, emits(false));
+      await rxSharedPreferences.setBool('bool', true);
+      await rxSharedPreferences.setBool('bool', false);
+      await rxSharedPreferences.setBool('bool', true);
+      await rxSharedPreferences.setBool('bool', false);
+      await expectStreamBoolFuture;
 
-      final streamDouble =
-          rxSharedPreferences.getDoubleObservable('double').share();
-      await expectLater(streamDouble, emits(3.14159));
+      final streamDouble = rxSharedPreferences.getDoubleObservable('double');
+      final expectStreamDoubleFuture = expectLater(
+        streamDouble,
+        emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
+      );
       await rxSharedPreferences.setDouble('double', 0.3333);
-      await expectLater(streamDouble, emits(0.3333));
-
-      final dynamicStream = rxSharedPreferences.getObservable('int').share();
-      await expectLater(dynamicStream, emits(42));
-      await rxSharedPreferences.setDouble('int', 69);
-      await expectLater(dynamicStream, emits(69));
-      await rxSharedPreferences.remove('int');
-      await expectLater(dynamicStream, emits(isNull));
-      expect(await rxSharedPreferences.get('int'), isNull);
-      await rxSharedPreferences.setInt('int', 2);
-
-      await rxSharedPreferences.clear();
-      await Future.wait([
-        expectLater(dynamicStream, emits(isNull)),
-        expectLater(streamDouble, emits(isNull)),
-        expectLater(streamBool, emits(isNull)),
-      ]);
+      await rxSharedPreferences.setDouble('double', 1);
+      await rxSharedPreferences.setDouble('double', 2);
+      await rxSharedPreferences.setDouble('double', null);
+      await rxSharedPreferences.setDouble('double', 3);
+      await rxSharedPreferences.remove('double');
+      await rxSharedPreferences.setDouble('double', 4);
+      await expectStreamDoubleFuture;
     });
   });
 }

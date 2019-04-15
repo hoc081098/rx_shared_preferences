@@ -4,157 +4,315 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///
-/// Get [Observable]s by key from [SharedPreferences]
+/// Get [Observable]s by key from persistent storage.
 ///
 abstract class IRxSharedPreferences {
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with key was changed.
+  ///
   Observable<dynamic> getObservable(String key);
 
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with [key] was changed.
+  /// This observable will emit an error if it's not a bool.
+  ///
   Observable<bool> getBoolObservable(String key);
 
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with [key] was changed.
+  /// This observable will emit an error if it's not a double.
+  ///
   Observable<double> getDoubleObservable(String key);
 
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with [key] was changed.
+  /// This observable will emit an error if it's not a int.
+  ///
   Observable<int> getIntObservable(String key);
 
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with [key] was changed.
+  /// This observable will emit an error if it's not a String.
+  ///
   Observable<String> getStringObservable(String key);
 
+  ///
+  /// Return [Observable] that will emit value read from persistent storage.
+  /// It will automatic emit value when value associated with [key] was changed.
+  /// This observable will emit an error if it's not a string set.
+  ///
   Observable<List<String>> getStringListObservable(String key);
 }
+
+typedef void Logger(String message);
 
 ///
 ///
 ///
 class RxSharedPreferences implements IRxSharedPreferences {
   // ignore: close_sinks
-  final PublishSubject<Set<String>> _keyChanges = PublishSubject<Set<String>>();
+  final PublishSubject<Iterable<_KeyAndValueChanged<dynamic>>>
+      _keyValuesChangedSubject = PublishSubject();
   final Future<SharedPreferences> _sharedPreferencesFuture;
+  final Logger _logger;
 
-  RxSharedPreferences(FutureOr<SharedPreferences> sharedPreference)
-      : _sharedPreferencesFuture = Future.value(sharedPreference);
+  RxSharedPreferences(
+    FutureOr<SharedPreferences> sharedPreference, [
+    Logger logger,
+  ])  : assert(sharedPreference != null),
+        _sharedPreferencesFuture = Future.value(sharedPreference),
+        this._logger = logger ?? ((message) => null) {
+    _keyValuesChangedSubject
+        .listen((pairs) => _logger('[KEYS_CHANGED] pairs=$pairs'));
+  }
 
+  ///
+  /// Workaround to capture generics
+  ///
+  static Type _typeOf<T>() => T;
+
+  ///
+  /// Get [Observable] from the persistent storage
+  ///
+  Observable<T> _getObservable<T>(String key, Future<T> get(String key)) {
+    return _keyValuesChangedSubject
+        .map((pairs) {
+          return pairs.firstWhere(
+            (pair) => pair.key == key,
+            orElse: () => null,
+          );
+        })
+        .where((pair) => pair != null)
+        .startWith(null) // Dummy value to trigger initial load.
+        .asyncMap((pair) async {
+          if (pair == null) {
+            return get(key);
+          } else {
+            return pair.value as T;
+          }
+        })
+        .doOnData((value) => _logger('[OBSERVABLE] key=$key, value=$value'));
+  }
+
+  ///
+  /// Get value from the persistent storage
+  ///
+  Future<T> _get<T>([String key]) {
+    return _sharedPreferencesFuture.then((sharedPreferences) {
+      if (T == dynamic) {
+        return sharedPreferences.get(key);
+      }
+      if (T == double) {
+        return sharedPreferences.getDouble(key) as T;
+      }
+      if (T == int) {
+        return sharedPreferences.getInt(key) as T;
+      }
+      if (T == bool) {
+        return sharedPreferences.getBool(key) as T;
+      }
+      if (T == String) {
+        return sharedPreferences.getString(key) as T;
+      }
+      if (T == _typeOf<List<String>>()) {
+        return sharedPreferences.getStringList(key) as T;
+      }
+      if (T == _typeOf<Set<String>>() && key == null) {
+        return sharedPreferences.getKeys() as T;
+      }
+    }).then((value) {
+      _logger('[READ] key=$key, type=$T => value=$value');
+      return value;
+    });
+  }
+
+  Future<bool> _setValue<T>(String key, T value) {
+    _triggerKeyChanges(bool result) {
+      _logger('[WRITE] key=$key, value=$value, type=$T => result=$result');
+
+      if (result ?? false) {
+        _keyValuesChangedSubject.add([_KeyAndValueChanged<T>(key, value)]);
+      }
+      return result;
+    }
+
+    return _sharedPreferencesFuture.then((sharedPreferences) {
+      if (T == dynamic) {
+        return value != null
+            ? Future.value(false)
+            : sharedPreferences.remove(key);
+      }
+      if (T == double) {
+        return sharedPreferences.setDouble(key, value as double);
+      }
+      if (T == int) {
+        return sharedPreferences.setInt(key, value as int);
+      }
+      if (T == bool) {
+        return sharedPreferences.setBool(key, value as bool);
+      }
+      if (T == String) {
+        return sharedPreferences.setString(key, value as String);
+      }
+      if (T == _typeOf<List<String>>()) {
+        return sharedPreferences.setStringList(key, value as List<String>);
+      }
+    }).then(_triggerKeyChanges);
+  }
+
+  ///
+  /// Returns a future complete with value true if the persistent storage
+  /// contains the given [key].
+  ///
+  Future<bool> containsKey(String key) => _sharedPreferencesFuture
+      .then((sharedPreferences) => sharedPreferences.containsKey(key));
+
+  ///
+  /// Reads a value of any type from persistent storage.
+  ///
+  Future<dynamic> get(String key) => _get<dynamic>(key);
+
+  ///
+  /// Reads a value from persistent storage, return a future that completes
+  /// with an error if it's not a bool.
+  ///
+  Future<bool> getBool(String key) => _get<bool>(key);
+
+  ///
+  /// Reads a value from persistent storage, return a future that completes
+  /// with an error if it's not a double.
+  ///
+  Future<double> getDouble(String key) => _get<double>(key);
+
+  ///
+  /// Reads a value from persistent storage, return a future that completes
+  /// with an error if it's not a int.
+  ///
+  Future<int> getInt(String key) => _get<int>(key);
+
+  ///
+  /// Returns all keys in the persistent storage.
+  ///
+  Future<Set<String>> getKeys() => _get<Set<String>>();
+
+  ///
+  /// Reads a value from persistent storage, return a future that completes
+  /// with an error if it's not a String.
+  ///
+  Future<String> getString(String key) => _get<String>(key);
+
+  ///
+  /// Reads a value from persistent storage, return a future that completes
+  /// with an error if it's not a string set.
+  ///
+  Future<List<String>> getStringList(String key) => _get<List<String>>(key);
+
+  ///
+  /// Completes with true once the user preferences for the app has been cleared.
+  ///
   Future<bool> clear() async {
     final SharedPreferences sharedPreferences = await _sharedPreferencesFuture;
     final Set<String> keys = sharedPreferences.getKeys();
     final bool result = await sharedPreferences.clear();
     if (result ?? false) {
-      _keyChanges.add(keys);
+      _keyValuesChangedSubject
+          .add(keys.map((key) => _KeyAndValueChanged<dynamic>(key, null)));
     }
     return result;
   }
 
+  /// Always returns true.
+  /// On iOS, synchronize is marked deprecated. On Android, we commit every set.
   @deprecated
-  Future<bool> commit() {
-    return _sharedPreferencesFuture.then((shared) => shared.commit());
-  }
+  Future<bool> commit() => _sharedPreferencesFuture
+      .then((sharedPreferences) => sharedPreferences.commit());
 
-  Future<bool> containsKey(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.containsKey(key));
-  }
+  ///
+  /// Removes an entry from persistent storage.
+  ///
+  Future<bool> remove(String key) => _setValue<dynamic>(key, null);
 
-  Future<dynamic> get(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.get(key));
-  }
+  ///
+  /// Saves a boolean [value] to persistent storage in the background.
+  ///
+  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
+  ///
+  Future<bool> setBool(String key, bool value) => _setValue<bool>(key, value);
 
-  Future<bool> getBool(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.getBool(key));
-  }
+  ///
+  /// Saves a double [value] to persistent storage in the background.
+  ///
+  /// Android doesn't support storing doubles, so it will be stored as a float.
+  ///
+  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
+  ///
+  Future<bool> setDouble(String key, double value) =>
+      _setValue<double>(key, value);
 
-  Future<double> getDouble(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.getDouble(key));
-  }
+  ///
+  /// Saves an integer [value] to persistent storage in the background.
+  ///
+  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
+  ///
+  Future<bool> setInt(String key, int value) => _setValue<int>(key, value);
 
-  Future<int> getInt(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.getInt(key));
-  }
+  ///
+  /// Saves a string [value] to persistent storage in the background.
+  ///
+  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
+  ///
+  Future<bool> setString(String key, String value) =>
+      _setValue<String>(key, value);
 
-  Future<Set<String>> getKeys() {
-    return _sharedPreferencesFuture.then((shared) => shared.getKeys());
-  }
+  ///
+  /// Saves a list of strings [value] to persistent storage in the background.
+  ///
+  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
+  ///
+  Future<bool> setStringList(String key, List<String> value) =>
+      _setValue<List<String>>(key, value);
 
-  Future<String> getString(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.getString(key));
-  }
-
-  Future<List<String>> getStringList(String key) {
-    return _sharedPreferencesFuture.then((shared) => shared.getStringList(key));
-  }
-
-  Future<bool> remove(String key) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.remove(key))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  Future<bool> setBool(String key, bool value) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.setBool(key, value))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  Future<bool> setDouble(String key, double value) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.setDouble(key, value))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  Future<bool> setInt(String key, int value) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.setInt(key, value))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  Future<bool> setString(String key, String value) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.setString(key, value))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  Future<bool> setStringList(String key, List<String> value) {
-    return _sharedPreferencesFuture
-        .then((shared) => shared.setStringList(key, value))
-        .then((result) => _triggerKeyChanges(<String>{key}, result));
-  }
-
-  bool _triggerKeyChanges(Set<String> keys, bool result) {
-    if (result ?? false) {
-      _keyChanges.add(keys);
-    }
-    return result;
-  }
-
-  Observable<T> _get$<T>(String key, Future<T> get(String key)) {
-    return _keyChanges
-        .where((keys) => keys.contains(key))
-        .startWith(null)
-        .asyncMap((_) => get(key));
-  }
+  ///
+  ///
+  ///
 
   @override
-  Observable<dynamic> getObservable(String key) {
-    return _get$(key, get);
-  }
+  Observable<dynamic> getObservable(String key) => _getObservable(key, get);
 
   @override
-  Observable<bool> getBoolObservable(String key) {
-    return _get$(key, getBool);
-  }
+  Observable<bool> getBoolObservable(String key) =>
+      _getObservable(key, getBool);
 
   @override
-  Observable<double> getDoubleObservable(String key) {
-    return _get$(key, getDouble);
-  }
+  Observable<double> getDoubleObservable(String key) =>
+      _getObservable(key, getDouble);
 
   @override
-  Observable<int> getIntObservable(String key) {
-    return _get$(key, getInt);
-  }
+  Observable<int> getIntObservable(String key) => _getObservable(key, getInt);
 
   @override
-  Observable<String> getStringObservable(String key) {
-    return _get$(key, getString);
-  }
+  Observable<String> getStringObservable(String key) =>
+      _getObservable(key, getString);
 
   @override
-  Observable<List<String>> getStringListObservable(String key) {
-    return _get$(key, getStringList);
-  }
+  Observable<List<String>> getStringListObservable(String key) =>
+      _getObservable(key, getStringList);
+}
+
+///
+/// Pair of [key] and [value]
+///
+class _KeyAndValueChanged<T> {
+  final String key;
+  final T value;
+
+  const _KeyAndValueChanged(this.key, this.value);
+
+  @override
+  String toString() => '_KeyAndValueChanged{key: $key, value: $value}';
 }
