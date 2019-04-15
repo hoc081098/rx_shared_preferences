@@ -5,7 +5,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rxdart/src/observables/observable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_api/test_api.dart' show TypeMatcher;
 
 void main() {
   group('$RxSharedPreferences is like to $SharedPreferences', () {
@@ -49,8 +51,8 @@ void main() {
       log.clear();
     });
 
-    tearDown(() {
-      rxSharedPreferences.clear();
+    tearDown(() async {
+      await rxSharedPreferences.dispose();
     });
 
     test('reading', () async {
@@ -265,46 +267,180 @@ void main() {
       log.clear();
     });
 
-    tearDown(() {
-      rxSharedPreferences.clear();
+    tearDown(() async {
+      await rxSharedPreferences.dispose();
     });
 
-    test('Test Observer Stream', () async {
-      await expectLater(
-          rxSharedPreferences.getObservable('No such key'), emits(isNull));
+    test(
+      'Observable will emit error when read value is not valid type',
+      () async {
+        final Observable<int> intObservable = rxSharedPreferences
+            .getIntObservable('bool'); // Actual: Observable<bool>
+        await expectLater(
+          intObservable,
+          emitsError(const TypeMatcher<TypeError>()),
+        );
 
-      final streamBool = rxSharedPreferences.getBoolObservable('bool');
-      final expectStreamBoolFuture = expectLater(
-        streamBool,
-        emitsInOrder([
-          anything,
-          false,
-          true,
-          false,
-          true,
-          false,
-        ]),
-      );
-      await rxSharedPreferences.setBool('bool', false);
-      await rxSharedPreferences.setBool('bool', true);
-      await rxSharedPreferences.setBool('bool', false);
-      await rxSharedPreferences.setBool('bool', true);
-      await rxSharedPreferences.setBool('bool', false);
-      await expectStreamBoolFuture;
+        final Observable<List<String>> listStringObservable =
+            rxSharedPreferences.getStringListObservable(
+                'String'); // Actual: Observable<String>
 
-      final streamDouble = rxSharedPreferences.getDoubleObservable('double');
-      final expectStreamDoubleFuture = expectLater(
-        streamDouble,
-        emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
-      );
-      await rxSharedPreferences.setDouble('double', 0.3333);
-      await rxSharedPreferences.setDouble('double', 1);
-      await rxSharedPreferences.setDouble('double', 2);
-      await rxSharedPreferences.setDouble('double', null);
-      await rxSharedPreferences.setDouble('double', 3);
-      await rxSharedPreferences.remove('double');
-      await rxSharedPreferences.setDouble('double', 4);
-      await expectStreamDoubleFuture;
-    });
+        listStringObservable.listen(
+          null,
+          onError: expectAsync2(
+            (dynamic e, StackTrace s) {
+              expect(e, const TypeMatcher<TypeError>());
+            },
+            count: 1,
+          ),
+          onDone: expectAsync0(() {}, count: 0),
+        );
+      },
+    );
+
+    test(
+      'Observable will emit value as soon as possible after listen',
+      () async {
+        await Future.wait([
+          expectLater(
+            rxSharedPreferences.getIntObservable('int'),
+            emits(anything),
+          ),
+          expectLater(
+            rxSharedPreferences.getBoolObservable('bool'),
+            emits(isInstanceOf<bool>()),
+          ),
+          expectLater(
+            rxSharedPreferences.getDoubleObservable('double'),
+            emits(const TypeMatcher<double>()),
+          ),
+          expectLater(
+            rxSharedPreferences.getStringObservable('String'),
+            emits(const TypeMatcher<String>()),
+          ),
+          expectLater(
+            rxSharedPreferences.getStringListObservable('List'),
+            emits(const TypeMatcher<List<String>>()),
+          ),
+          expectLater(
+            rxSharedPreferences.getObservable('No such key'),
+            emits(isNull),
+          ),
+        ]);
+      },
+    );
+
+    test(
+      'Observable will emit value as soon as possible after listen,'
+          ' and will emit value when value associated with key change',
+      () async {
+        ///
+        /// Bool
+        ///
+        final Observable<bool> streamBool =
+            rxSharedPreferences.getBoolObservable('bool');
+        final expectStreamBoolFuture = expectLater(
+          streamBool,
+          emitsInOrder([anything, false, true, false, true, false]),
+        );
+        await rxSharedPreferences.setBool('bool', false);
+        await rxSharedPreferences.setBool('bool', true);
+        await rxSharedPreferences.setBool('bool', false);
+        await rxSharedPreferences.setBool('bool', true);
+        await rxSharedPreferences.setBool('bool', false);
+
+        ///
+        /// Double
+        ///
+        final Observable<double> streamDouble =
+            rxSharedPreferences.getDoubleObservable('double');
+        final expectStreamDoubleFuture = expectLater(
+          streamDouble,
+          emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
+        );
+        await rxSharedPreferences.setDouble('double', 0.3333);
+        await rxSharedPreferences.setDouble('double', 1);
+        await rxSharedPreferences.setDouble('double', 2);
+        await rxSharedPreferences.setDouble('double', null);
+        await rxSharedPreferences.setDouble('double', 3);
+        await rxSharedPreferences.remove('double');
+        await rxSharedPreferences.setDouble('double', 4);
+
+        ///
+        /// Int
+        ///
+        final Observable<int> streamInt =
+            rxSharedPreferences.getIntObservable('int');
+        final expectStreamIntFuture = expectLater(
+          streamInt,
+          emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
+        );
+        await rxSharedPreferences.setInt('int', 1);
+        await rxSharedPreferences.setInt('int', null);
+        await rxSharedPreferences.setInt('int', 2);
+        await rxSharedPreferences.setInt('int', 3);
+        await rxSharedPreferences.remove('int');
+        await rxSharedPreferences.setInt('int', 3);
+        await rxSharedPreferences.setInt('int', 2);
+        await rxSharedPreferences.setInt('int', 1);
+
+        ///
+        /// String
+        ///
+        final Observable<String> streamString =
+            rxSharedPreferences.getStringObservable('String');
+        final expectStreamStringFuture = expectLater(
+          streamString,
+          emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
+        );
+        await rxSharedPreferences.setString('String', 'h');
+        await rxSharedPreferences.setString('String', 'e');
+        await rxSharedPreferences.setString('String', 'l');
+        await rxSharedPreferences.setString('String', 'l');
+        await rxSharedPreferences.setString('String', 'o');
+        await rxSharedPreferences.setString('String', null);
+
+        ///
+        /// List<String>
+        ///
+        final Observable<List<String>> streamListString =
+            rxSharedPreferences.getStringListObservable('List');
+        final expectStreamListStringFuture = expectLater(
+          streamListString,
+          emitsInOrder([
+            anything,
+            <String>['1', '2', '3'],
+            <String>['1', '2', '3', '4'],
+            <String>['1', '2', '3', '4', '5'],
+            <String>['1', '2', '3', '4'],
+            <String>['1', '2', '3'],
+            <String>['1', '2'],
+            <String>['1'],
+            <String>[],
+            isNull,
+            <String>['done'],
+          ]),
+        );
+        await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
+        await rxSharedPreferences.setStringList('List', ['1', '2', '3', '4']);
+        await rxSharedPreferences
+            .setStringList('List', ['1', '2', '3', '4', '5']);
+        await rxSharedPreferences.setStringList('List', ['1', '2', '3', '4']);
+        await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
+        await rxSharedPreferences.setStringList('List', ['1', '2']);
+        await rxSharedPreferences.setStringList('List', ['1']);
+        await rxSharedPreferences.setStringList('List', []);
+        await rxSharedPreferences.remove('List');
+        await rxSharedPreferences.setStringList('List', ['done']);
+
+        await Future.wait([
+          expectStreamBoolFuture,
+          expectStreamDoubleFuture,
+          expectStreamIntFuture,
+          expectStreamStringFuture,
+          expectStreamListStringFuture,
+        ]);
+      },
+    );
   });
 }
