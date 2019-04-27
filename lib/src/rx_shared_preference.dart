@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,7 +60,6 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _keyValuesChangedSubject = PublishSubject();
   final Future<SharedPreferences> _sharedPreferencesFuture;
   final Logger _logger;
-  StreamSubscription<dynamic> _subscription;
 
   RxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
@@ -69,15 +67,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ])  : assert(sharedPreference != null),
         _sharedPreferencesFuture = Future.value(sharedPreference),
         this._logger = logger ?? ((message) => null) {
-    _subscription = _keyValuesChangedSubject
+    _keyValuesChangedSubject
         .listen((pairs) => _logger('[KEYS_CHANGED] pairs=$pairs'));
-  }
-
-  @visibleForTesting
-  dispose() async {
-    await _subscription?.cancel();
-    await _keyValuesChangedSubject.close();
-    await clear();
   }
 
   ///
@@ -145,11 +136,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _logger('[WRITE] key=$key, value=$value, type=$T => result=$result');
 
       if (result ?? false) {
-        try {
-          _keyValuesChangedSubject.add([_KeyAndValueChanged<T>(key, value)]);
-        } catch (e) {
-          _logger('[ERROR] Cannot add value to controller after close');
-        }
+        _keyValuesChangedSubject.add([_KeyAndValueChanged<T>(key, value)]);
       }
       return result;
     }
@@ -233,12 +220,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
     final Set<String> keys = sharedPreferences.getKeys();
     final bool result = await sharedPreferences.clear();
     if (result ?? false) {
-      try {
-        _keyValuesChangedSubject
-            .add(keys.map((key) => _KeyAndValueChanged<dynamic>(key, null)));
-      } catch (e) {
-        _logger('[ERROR] Cannot add value to controller after close');
-      }
+      _keyValuesChangedSubject
+          .add(keys.map((key) => _KeyAndValueChanged<dynamic>(key, null)));
     }
     return result;
   }

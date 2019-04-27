@@ -47,12 +47,12 @@ void main() {
         return null;
       });
       rxSharedPreferences =
-          RxSharedPreferences(await SharedPreferences.getInstance(), print);
+          RxSharedPreferences(await SharedPreferences.getInstance());
       log.clear();
     });
 
     tearDown(() async {
-      await rxSharedPreferences.dispose();
+      await rxSharedPreferences.clear();
     });
 
     test('reading', () async {
@@ -238,14 +238,6 @@ void main() {
       'flutter.List': <String>['foo', 'bar'],
     };
 
-    const Map<String, dynamic> kTestValues2 = <String, dynamic>{
-      'flutter.String': 'goodbye world',
-      'flutter.bool': false,
-      'flutter.int': 1337,
-      'flutter.double': 2.71828,
-      'flutter.List': <String>['baz', 'quox'],
-    };
-
     final List<MethodCall> log = <MethodCall>[];
     RxSharedPreferences rxSharedPreferences;
 
@@ -263,37 +255,33 @@ void main() {
         return null;
       });
       rxSharedPreferences =
-          RxSharedPreferences(await SharedPreferences.getInstance(), print);
+          RxSharedPreferences(await SharedPreferences.getInstance());
       log.clear();
     });
 
-    tearDown(() async {
-      await rxSharedPreferences.dispose();
-    });
-
     test(
-      'Observable will emit error when read value is not valid type',
+      'Observable will emit error when read value is not valid type, or emit null when value is not set',
       () async {
         final Observable<int> intObservable = rxSharedPreferences
             .getIntObservable('bool'); // Actual: Observable<bool>
         await expectLater(
           intObservable,
-          emitsError(const TypeMatcher<TypeError>()),
+          emitsAnyOf([
+            isNull,
+            emitsError(const TypeMatcher<TypeError>()),
+          ]),
         );
 
         final Observable<List<String>> listStringObservable =
             rxSharedPreferences.getStringListObservable(
                 'String'); // Actual: Observable<String>
 
-        listStringObservable.listen(
-          null,
-          onError: expectAsync2(
-            (dynamic e, StackTrace s) {
-              expect(e, const TypeMatcher<TypeError>());
-            },
-            count: 1,
-          ),
-          onDone: expectAsync0(() {}, count: 0),
+        await expectLater(
+          listStringObservable,
+          emitsAnyOf([
+            isNull,
+            emitsError(const TypeMatcher<TypeError>()),
+          ]),
         );
       },
     );
@@ -308,19 +296,19 @@ void main() {
           ),
           expectLater(
             rxSharedPreferences.getBoolObservable('bool'),
-            emits(isInstanceOf<bool>()),
+            emits(anything),
           ),
           expectLater(
             rxSharedPreferences.getDoubleObservable('double'),
-            emits(const TypeMatcher<double>()),
+            emits(anything),
           ),
           expectLater(
             rxSharedPreferences.getStringObservable('String'),
-            emits(const TypeMatcher<String>()),
+            emits(anything),
           ),
           expectLater(
             rxSharedPreferences.getStringListObservable('List'),
-            emits(const TypeMatcher<List<String>>()),
+            emits(anything),
           ),
           expectLater(
             rxSharedPreferences.getObservable('No such key'),
@@ -332,7 +320,7 @@ void main() {
 
     test(
       'Observable will emit value as soon as possible after listen,'
-          ' and will emit value when value associated with key change',
+      ' and will emit value when value associated with key change',
       () async {
         ///
         /// Bool

@@ -1,3 +1,7 @@
+## [1.0.0+1] - April 27, 2019
+
+* Add test
+
 ## [1.0.0] - April 15, 2019
 
 * Refactor and add comment for public API.

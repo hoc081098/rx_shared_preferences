@@ -1,6 +1,7 @@
 # rx_shared_preference
 
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)]()
+[![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
 
 Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences.
 
