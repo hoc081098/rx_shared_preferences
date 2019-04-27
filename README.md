@@ -1,6 +1,6 @@
 # rx_shared_preference <img src="https://avatars3.githubusercontent.com/u/6407041?s=200&v=4" width="32">
 
-[![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)]()
+[![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)](https://pub.dartlang.org/packages/rx_shared_preference)
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
 
 Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences.
