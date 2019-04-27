@@ -14,8 +14,8 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b beta
   - ./flutter/bin/flutter doctor
 script:
-  - pub get
-  - pub run test test/rx_shared_preference_test.dart
+  - flutter packages get
+  - flutter test test/rx_shared_preference_test.dart
 cache:
   directories:
     - $HOME/.pub-cache

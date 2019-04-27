@@ -1,4 +1,4 @@
-# rx_shared_preference
+# rx_shared_preference <img src="https://avatars3.githubusercontent.com/u/6407041?s=200&v=4" width="32">
 
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)]()
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
