@@ -2,8 +2,10 @@
 
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)](https://pub.dartlang.org/packages/rx_shared_preference)
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences.
+Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences. <br>
+This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## Getting Started
 
@@ -75,6 +77,12 @@ rxSharedPreferences.getIntObservable('KEY')
 ```
 
 `RxSharedPreferences` is like to `SharedPreferences`, it provides read write functions: `getBool`, `getDouble`,  `getInt`, ..., `setBool`, `setDouble`, `setInt`, etc...
+
+## Example demo: Build ListView from Stream using RxSharedPreferences
+
+<p align="center">
+  <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="360">
+</p>  
 
 License
 -------
