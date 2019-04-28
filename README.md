@@ -1,5 +1,6 @@
 # rx_shared_preference <img src="https://avatars3.githubusercontent.com/u/6407041?s=200&v=4" width="32">
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preference?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preference&utm_campaign=Badge_Grade_Dashboard)
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)](https://pub.dartlang.org/packages/rx_shared_preference)
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
