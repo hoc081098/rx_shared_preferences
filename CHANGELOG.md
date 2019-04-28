@@ -1,3 +1,7 @@
+## [1.0.0+2] - April 28, 2019
+
+* Update README.md
+
 ## [1.0.0+1] - April 27, 2019
 
 * Add test
