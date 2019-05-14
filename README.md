@@ -8,7 +8,7 @@
 Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences. <br>
 This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
-<img src="https://imgbbb.com/images/2019/04/28/carbon-8.png" width="600">
+<img src="https://imgbbb.com/images/2019/05/14/carbon-9.png" width="800">
 
 ## Getting Started
 
