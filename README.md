@@ -81,11 +81,15 @@ rxSharedPreferences.getIntObservable('KEY')
 
 `RxSharedPreferences` is like to `SharedPreferences`, it provides read write functions: `getBool`, `getDouble`,  `getInt`, ..., `setBool`, `setDouble`, `setInt`, etc...
 
-## Example demo: Build ListView from Stream using RxSharedPreferences
+## Example demo:
+
+Build ListView from Stream using RxSharedPreferences
 
 <p align="center">
   <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="360">
 </p>  
+
+Change theme runtime: https://github.com/hoc081098/flutter-change-theme-youtube-code
 
 License
 -------
