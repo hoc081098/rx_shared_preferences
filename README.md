@@ -83,13 +83,14 @@ rxSharedPreferences.getIntObservable('KEY')
 
 ## Example demo:
 
-Build ListView from Stream using RxSharedPreferences
+### Build ListView from Stream using RxSharedPreferences
 
 <p align="center">
-  <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="360">
+  <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="240">
 </p>  
 
-Change theme runtime: https://github.com/hoc081098/flutter-change-theme-youtube-code
+### Change theme runtime:
+https://github.com/hoc081098/flutter-change-theme-youtube-code
 
 License
 -------
