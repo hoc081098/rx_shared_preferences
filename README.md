@@ -85,8 +85,10 @@ rxSharedPreferences.getIntObservable('KEY')
 
 ### Build ListView from Stream using RxSharedPreferences
 
-<p align="center">
-  <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="240">
+| Demo          | Code |
+| ------------- | ------------- |
+| <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="240">  | <img src="https://imgbbb.com/images/2019/05/17/carbon-11.png" width="600">  |
+  
 </p>  
 
 ### Change theme runtime:
