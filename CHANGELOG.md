@@ -1,3 +1,11 @@
+## [1.0.1] - April 28, 2019
+
+* Update dependencies (`rxdart` and `shared_preferences`) to latest version
+
+* Add `reload` method
+
+* Some minor changes
+
 ## [1.0.0+2] - April 28, 2019
 
 * Update README.md

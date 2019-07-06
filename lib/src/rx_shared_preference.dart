@@ -72,6 +72,10 @@ class RxSharedPreferences implements IRxSharedPreferences {
   }
 
   ///
+  ///
+  ///
+
+  ///
   /// Workaround to capture generics
   ///
   static Type _typeOf<T>() => T;
@@ -93,14 +97,22 @@ class RxSharedPreferences implements IRxSharedPreferences {
           if (pair == null) {
             return get(key);
           } else {
+            if (T == _typeOf<List<String>>()) {
+              return (pair.value as List)?.cast<String>() as T;
+            }
+            if (T == _typeOf<Set<String>>()) {
+              return (pair.value as Set)?.cast<String>() as T;
+            }
             return pair.value as T;
           }
         })
-        .doOnData((value) => _logger('[OBSERVABLE] key=$key, value=$value'));
+        .doOnData((value) => _logger('[OBSERVABLE] key=$key, value=$value'))
+        .doOnError((error, stacktrace) =>
+            _logger('[OBSERAVBLE] error=$error, stacktrace=$stacktrace'));
   }
 
   ///
-  /// Get value from the persistent storage
+  /// Get value from the persistent storage by [key]
   ///
   Future<T> _get<T>([String key]) {
     return _sharedPreferencesFuture.then((sharedPreferences) {
@@ -120,8 +132,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
         return sharedPreferences.getString(key) as T;
       }
       if (T == _typeOf<List<String>>()) {
-        return sharedPreferences.getStringList(key) as T;
+        return sharedPreferences.getStringList(key)?.cast<String>() as T;
       }
+      /// Get all keys
       if (T == _typeOf<Set<String>>() && key == null) {
         return sharedPreferences.getKeys() as T;
       }
@@ -131,6 +144,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
     });
   }
 
+  ///
+  /// Set [value] associated with [key]
+  ///
   Future<bool> _setValue<T>(String key, T value) {
     _triggerKeyChanges(bool result) {
       _logger('[WRITE] key=$key, value=$value, type=$T => result=$result');
@@ -160,10 +176,14 @@ class RxSharedPreferences implements IRxSharedPreferences {
         return sharedPreferences.setString(key, value as String);
       }
       if (T == _typeOf<List<String>>()) {
-        return sharedPreferences.setStringList(key, value as List<String>);
+        return sharedPreferences.setStringList(key, (value as List)?.cast<String>());
       }
     }).then(_triggerKeyChanges);
   }
+
+  ///
+  ///
+  ///
 
   ///
   /// Returns a future complete with value true if the persistent storage
@@ -224,6 +244,20 @@ class RxSharedPreferences implements IRxSharedPreferences {
           .add(keys.map((key) => _KeyAndValueChanged<dynamic>(key, null)));
     }
     return result;
+  }
+
+  /// Fetches the latest values from the host platform.
+  ///
+  /// Use this method to observe modifications that were made in native code
+  /// (without using the plugin) while the app is running.
+  Future<void> reload() async {
+    final SharedPreferences sharedPreferences = await _sharedPreferencesFuture;
+    await sharedPreferences.reload();
+    _keyValuesChangedSubject.add(
+      sharedPreferences
+        .getKeys()
+        .map((key) => _KeyAndValueChanged(key, sharedPreferences.get(key)))
+    );
   }
 
   /// Always returns true.

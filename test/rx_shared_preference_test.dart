@@ -219,6 +219,21 @@ void main() {
       // ignore: strong_mode_implicit_dynamic_method
       expect(await channel.invokeMethod('getAll'), kTestValues2);
     });
+
+    test('reloading', () async {
+      await rxSharedPreferences.setString(
+          'String', kTestValues['flutter.String']);
+      expect(await rxSharedPreferences.getString('String'),
+          kTestValues['flutter.String']);
+
+      SharedPreferences.setMockInitialValues(kTestValues2);
+      expect(await rxSharedPreferences.getString('String'),
+          kTestValues['flutter.String']);
+
+      await rxSharedPreferences.reload();
+      expect(await rxSharedPreferences.getString('String'),
+          kTestValues2['flutter.String']);
+    });
   });
 
   group('Test Stream', () {
@@ -278,6 +293,15 @@ void main() {
             isNull,
             emitsError(const TypeMatcher<TypeError>()),
           ]),
+        );
+
+        final Observable<int> noSuchObservable =
+            rxSharedPreferences.getIntObservable(
+                '@@@@@@@@@@@String'); // Actual: Observable<String>
+
+        await expectLater(
+          noSuchObservable,
+          emits(isNull),
         );
       },
     );
@@ -403,6 +427,9 @@ void main() {
             <String>[],
             isNull,
             <String>['done'],
+            <String>['AFTER RELOAD'],
+            <String>['AFTER RELOAD'],
+            ['WORKING']
           ]),
         );
         await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
@@ -416,6 +443,23 @@ void main() {
         await rxSharedPreferences.setStringList('List', []);
         await rxSharedPreferences.remove('List');
         await rxSharedPreferences.setStringList('List', ['done']);
+        await rxSharedPreferences.setStringList('List', ['AFTER RELOAD']);
+
+        ///
+        /// Test reloading
+        ///
+        channel.setMockMethodCallHandler((MethodCall methodCall) async {
+          if (methodCall.method == 'getAll') {
+            return {
+              'flutter.List': ['AFTER RELOAD']
+            };
+          }
+          if (methodCall.method.startsWith('set')) {
+            return true;
+          }
+        });
+        await rxSharedPreferences.reload();
+        rxSharedPreferences.setStringList('List', ['WORKING']);
 
         await Future.wait([
           expectStreamBoolFuture,

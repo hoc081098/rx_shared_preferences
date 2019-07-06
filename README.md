@@ -1,12 +1,24 @@
 # rx_shared_preference ![alt text](https://avatars3.githubusercontent.com/u/6407041?s=32&v=4)
 
+### Author: [Petrus Nguyễn Thái Học](https://github.com/hoc081098)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preference?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preference&utm_campaign=Badge_Grade_Dashboard)
 [![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)](https://pub.dartlang.org/packages/rx_shared_preference)
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Shared preference with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences. <br>
-This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
+- Shared preference with RxDart Stream observation.
+- Reactive shared preferences for Flutter.
+- Reactive stream wrapper around SharedPreferences.
+- This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
+
+## More detail about return `Observable`
+- `Observable` will emit the **initial value** as its first next event (Emit value as soon as possible after is listen to) (**emit `null`** when value is not set) 
+- It will automatic emit value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`)
+- When read value is not valid type (wrong type):
+  + Will **emit error** if value is present (not `null`)
+  + **Emit `null`** when value is absent (value is not set, value is `null`) (because `null` can be cast to any type).
+- Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Observable` where data events are skipped if they are equal to the previous data event.
 
 <img src="https://imgbbb.com/images/2019/04/28/carbon-8.png" width="600">
 
@@ -17,7 +29,7 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
   ...
-  rx_shared_preference: ^1.0.0
+  rx_shared_preference: <latest_version>
 ```
 
 ## Usage
