@@ -20,7 +20,7 @@
   + **Emit `null`** when value is absent (value is not set, value is `null`) (because `null` can be cast to any type).
 - Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Observable` where data events are skipped if they are equal to the previous data event.
 
-<img src="https://imgbbb.com/images/2019/04/28/carbon-8.png" width="600">
+<img src="https://imgbbb.com/images/2019/05/14/carbon-9.png" width="800">
 
 ## Getting Started
 
@@ -93,11 +93,18 @@ rxSharedPreferences.getIntObservable('KEY')
 
 `RxSharedPreferences` is like to `SharedPreferences`, it provides read write functions: `getBool`, `getDouble`,  `getInt`, ..., `setBool`, `setDouble`, `setInt`, etc...
 
-## Example demo: Build ListView from Stream using RxSharedPreferences
+## Example demo:
 
-<p align="center">
-  <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="360">
+### Build ListView from Stream using RxSharedPreferences
+
+| Demo          | Code |
+| ------------- | ------------- |
+| <img src="https://imgbbb.com/images/2019/04/28/rx_shared_pref_example.gif" width="240">  | <img src="https://imgbbb.com/images/2019/05/17/carbon-11.png" width="600">  |
+  
 </p>  
+
+### Change theme runtime:
+https://github.com/hoc081098/flutter-change-theme-youtube-code
 
 License
 -------
