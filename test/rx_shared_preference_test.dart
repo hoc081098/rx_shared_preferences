@@ -208,18 +208,6 @@ void main() {
       expect(log, <Matcher>[isMethodCall('clear', arguments: null)]);
     });
 
-    test('mocking', () async {
-      // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-      // https://github.com/flutter/flutter/issues/26431
-      // ignore: strong_mode_implicit_dynamic_method
-      expect(await channel.invokeMethod('getAll'), kTestValues);
-      SharedPreferences.setMockInitialValues(kTestValues2);
-      // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
-      // https://github.com/flutter/flutter/issues/26431
-      // ignore: strong_mode_implicit_dynamic_method
-      expect(await channel.invokeMethod('getAll'), kTestValues2);
-    });
-
     test('reloading', () async {
       await rxSharedPreferences.setString(
           'String', kTestValues['flutter.String']);
@@ -228,11 +216,58 @@ void main() {
 
       SharedPreferences.setMockInitialValues(kTestValues2);
       expect(await rxSharedPreferences.getString('String'),
-          kTestValues['flutter.String']);
+          kTestValues2['flutter.String']);
 
       await rxSharedPreferences.reload();
       expect(await rxSharedPreferences.getString('String'),
           kTestValues2['flutter.String']);
+    });
+
+    group('mocking', () {
+      const String _key = 'dummy';
+      const String _prefixedKey = 'flutter.' + _key;
+
+      test('test 1', () async {
+        SharedPreferences.setMockInitialValues(
+            <String, dynamic>{_prefixedKey: 'my string'});
+
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final RxSharedPreferences rxPrefs = RxSharedPreferences(prefs);
+
+        final String value = prefs.getString(_key);
+        final String valueReadFromRxPrefs = await rxPrefs.getString(_key);
+
+        expect(value, 'my string');
+        expect(value, valueReadFromRxPrefs);
+      });
+
+      test('test 2', () async {
+        SharedPreferences.setMockInitialValues(
+            <String, dynamic>{_prefixedKey: 'my other string'});
+
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final RxSharedPreferences rxPrefs = RxSharedPreferences(prefs);
+
+        final String value = prefs.getString(_key);
+        final String valueReadFromRxPrefs = await rxPrefs.getString(_key);
+
+        expect(value, 'my other string');
+        expect(value, valueReadFromRxPrefs);
+      });
+    });
+
+    test('writing copy of strings list', () async {
+      final List<String> myList = <String>[];
+      await rxSharedPreferences.setStringList("myList", myList);
+      myList.add("foobar");
+
+      final List<String> cachedList =
+          await rxSharedPreferences.getStringList('myList');
+      expect(cachedList, <String>[]);
+
+      cachedList.add("foobar2");
+
+      expect(await rxSharedPreferences.getStringList('myList'), <String>[]);
     });
   });
 
@@ -457,6 +492,7 @@ void main() {
           if (methodCall.method.startsWith('set')) {
             return true;
           }
+          return null;
         });
         await rxSharedPreferences.reload();
         rxSharedPreferences.setStringList('List', ['WORKING']);

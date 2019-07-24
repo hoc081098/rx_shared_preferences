@@ -100,9 +100,6 @@ class RxSharedPreferences implements IRxSharedPreferences {
             if (T == _typeOf<List<String>>()) {
               return (pair.value as List)?.cast<String>() as T;
             }
-            if (T == _typeOf<Set<String>>()) {
-              return (pair.value as Set)?.cast<String>() as T;
-            }
             return pair.value as T;
           }
         })
@@ -134,6 +131,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
       if (T == _typeOf<List<String>>()) {
         return sharedPreferences.getStringList(key)?.cast<String>() as T;
       }
+
       /// Get all keys
       if (T == _typeOf<Set<String>>() && key == null) {
         return sharedPreferences.getKeys() as T;
@@ -176,8 +174,10 @@ class RxSharedPreferences implements IRxSharedPreferences {
         return sharedPreferences.setString(key, value as String);
       }
       if (T == _typeOf<List<String>>()) {
-        return sharedPreferences.setStringList(key, (value as List)?.cast<String>());
+        return sharedPreferences.setStringList(
+            key, (value as List)?.cast<String>());
       }
+      return null;
     }).then(_triggerKeyChanges);
   }
 
@@ -253,11 +253,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
   Future<void> reload() async {
     final SharedPreferences sharedPreferences = await _sharedPreferencesFuture;
     await sharedPreferences.reload();
-    _keyValuesChangedSubject.add(
-      sharedPreferences
+    _keyValuesChangedSubject.add(sharedPreferences
         .getKeys()
-        .map((key) => _KeyAndValueChanged(key, sharedPreferences.get(key)))
-    );
+        .map((key) => _KeyAndValueChanged(key, sharedPreferences.get(key))));
   }
 
   /// Always returns true.
@@ -316,26 +314,28 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ///
 
   @override
-  Observable<dynamic> getObservable(String key) => _getObservable(key, get);
+  Observable<dynamic> getObservable(String key) =>
+      _getObservable<dynamic>(key, get);
 
   @override
   Observable<bool> getBoolObservable(String key) =>
-      _getObservable(key, getBool);
+      _getObservable<bool>(key, getBool);
 
   @override
   Observable<double> getDoubleObservable(String key) =>
-      _getObservable(key, getDouble);
+      _getObservable<double>(key, getDouble);
 
   @override
-  Observable<int> getIntObservable(String key) => _getObservable(key, getInt);
+  Observable<int> getIntObservable(String key) =>
+      _getObservable<int>(key, getInt);
 
   @override
   Observable<String> getStringObservable(String key) =>
-      _getObservable(key, getString);
+      _getObservable<String>(key, getString);
 
   @override
   Observable<List<String>> getStringListObservable(String key) =>
-      _getObservable(key, getStringList);
+      _getObservable<List<String>>(key, getStringList);
 }
 
 ///
