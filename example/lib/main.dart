@@ -7,9 +7,7 @@ import 'package:rxdart/rxdart.dart';
 
 void main() {
   final rxSharedPreferences = RxSharedPreferences(
-    SharedPreferences.getInstance(),
-    const DefaultLogger()
-  );
+      SharedPreferences.getInstance(), const DefaultLogger());
   runApp(MyApp(rxSharedPreferences));
 }
 
@@ -65,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _subscription.cancel();
+    _textEditingController.dispose();
     super.dispose();
   }
 
@@ -87,8 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
               return ListTile(
                 title: Text(list[index]),
                 trailing: IconButton(
-                    icon: Icon(Icons.remove_circle),
-                    onPressed: () => _removeString(list[index])),
+                  icon: Icon(Icons.remove_circle),
+                  onPressed: () => _removeString(list[index]),
+                ),
               );
             },
           );
