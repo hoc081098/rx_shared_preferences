@@ -95,7 +95,7 @@ rxSharedPreferences.getIntObservable('KEY')
 
 ## Example demo:
 
-### Build ListView from Stream using RxSharedPreferences
+### [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preference/tree/master/example)
 
 | Demo          | Code |
 | ------------- | ------------- |
@@ -103,8 +103,7 @@ rxSharedPreferences.getIntObservable('KEY')
   
 </p>  
 
-### Change theme runtime:
-https://github.com/hoc081098/flutter-change-theme-youtube-code
+### [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)
 
 License
 -------
