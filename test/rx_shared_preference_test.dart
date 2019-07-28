@@ -214,7 +214,7 @@ void main() {
       expect(await rxSharedPreferences.getString('String'),
           kTestValues['flutter.String']);
 
-      SharedPreferences.setMockInitialValues(kTestValues2);
+      RxSharedPreferences.setMockInitialValues(kTestValues2);
       expect(await rxSharedPreferences.getString('String'),
           kTestValues2['flutter.String']);
 
@@ -228,7 +228,7 @@ void main() {
       const String _prefixedKey = 'flutter.' + _key;
 
       test('test 1', () async {
-        SharedPreferences.setMockInitialValues(
+        RxSharedPreferences.setMockInitialValues(
             <String, dynamic>{_prefixedKey: 'my string'});
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -242,7 +242,7 @@ void main() {
       });
 
       test('test 2', () async {
-        SharedPreferences.setMockInitialValues(
+        RxSharedPreferences.setMockInitialValues(
             <String, dynamic>{_prefixedKey: 'my other string'});
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();

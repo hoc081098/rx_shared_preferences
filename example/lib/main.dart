@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 void main() {
   final rxSharedPreferences = RxSharedPreferences(
     SharedPreferences.getInstance(),
-    (message) => print('[RX_SHARED_PREF] :: $message'),
+    const DefaultLogger()
   );
   runApp(MyApp(rxSharedPreferences));
 }

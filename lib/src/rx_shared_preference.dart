@@ -1,78 +1,41 @@
 import 'dart:async';
+import 'dart:collection';
 
+import 'package:meta/meta.dart';
+import 'package:rx_shared_preference/src/interface/i_rx_shared_preferences.dart';
+import 'package:rx_shared_preference/src/logger/logger.dart';
+import 'package:rx_shared_preference/src/model/key_and_value.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-///
-/// Get [Observable]s by key from persistent storage.
-///
-abstract class IRxSharedPreferences {
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with key was changed.
-  ///
-  Observable<dynamic> getObservable(String key);
-
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a bool.
-  ///
-  Observable<bool> getBoolObservable(String key);
-
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a double.
-  ///
-  Observable<double> getDoubleObservable(String key);
-
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a int.
-  ///
-  Observable<int> getIntObservable(String key);
-
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a String.
-  ///
-  Observable<String> getStringObservable(String key);
-
-  ///
-  /// Return [Observable] that will emit value read from persistent storage.
-  /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a string set.
-  ///
-  Observable<List<String>> getStringListObservable(String key);
-}
-
-typedef void Logger(String message);
 
 ///
 ///
 ///
 class RxSharedPreferences implements IRxSharedPreferences {
+  ///
+  /// Properties
+  ///
+
   // ignore: close_sinks
-  final PublishSubject<Iterable<_KeyAndValueChanged<dynamic>>>
-      _keyValuesChangedSubject = PublishSubject();
-  final Future<SharedPreferences> _sharedPreferencesFuture;
+  final _keyValuesSubject = PublishSubject<Iterable<KeyAndValue<dynamic>>>();
+  final Future<SharedPreferences> _sharedPrefsFuture;
   final Logger _logger;
+
+  ///
+  /// Constructor
+  ///
 
   RxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
-    Logger logger,
+    this._logger,
   ])  : assert(sharedPreference != null),
-        _sharedPreferencesFuture = Future.value(sharedPreference),
-        this._logger = logger ?? ((message) => null) {
-    _keyValuesChangedSubject
-        .listen((pairs) => _logger('[KEYS_CHANGED] pairs=$pairs'));
+        _sharedPrefsFuture = Future.value(sharedPreference) {
+    _keyValuesSubject
+        .listen((pairs) => _logger?.keysChanged(UnmodifiableListView(pairs)));
   }
 
   ///
-  ///
+  /// Internal
   ///
 
   ///
@@ -84,7 +47,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   /// Get [Observable] from the persistent storage
   ///
   Observable<T> _getObservable<T>(String key, Future<T> get(String key)) {
-    return _keyValuesChangedSubject
+    return _keyValuesSubject
         .map((pairs) {
           return pairs.firstWhere(
             (pair) => pair.key == key,
@@ -96,25 +59,24 @@ class RxSharedPreferences implements IRxSharedPreferences {
         .asyncMap((pair) async {
           if (pair == null) {
             return get(key);
-          } else {
-            if (T == _typeOf<List<String>>()) {
-              return (pair.value as List)?.cast<String>() as T;
-            }
-            return pair.value as T;
           }
+          if (T == _typeOf<List<String>>()) {
+            return (pair.value as List)?.cast<String>() as T;
+          }
+          return pair.value as T;
         })
-        .doOnData((value) => _logger('[OBSERVABLE] key=$key, value=$value'))
-        .doOnError((error, stacktrace) =>
-            _logger('[OBSERAVBLE] error=$error, stacktrace=$stacktrace'));
+        .doOnData(
+            (value) => _logger?.doOnDataObservable(KeyAndValue(key, value)))
+        .doOnError((e, StackTrace s) => _logger?.doOnErrorObservable(e, s));
   }
 
   ///
   /// Get value from the persistent storage by [key]
   ///
-  Future<T> _get<T>([String key]) {
-    return _sharedPreferencesFuture.then((sharedPreferences) {
+  Future<T> _get<T>([String key]) async {
+    read<T>(SharedPreferences sharedPreferences, String key) {
       if (T == dynamic) {
-        return sharedPreferences.get(key);
+        return sharedPreferences.get(key) as T;
       }
       if (T == double) {
         return sharedPreferences.getDouble(key) as T;
@@ -131,31 +93,25 @@ class RxSharedPreferences implements IRxSharedPreferences {
       if (T == _typeOf<List<String>>()) {
         return sharedPreferences.getStringList(key)?.cast<String>() as T;
       }
-
-      /// Get all keys
+      // Get all keys
       if (T == _typeOf<Set<String>>() && key == null) {
         return sharedPreferences.getKeys() as T;
       }
-    }).then((value) {
-      _logger('[READ] key=$key, type=$T => value=$value');
-      return value;
-    });
+      return null;
+    }
+
+    final sharedPreferences = await _sharedPrefsFuture;
+    final value = read<T>(sharedPreferences, key);
+    _logger?.readValue(T, key, value);
+
+    return value;
   }
 
   ///
   /// Set [value] associated with [key]
   ///
-  Future<bool> _setValue<T>(String key, T value) {
-    _triggerKeyChanges(bool result) {
-      _logger('[WRITE] key=$key, value=$value, type=$T => result=$result');
-
-      if (result ?? false) {
-        _keyValuesChangedSubject.add([_KeyAndValueChanged<T>(key, value)]);
-      }
-      return result;
-    }
-
-    return _sharedPreferencesFuture.then((sharedPreferences) {
+  Future<bool> _setValue<T>(String key, T value) async {
+    write<T>(SharedPreferences sharedPreferences, String key, T value) {
       if (T == dynamic) {
         return value != null
             ? Future.value(false)
@@ -175,21 +131,34 @@ class RxSharedPreferences implements IRxSharedPreferences {
       }
       if (T == _typeOf<List<String>>()) {
         return sharedPreferences.setStringList(
-            key, (value as List)?.cast<String>());
+          key,
+          (value as List)?.cast<String>(),
+        );
       }
-      return null;
-    }).then(_triggerKeyChanges);
+      return Future.value(false);
+    }
+
+    final sharedPreferences = await _sharedPrefsFuture;
+    final result = (await write<T>(sharedPreferences, key, value)) ?? false;
+    _logger?.writeValue(T, key, value, result);
+
+    // Trigger key changes
+    if (result) {
+      _keyValuesSubject.add([KeyAndValue<T>(key, value)]);
+    }
+
+    return result;
   }
 
   ///
-  ///
+  /// Delegate to [SharedPreferences]
   ///
 
   ///
   /// Returns a future complete with value true if the persistent storage
   /// contains the given [key].
   ///
-  Future<bool> containsKey(String key) => _sharedPreferencesFuture
+  Future<bool> containsKey(String key) => _sharedPrefsFuture
       .then((sharedPreferences) => sharedPreferences.containsKey(key));
 
   ///
@@ -236,12 +205,11 @@ class RxSharedPreferences implements IRxSharedPreferences {
   /// Completes with true once the user preferences for the app has been cleared.
   ///
   Future<bool> clear() async {
-    final SharedPreferences sharedPreferences = await _sharedPreferencesFuture;
+    final SharedPreferences sharedPreferences = await _sharedPrefsFuture;
     final Set<String> keys = sharedPreferences.getKeys();
     final bool result = await sharedPreferences.clear();
     if (result ?? false) {
-      _keyValuesChangedSubject
-          .add(keys.map((key) => _KeyAndValueChanged<dynamic>(key, null)));
+      _keyValuesSubject.add(keys.map((key) => KeyAndValue<dynamic>(key, null)));
     }
     return result;
   }
@@ -251,18 +219,18 @@ class RxSharedPreferences implements IRxSharedPreferences {
   /// Use this method to observe modifications that were made in native code
   /// (without using the plugin) while the app is running.
   Future<void> reload() async {
-    final SharedPreferences sharedPreferences = await _sharedPreferencesFuture;
+    final SharedPreferences sharedPreferences = await _sharedPrefsFuture;
     await sharedPreferences.reload();
-    _keyValuesChangedSubject.add(sharedPreferences
+    _keyValuesSubject.add(sharedPreferences
         .getKeys()
-        .map((key) => _KeyAndValueChanged(key, sharedPreferences.get(key))));
+        .map((key) => KeyAndValue(key, sharedPreferences.get(key))));
   }
 
   /// Always returns true.
   /// On iOS, synchronize is marked deprecated. On Android, we commit every set.
   @deprecated
-  Future<bool> commit() => _sharedPreferencesFuture
-      .then((sharedPreferences) => sharedPreferences.commit());
+  Future<bool> commit() =>
+      _sharedPrefsFuture.then((sharedPrefs) => sharedPrefs.commit());
 
   ///
   /// Removes an entry from persistent storage.
@@ -309,8 +277,17 @@ class RxSharedPreferences implements IRxSharedPreferences {
   Future<bool> setStringList(String key, List<String> value) =>
       _setValue<List<String>>(key, value);
 
+  /// Initializes the shared preferences with mock values for testing.
   ///
+  /// If the singleton instance has been initialized already, it is automatically reloaded.
+  @visibleForTesting
+  static void setMockInitialValues(Map<String, dynamic> values) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    SharedPreferences.setMockInitialValues(values);
+  }
+
   ///
+  /// Get observables (implements [IRxSharedPreferences])
   ///
 
   @override
@@ -336,17 +313,4 @@ class RxSharedPreferences implements IRxSharedPreferences {
   @override
   Observable<List<String>> getStringListObservable(String key) =>
       _getObservable<List<String>>(key, getStringList);
-}
-
-///
-/// Pair of [key] and [value]
-///
-class _KeyAndValueChanged<T> {
-  final String key;
-  final T value;
-
-  const _KeyAndValueChanged(this.key, this.value);
-
-  @override
-  String toString() => '_KeyAndValueChanged{key: $key, value: $value}';
 }

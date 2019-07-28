@@ -63,16 +63,24 @@ Logger will log messages about operations (such as read, write) and observable v
 ```dart
 final rxSharedPreferences = RxSharedPreferences(
   SharedPreferences.getInstance(),
-  (message) => print('[RX_SHARED_PREF] :: $message'),
+  const DefaultLogger(),
 );
 ```
 
-or simply pass `print` function to `RxSharedPreferences` constructor
-
+You can custom Logger by implements Logger, or extends class LoggerAdapter (with empty implementations)
 ```dart
+class MyLogger extends LoggerAdapter {
+  const MyLogger();
+
+  @override
+  void readValue(Type type, String key, value) {
+    // do something
+  }
+}
+
 final rxSharedPreferences = RxSharedPreferences(
   SharedPreferences.getInstance(),
-  print,
+  const MyLogger(),
 );
 ```
 
