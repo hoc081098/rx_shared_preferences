@@ -63,10 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialogAdd(context),
-        child: Icon(Icons.add),
-        tooltip: 'Add a string',
+      floatingActionButton: Builder(
+        builder: (context) {
+          return FloatingActionButton(
+            onPressed: () => showDialogAdd(context),
+            child: Icon(Icons.add),
+            tooltip: 'Add a string',
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
