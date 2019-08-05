@@ -12,7 +12,7 @@
 - Reactive stream wrapper around SharedPreferences.
 - This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
-## More detail about return `Observable`
+## More detail about returned `Observable`
 - `Observable` will emit the **initial value** as its first next event (Emit value as soon as possible after is listen to) (**emit `null`** when value is not set) 
 - It will automatic emit value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`)
 - When read value is not valid type (wrong type):
