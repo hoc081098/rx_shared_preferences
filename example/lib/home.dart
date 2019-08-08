@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:example/dialog.dart';
-import 'package:example/main.dart';
+import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 

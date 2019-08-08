@@ -1,30 +1,34 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:meta/meta.dart';
-import 'package:rx_shared_preference/src/interface/i_rx_shared_preferences.dart';
+import 'package:rx_shared_preference/src/interface/rx_shared_preferences.dart';
 import 'package:rx_shared_preference/src/logger/logger.dart';
 import 'package:rx_shared_preference/src/model/key_and_value.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///
-///
+/// Default [IRxSharedPreferences] implementation
 ///
 class RxSharedPreferences implements IRxSharedPreferences {
   ///
-  /// Properties
+  /// Trigger subject
   ///
-
-  // ignore: close_sinks
   final _keyValuesSubject = PublishSubject<Iterable<KeyAndValue<dynamic>>>();
+
+  ///
+  /// Future of [SharedPreferences]
+  ///
   final Future<SharedPreferences> _sharedPrefsFuture;
+
+  ///
+  /// Logger
+  ///
   final Logger _logger;
 
   ///
   /// Constructor
   ///
-
   RxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
     this._logger,
@@ -100,8 +104,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
       return null;
     }
 
-    final sharedPreferences = await _sharedPrefsFuture;
-    final value = read<T>(sharedPreferences, key);
+    final prefs = await _sharedPrefsFuture;
+    final value = read<T>(prefs, key);
     _logger?.readValue(T, key, value);
 
     return value;
@@ -138,157 +142,136 @@ class RxSharedPreferences implements IRxSharedPreferences {
       return Future.value(false);
     }
 
-    final sharedPreferences = await _sharedPrefsFuture;
-    final result = (await write<T>(sharedPreferences, key, value)) ?? false;
+    final prefs = await _sharedPrefsFuture;
+    final result = await write<T>(prefs, key, value);
     _logger?.writeValue(T, key, value, result);
 
     // Trigger key changes
-    if (result) {
-      _keyValuesSubject.add([KeyAndValue<T>(key, value)]);
+    if (result ?? false) {
+      _sendKeyValueChanged([KeyAndValue<T>(key, value)]);
     }
 
     return result;
   }
 
   ///
-  /// Delegate to [SharedPreferences]
+  /// Add pairs to subject to trigger.
+  /// Do nothing if subject already closed.
   ///
+  void _sendKeyValueChanged(Iterable<KeyAndValue<dynamic>> pairs) {
+    try {
+      _keyValuesSubject.add(pairs);
+    } catch (e) {
+      print(e);
+      // Do nothing
+    }
+  }
 
-  ///
-  /// Returns a future complete with value true if the persistent storage
-  /// contains the given [key].
-  ///
-  Future<bool> containsKey(String key) => _sharedPrefsFuture
-      .then((sharedPreferences) => sharedPreferences.containsKey(key));
+  //
+  // Get and set methods (implements [ILikeSharedPreferences])
+  //
 
-  ///
-  /// Reads a value of any type from persistent storage.
-  ///
+  @override
+  Future<bool> containsKey(String key) =>
+      _sharedPrefsFuture.then((prefs) => prefs.containsKey(key));
+
+  @override
   Future<dynamic> get(String key) => _get<dynamic>(key);
 
-  ///
-  /// Reads a value from persistent storage, return a future that completes
-  /// with an error if it's not a bool.
-  ///
+  @override
   Future<bool> getBool(String key) => _get<bool>(key);
 
-  ///
-  /// Reads a value from persistent storage, return a future that completes
-  /// with an error if it's not a double.
-  ///
+  @override
   Future<double> getDouble(String key) => _get<double>(key);
 
-  ///
-  /// Reads a value from persistent storage, return a future that completes
-  /// with an error if it's not a int.
-  ///
+  @override
   Future<int> getInt(String key) => _get<int>(key);
 
-  ///
-  /// Returns all keys in the persistent storage.
-  ///
+  @override
   Future<Set<String>> getKeys() => _get<Set<String>>();
 
-  ///
-  /// Reads a value from persistent storage, return a future that completes
-  /// with an error if it's not a String.
-  ///
+  @override
   Future<String> getString(String key) => _get<String>(key);
 
-  ///
-  /// Reads a value from persistent storage, return a future that completes
-  /// with an error if it's not a string set.
-  ///
+  @override
   Future<List<String>> getStringList(String key) => _get<List<String>>(key);
 
-  ///
-  /// Completes with true once the user preferences for the app has been cleared.
-  ///
+  @override
   Future<bool> clear() async {
-    final SharedPreferences sharedPreferences = await _sharedPrefsFuture;
-    final Set<String> keys = sharedPreferences.getKeys();
-    final bool result = await sharedPreferences.clear();
+    final SharedPreferences prefs = await _sharedPrefsFuture;
+    final Set<String> keys = prefs.getKeys();
+    final bool result = await prefs.clear();
+
+    keys.forEach((key) => _logger?.writeValue(dynamic, key, null, result));
+
     if (result ?? false) {
-      _keyValuesSubject.add(keys.map((key) => KeyAndValue<dynamic>(key, null)));
+      _sendKeyValueChanged(
+        keys.map((key) {
+          return KeyAndValue<dynamic>(
+            key,
+            null,
+          );
+        }),
+      );
     }
+
     return result;
   }
 
-  /// Fetches the latest values from the host platform.
-  ///
-  /// Use this method to observe modifications that were made in native code
-  /// (without using the plugin) while the app is running.
+  @override
   Future<void> reload() async {
-    final SharedPreferences sharedPreferences = await _sharedPrefsFuture;
-    await sharedPreferences.reload();
-    _keyValuesSubject.add(sharedPreferences
-        .getKeys()
-        .map((key) => KeyAndValue(key, sharedPreferences.get(key))));
+    final SharedPreferences prefs = await _sharedPrefsFuture;
+    await prefs.reload();
+
+    prefs.getKeys().forEach(
+      (key) {
+        _logger?.readValue(
+          dynamic,
+          key,
+          prefs.get(key),
+        );
+      },
+    );
+    _sendKeyValueChanged(
+      prefs.getKeys().map(
+        (key) {
+          return KeyAndValue<dynamic>(
+            key,
+            prefs.get(key),
+          );
+        },
+      ).toList(growable: false),
+    );
   }
 
-  /// Always returns true.
-  /// On iOS, synchronize is marked deprecated. On Android, we commit every set.
   @deprecated
-  Future<bool> commit() =>
-      _sharedPrefsFuture.then((sharedPrefs) => sharedPrefs.commit());
+  @override
+  Future<bool> commit() => _sharedPrefsFuture.then((prefs) => prefs.commit());
 
-  ///
-  /// Removes an entry from persistent storage.
-  ///
+  @override
   Future<bool> remove(String key) => _setValue<dynamic>(key, null);
 
-  ///
-  /// Saves a boolean [value] to persistent storage in the background.
-  ///
-  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  ///
+  @override
   Future<bool> setBool(String key, bool value) => _setValue<bool>(key, value);
 
-  ///
-  /// Saves a double [value] to persistent storage in the background.
-  ///
-  /// Android doesn't support storing doubles, so it will be stored as a float.
-  ///
-  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  ///
+  @override
   Future<bool> setDouble(String key, double value) =>
       _setValue<double>(key, value);
 
-  ///
-  /// Saves an integer [value] to persistent storage in the background.
-  ///
-  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  ///
+  @override
   Future<bool> setInt(String key, int value) => _setValue<int>(key, value);
 
-  ///
-  /// Saves a string [value] to persistent storage in the background.
-  ///
-  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  ///
+  @override
   Future<bool> setString(String key, String value) =>
       _setValue<String>(key, value);
 
-  ///
-  /// Saves a list of strings [value] to persistent storage in the background.
-  ///
-  /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  ///
+  @override
   Future<bool> setStringList(String key, List<String> value) =>
       _setValue<List<String>>(key, value);
 
-  /// Initializes the shared preferences with mock values for testing.
-  ///
-  /// If the singleton instance has been initialized already, it is automatically reloaded.
-  @visibleForTesting
-  static void setMockInitialValues(Map<String, dynamic> values) {
-    // ignore: invalid_use_of_visible_for_testing_member
-    SharedPreferences.setMockInitialValues(values);
-  }
-
-  ///
-  /// Get observables (implements [IRxSharedPreferences])
-  ///
+  //
+  // Get observables (implements [IRxSharedPreferences])
+  //
 
   @override
   Observable<dynamic> getObservable(String key) =>
@@ -313,4 +296,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   @override
   Observable<List<String>> getStringListObservable(String key) =>
       _getObservable<List<String>>(key, getStringList);
+
+  @override
+  Future<void> dispose() => _keyValuesSubject.close();
 }

@@ -214,7 +214,7 @@ void main() {
       expect(await rxSharedPreferences.getString('String'),
           kTestValues['flutter.String']);
 
-      RxSharedPreferences.setMockInitialValues(kTestValues2);
+      SharedPreferences.setMockInitialValues(kTestValues2);
       expect(await rxSharedPreferences.getString('String'),
           kTestValues2['flutter.String']);
 
@@ -228,7 +228,7 @@ void main() {
       const String _prefixedKey = 'flutter.' + _key;
 
       test('test 1', () async {
-        RxSharedPreferences.setMockInitialValues(
+        SharedPreferences.setMockInitialValues(
             <String, dynamic>{_prefixedKey: 'my string'});
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -242,7 +242,7 @@ void main() {
       });
 
       test('test 2', () async {
-        RxSharedPreferences.setMockInitialValues(
+        SharedPreferences.setMockInitialValues(
             <String, dynamic>{_prefixedKey: 'my other string'});
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -321,7 +321,6 @@ void main() {
         final Observable<List<String>> listStringObservable =
             rxSharedPreferences.getStringListObservable(
                 'String'); // Actual: Observable<String>
-
         await expectLater(
           listStringObservable,
           emitsAnyOf([
@@ -462,9 +461,6 @@ void main() {
             <String>[],
             isNull,
             <String>['done'],
-            <String>['AFTER RELOAD'],
-            <String>['AFTER RELOAD'],
-            ['WORKING']
           ]),
         );
         await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
@@ -478,24 +474,6 @@ void main() {
         await rxSharedPreferences.setStringList('List', []);
         await rxSharedPreferences.remove('List');
         await rxSharedPreferences.setStringList('List', ['done']);
-        await rxSharedPreferences.setStringList('List', ['AFTER RELOAD']);
-
-        ///
-        /// Test reloading
-        ///
-        channel.setMockMethodCallHandler((MethodCall methodCall) async {
-          if (methodCall.method == 'getAll') {
-            return {
-              'flutter.List': ['AFTER RELOAD']
-            };
-          }
-          if (methodCall.method.startsWith('set')) {
-            return true;
-          }
-          return null;
-        });
-        await rxSharedPreferences.reload();
-        rxSharedPreferences.setStringList('List', ['WORKING']);
 
         await Future.wait([
           expectStreamBoolFuture,
@@ -506,5 +484,107 @@ void main() {
         ]);
       },
     );
+
+    test('Does not emit anything after disposed', () async {
+      final observable = rxSharedPreferences.getStringListObservable('List');
+
+      final later = expectLater(
+        observable,
+        emitsInOrder(
+          [
+            anything,
+            <String>['before', 'dispose'],
+            emitsDone,
+            neverEmits(anything),
+          ],
+        ),
+      );
+
+      await rxSharedPreferences.setStringList(
+        'List',
+        <String>['before', 'dispose'],
+      );
+
+      // delay
+      await Future.delayed(const Duration(microseconds: 500));
+
+      await rxSharedPreferences.dispose();
+      // not emit but persisted
+      await rxSharedPreferences.setStringList(
+        'List',
+        <String>['after', 'dispose'],
+      );
+
+      // work fine
+      expect(
+        await rxSharedPreferences.getStringList('List'),
+        <String>['after', 'dispose'],
+      );
+
+      await later;
+    });
+
+    test('Emit null when clearing', () async {
+      final observable = rxSharedPreferences.getStringListObservable('List');
+
+      final later = expectLater(
+        observable,
+        emitsInOrder(
+          [
+            anything,
+            isNull,
+          ],
+        ),
+      );
+
+      await rxSharedPreferences.clear();
+
+      await later;
+    });
+
+    test('Emit value when reloading', () async {
+      final observable = rxSharedPreferences.getStringListObservable('List');
+
+      final later = expectLater(
+        observable,
+        emitsInOrder(
+          [
+            anything,
+            ['AFTER RELOAD'],
+            ['WORKING'],
+            ['WORKING'],
+          ],
+        ),
+      );
+
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        if (methodCall.method == 'getAll') {
+          return {
+            'flutter.List': ['AFTER RELOAD']
+          };
+        }
+
+        if (methodCall.method.startsWith('set')) {
+          return true;
+        }
+        return null;
+      });
+      await rxSharedPreferences.reload(); // emits ['AFTER RELOAD']
+
+      await rxSharedPreferences
+          .setStringList('List', ['WORKING']); // emits ['WORKING']
+
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        if (methodCall.method == 'getAll') {
+          return {
+            'flutter.List': ['WORKING']
+          };
+        }
+        return null;
+      });
+      await rxSharedPreferences.reload(); // emits ['WORKING']
+
+      await later;
+    });
   });
 }

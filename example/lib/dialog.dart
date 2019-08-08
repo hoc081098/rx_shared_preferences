@@ -1,5 +1,5 @@
 import 'package:example/home.dart';
-import 'package:example/main.dart';
+import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/material.dart';
 
 void showDialogAdd(BuildContext context) async {
