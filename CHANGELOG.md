@@ -1,3 +1,7 @@
+## 1.0.3+1 - Aug 24, 2019
+
+* Deprecate this package
+
 ## 1.0.3 - Aug 24, 2019
 
 * Internal refactor
