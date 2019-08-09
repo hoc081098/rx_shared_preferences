@@ -1,3 +1,7 @@
+## 1.0.3 - Aug 24, 2019
+
+* Internal refactor
+
 ## 1.0.2 - Jul 24, 2019
 
 * Update dependencies (`rxdart` and `shared_preferences`) to latest version

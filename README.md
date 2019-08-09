@@ -1,5 +1,7 @@
 # rx_shared_preference ![alt text](https://avatars3.githubusercontent.com/u/6407041?s=32&v=4)
 
+# **Note: this package is now named [![Pub](https://img.shields.io/pub/v/rx_shared_preferences.svg)](https://pub.dartlang.org/packages/rx_shared_preferences)**. Please use new name package.
+
 ### Author: [Petrus Nguyễn Thái Học](https://github.com/hoc081098)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preference?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preference&utm_campaign=Badge_Grade_Dashboard)
@@ -57,6 +59,8 @@ final rxSharedPreferences = RxSharedPreferences(
 );
 ```
 
+-----
+
 You can add logger optional parameter to `RxSharedPreferences` constructor.
 Logger will log messages about operations (such as read, write) and observable values
 
@@ -67,7 +71,7 @@ final rxSharedPreferences = RxSharedPreferences(
 );
 ```
 
-You can custom Logger by implements Logger, or extends class LoggerAdapter (with empty implementations)
+You can custom Logger by implements `Logger`, or extends class `LoggerAdapter` (with empty implementations)
 ```dart
 class MyLogger extends LoggerAdapter {
   const MyLogger();
@@ -83,6 +87,8 @@ final rxSharedPreferences = RxSharedPreferences(
   const MyLogger(),
 );
 ```
+
+-----
 
 And then, just listen `Observable`, transform `Observable` through operators such as (`map`, `flatMap`, etc...).
 If you need listen to this `Observable` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
