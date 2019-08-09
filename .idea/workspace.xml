@@ -14,7 +14,7 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/src/rx_shared_preference.dart">
+        <entry file="file://$PROJECT_DIR$/lib/src/rx_shared_preferences.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-4977">
               <caret line="12" column="5" lean-forward="true" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
@@ -53,7 +53,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/rx_shared_preference.dart">
+        <entry file="file://$PROJECT_DIR$/lib/rx_shared_preferences.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="147">
               <caret line="7" selection-start-line="7" selection-end-line="7" />
@@ -62,7 +62,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/rx_shared_preference_test.dart">
+        <entry file="file://$PROJECT_DIR$/test/rx_shared_preferences_test.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4578">
               <caret line="273" selection-start-line="273" selection-end-line="273" />
@@ -130,10 +130,10 @@
         <option value="$PROJECT_DIR$/../flutter_provider/pubspec.yaml" />
         <option value="$PROJECT_DIR$/../flutter_provider/CHANGELOG.md" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/lib/rx_shared_preference.dart" />
+        <option value="$PROJECT_DIR$/lib/rx_shared_preferences.dart" />
         <option value="$PROJECT_DIR$/example/lib/main.dart" />
-        <option value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
-        <option value="$PROJECT_DIR$/lib/src/rx_shared_preference.dart" />
+        <option value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
+        <option value="$PROJECT_DIR$/lib/src/rx_shared_preferences.dart" />
         <option value="$PROJECT_DIR$/pubspec.yaml" />
         <option value="$PROJECT_DIR$/CHANGELOG.md" />
         <option value="$PROJECT_DIR$/.travis.yml" />
@@ -158,27 +158,27 @@
         <subPane>
           <expand>
             <path>
-              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
-              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="rx_shared_preferences" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preferences" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
-              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="rx_shared_preferences" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preferences" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
-              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="rx_shared_preferences" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preferences" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
-              <item name="rx_shared_preference" type="462c0819:PsiDirectoryNode" />
+              <item name="rx_shared_preferences" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preferences" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="rx_shared_preference" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rx_shared_preferences" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
@@ -207,38 +207,38 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Flutter Test.tests in rx_shared_preference_test.dart">
+  <component name="RunManager" selected="Flutter Test.tests in rx_shared_preferences_test.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
     <configuration name="Observable will emit error when read value is not valid type" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Observable will emit error when read value is not valid type" />
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="Observable will emit error when read value is not valid type, or emit null when value is not set" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Observable will emit error when read value is not valid type, or emit null when value is not set" />
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="Observable will emit value as soon as possible after listen" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Observable will emit value as soon as possible after listen" />
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="Test Stream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Test Stream" />
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="tests in rx_shared_preference_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preference_test.dart" />
+    <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Flutter Test.tests in rx_shared_preference_test.dart" />
+        <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
         <item itemvalue="Flutter Test.Test Stream" />
         <item itemvalue="Flutter Test.Observable will emit value as soon as possible after listen" />
         <item itemvalue="Flutter Test.Observable will emit error when read value is not valid type, or emit null when value is not set" />
@@ -302,29 +302,29 @@
     <history-entry file="Observable_will_emit_value_as_soon_as_possible_after_listen - 2019.04.27 at 12h 43m 05s.xml">
       <configuration name="Observable will emit value as soon as possible after listen" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 43m 11s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 43m 11s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
     <history-entry file="Test_Stream - 2019.04.27 at 12h 43m 18s.xml">
       <configuration name="Test Stream" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 43m 26s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 43m 26s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 43m 48s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 43m 48s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 46m 24s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 46m 24s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 46m 49s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 46m 49s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 47m 07s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 47m 07s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
-    <history-entry file="tests_in_rx_shared_preference_test_dart - 2019.04.27 at 12h 47m 58s.xml">
-      <configuration name="tests in rx_shared_preference_test.dart" configurationId="FlutterTestConfigType" />
+    <history-entry file="tests_in_rx_shared_preferences_test_dart - 2019.04.27 at 12h 47m 58s.xml">
+      <configuration name="tests in rx_shared_preferences_test.dart" configurationId="FlutterTestConfigType" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -816,7 +816,7 @@
     <entry file="file://$PROJECT_DIR$/example/test/widget_test.dart">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/rx_shared_preference_test.dart">
+    <entry file="file://$PROJECT_DIR$/test/rx_shared_preferences_test.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4578">
           <caret line="273" selection-start-line="273" selection-end-line="273" />
@@ -843,7 +843,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/rx_shared_preference.dart">
+    <entry file="file://$PROJECT_DIR$/lib/rx_shared_preferences.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
@@ -871,7 +871,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/rx_shared_preference.dart">
+    <entry file="file://$PROJECT_DIR$/lib/src/rx_shared_preferences.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4977">
           <caret line="12" column="5" lean-forward="true" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />

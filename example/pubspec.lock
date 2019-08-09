@@ -81,7 +81,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
-  rx_shared_preference:
+  rx_shared_preferences:
     dependency: "direct main"
     description:
       path: ".."

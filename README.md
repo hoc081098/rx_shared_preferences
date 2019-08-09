@@ -1,10 +1,10 @@
-# rx_shared_preference ![alt text](https://avatars3.githubusercontent.com/u/6407041?s=32&v=4)
+# rx_shared_preferences ![alt text](https://avatars3.githubusercontent.com/u/6407041?s=32&v=4)
 
 ### Author: [Petrus Nguyễn Thái Học](https://github.com/hoc081098)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preference?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preference&utm_campaign=Badge_Grade_Dashboard)
-[![Pub](https://img.shields.io/pub/v/rx_shared_preference.svg)](https://pub.dartlang.org/packages/rx_shared_preference)
-[![Build Status](https://travis-ci.org/hoc081098/rx_shared_preference.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preference)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preferences?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preferences&utm_campaign=Badge_Grade_Dashboard)
+[![Pub](https://img.shields.io/pub/v/rx_shared_preferences.svg)](https://pub.dartlang.org/packages/rx_shared_preferences)
+[![Build Status](https://travis-ci.org/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preferences)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 - Shared preference with RxDart Stream observation.
@@ -29,15 +29,15 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
   ...
-  rx_shared_preference: <latest_version>
+  rx_shared_preferences: <latest_version>
 ```
 
 ## Usage
 
-Import `rx_shared_preference` and `shared_preferences`
+Import `rx_shared_preferences` and `shared_preferences`
 
 ```dart
-import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 ```
 
@@ -103,7 +103,7 @@ rxSharedPreferences.getIntObservable('KEY')
 
 ## Example demo:
 
-### 1. [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preference/tree/master/example)
+### 1. [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)
 
 | Demo          | Code |
 | ------------- | ------------- |

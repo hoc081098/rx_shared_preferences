@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 /// Widget that efficiently provider [RxSharedPreferences] down the tree.
 class RxPrefsProvider extends StatefulWidget {

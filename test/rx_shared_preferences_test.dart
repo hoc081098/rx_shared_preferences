@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart/src/observables/observable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_api/test_api.dart' show TypeMatcher;

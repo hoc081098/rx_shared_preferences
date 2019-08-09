@@ -2,7 +2,7 @@ import 'package:example/home.dart';
 import 'package:example/loggers.dart';
 import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

@@ -1,10 +1,10 @@
-library rx_shared_preference;
+library rx_shared_preferences;
 
 ///
 /// Author: Petrus Nguyễn Thái Học
 /// Github: https://github.com/hoc081098
 ///
-export 'src/rx_shared_preference_impl.dart';
+export 'src/rx_shared_preferences_impl.dart';
 export 'src/interface/like_shared_preferences.dart';
 export 'src/interface/rx_shared_preferences.dart';
 export 'src/logger/default_logger.dart';

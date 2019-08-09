@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:rx_shared_preference/src/interface/rx_shared_preferences.dart';
-import 'package:rx_shared_preference/src/logger/logger.dart';
-import 'package:rx_shared_preference/src/model/key_and_value.dart';
+import 'package:rx_shared_preferences/src/interface/rx_shared_preferences.dart';
+import 'package:rx_shared_preferences/src/logger/logger.dart';
+import 'package:rx_shared_preferences/src/model/key_and_value.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
