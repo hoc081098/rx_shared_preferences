@@ -166,7 +166,7 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
 
 | Demo          | Code |
 | ------------- | ------------- |
-| <img src="https://github.com/hoc081098/rx_shared_preferences/blob/rename_package/example/example.gif?raw=true" width="240">  | <img src="https://imgbbb.com/images/2019/08/09/carbon-1.png" width="600">  |
+| <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" width="240">  | <img src="https://imgbbb.com/images/2019/08/09/carbon-1.png" width="600">  |
   
 </p>  
 
