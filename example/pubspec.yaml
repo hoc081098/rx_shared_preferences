@@ -1,5 +1,5 @@
 name: example
-description: Rx Shared Preference example.
+description: Rx Shared Preferences example.
 version: 1.0.0+1
 
 environment:

@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rx Shared Preference example',
+      title: 'Rx Shared Preferences example',
       theme: ThemeData.dark(),
       home: const MyHomePage(),
     );
