@@ -5,7 +5,7 @@ library rx_shared_preferences;
 /// Github: https://github.com/hoc081098
 ///
 export 'src/rx_shared_preferences_impl.dart';
-export 'src/interface/like_shared_preferences.dart';
+export 'src/interface/shared_preferences_like.dart';
 export 'src/interface/rx_shared_preferences.dart';
 export 'src/logger/default_logger.dart';
 export 'src/logger/logger_adapter.dart';
