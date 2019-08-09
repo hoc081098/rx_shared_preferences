@@ -1,4 +1,4 @@
-import 'package:rx_shared_preference/src/interface/like_shared_preferences.dart';
+import 'package:rx_shared_preferences/src/interface/shared_preferences_like.dart';
 import 'package:rxdart/rxdart.dart';
 
 ///

@@ -1,4 +1,4 @@
-import 'package:rx_shared_preference/rx_shared_preference.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 //
 // Using logger:

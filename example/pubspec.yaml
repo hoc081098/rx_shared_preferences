@@ -9,10 +9,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  rx_shared_preference: ^1.0.0+2
+  rx_shared_preferences:
 
 dependency_overrides:
-  rx_shared_preference:
+  rx_shared_preferences:
     path: ../
 
 dev_dependencies:
