@@ -20,7 +20,9 @@
   + **Emit `null`** when value is absent (value is `null`) (this occurred because `null` can be cast to any type).
 - Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Observable` where data events are skipped if they are equal to the previous data event.
 
+<p align="center">
 <img src="https://imgbbb.com/images/2019/08/09/carbon.png" width="600">
+</p>
 
 # Getting Started
 
