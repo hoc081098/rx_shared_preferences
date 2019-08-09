@@ -88,7 +88,7 @@ final rxPrefs = RxSharedPreferences(
 );
 ```
 
-## 3. Select observable (stream) by and use
+## 3. Select observable (stream) and use
 
 - And then, just listen `Observable`, transform `Observable` through operators such as (`map`, `flatMap`, etc...).
 - If you need listen to this `Observable` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
