@@ -1,3 +1,7 @@
+## 1.0.3+2 - Oct 7, 2019
+
+* Update dependencies
+
 ## 1.0.3+1 - Aug 9, 2019
 
 * Update README.md
