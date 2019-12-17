@@ -48,9 +48,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
   static Type _typeOf<T>() => T;
 
   ///
-  /// Get [Observable] from the persistent storage
+  /// Get [Stream] from the persistent storage
   ///
-  Observable<T> _getObservable<T>(String key, Future<T> get(String key)) {
+  Stream<T> _getStream<T>(String key, Future<T> get(String key)) {
     return _keyValuesSubject
         .map((pairs) {
           return pairs.firstWhere(
@@ -69,9 +69,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
           }
           return pair.value as T;
         })
-        .doOnData(
-            (value) => _logger?.doOnDataObservable(KeyAndValue(key, value)))
-        .doOnError((e, StackTrace s) => _logger?.doOnErrorObservable(e, s));
+        .doOnData((value) => _logger?.doOnDataStream(KeyAndValue(key, value)))
+        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s));
   }
 
   ///
@@ -270,32 +269,29 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _setValue<List<String>>(key, value);
 
   //
-  // Get observables (implements [IRxSharedPreferences])
+  // Get streams (implements [IRxSharedPreferences])
   //
 
   @override
-  Observable<dynamic> getObservable(String key) =>
-      _getObservable<dynamic>(key, get);
+  Stream<dynamic> getStream(String key) => _getStream<dynamic>(key, get);
 
   @override
-  Observable<bool> getBoolObservable(String key) =>
-      _getObservable<bool>(key, getBool);
+  Stream<bool> getBoolStream(String key) => _getStream<bool>(key, getBool);
 
   @override
-  Observable<double> getDoubleObservable(String key) =>
-      _getObservable<double>(key, getDouble);
+  Stream<double> getDoubleStream(String key) =>
+      _getStream<double>(key, getDouble);
 
   @override
-  Observable<int> getIntObservable(String key) =>
-      _getObservable<int>(key, getInt);
+  Stream<int> getIntStream(String key) => _getStream<int>(key, getInt);
 
   @override
-  Observable<String> getStringObservable(String key) =>
-      _getObservable<String>(key, getString);
+  Stream<String> getStringStream(String key) =>
+      _getStream<String>(key, getString);
 
   @override
-  Observable<List<String>> getStringListObservable(String key) =>
-      _getObservable<List<String>>(key, getStringList);
+  Stream<List<String>> getStringListStream(String key) =>
+      _getStream<List<String>>(key, getStringList);
 
   @override
   Future<void> dispose() => _keyValuesSubject.close();

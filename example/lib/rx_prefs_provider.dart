@@ -18,8 +18,8 @@ class RxPrefsProvider extends StatefulWidget {
   _RxPrefsProviderState createState() => _RxPrefsProviderState();
 
   static RxSharedPreferences of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_RxPrefsProviderInherited)
-            as _RxPrefsProviderInherited)
+    return context
+        .dependOnInheritedWidgetOfExactType<_RxPrefsProviderInherited>()
         .rxPrefs;
   }
 }

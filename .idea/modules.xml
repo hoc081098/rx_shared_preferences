@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/rx_shared_preferences.iml" filepath="$PROJECT_DIR$/rx_shared_preferences.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rx_shared_preference.iml" filepath="$PROJECT_DIR$/.idea/rx_shared_preference.iml" />
     </modules>
   </component>
 </project>

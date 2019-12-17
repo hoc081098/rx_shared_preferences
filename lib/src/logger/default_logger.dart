@@ -9,11 +9,11 @@ class DefaultLogger implements Logger {
       print('[KEYS_CHANGED       ] pairs=$pairs');
 
   @override
-  void doOnDataObservable(KeyAndValue pair) =>
+  void doOnDataStream(KeyAndValue pair) =>
       print('[ON_DATA_OBSERAVBLE ] data=$pair');
 
   @override
-  void doOnErrorObservable(error, StackTrace stackTrace) =>
+  void doOnErrorStream(error, StackTrace stackTrace) =>
       print('[ON_ERROR_OBSERVABLE] error=$error, stackTrace=$stackTrace');
 
   @override

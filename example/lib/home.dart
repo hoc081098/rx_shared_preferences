@@ -15,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ValueObservable<List<String>> _list$;
+  ValueStream<List<String>> _list$;
   StreamSubscription<List<String>> _subscription;
 
   @override
@@ -24,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (_subscription == null) {
       final list$ = RxPrefsProvider.of(context)
-          .getStringListObservable(key)
+          .getStringListStream(key)
           .publishValue();
       _subscription = list$.connect();
       _list$ = list$;

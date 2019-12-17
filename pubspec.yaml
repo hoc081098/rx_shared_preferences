@@ -1,17 +1,16 @@
 name: rx_shared_preferences
 description: Shared preferences with RxDart Stream observation. Reactive shared preferences for Flutter. Reactive stream wrapper around SharedPreferences. Lightweight and easy-to-use.
-version: 1.0.3+2
-author: Petrus Nguyễn Thái Học <hoc081098@gmail.com>
+version: 1.1.0
 homepage: https://github.com/hoc081098/rx_shared_preferences.git
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^0.5.3+4
-  rxdart: ^0.22.3
+  shared_preferences: ^0.5.6
+  rxdart: ^0.23.1
 
 dev_dependencies:
   flutter_test:

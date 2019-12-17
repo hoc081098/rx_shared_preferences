@@ -14,10 +14,10 @@ class EmptyLogger extends DefaultLogger {
 /// Implements all methods
 class CustomLogger implements Logger {
   @override
-  void doOnDataObservable(KeyAndValue pair) => print(pair);
+  void doOnDataStream(KeyAndValue pair) => print(pair);
 
   @override
-  void doOnErrorObservable(error, StackTrace stackTrace) => print(error);
+  void doOnErrorStream(error, StackTrace stackTrace) => print(error);
 
   @override
   void keysChanged(Iterable<KeyAndValue> pairs) => print(pairs);

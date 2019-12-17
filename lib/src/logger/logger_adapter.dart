@@ -8,10 +8,10 @@ class LoggerAdapter implements Logger {
   const LoggerAdapter();
 
   @override
-  void doOnDataObservable(KeyAndValue pair) {}
+  void doOnDataStream(KeyAndValue pair) {}
 
   @override
-  void doOnErrorObservable(error, StackTrace stackTrace) {}
+  void doOnErrorStream(error, StackTrace stackTrace) {}
 
   @override
   void keysChanged(Iterable<KeyAndValue> pairs) {}

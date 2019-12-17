@@ -1,50 +1,49 @@
 import 'package:rx_shared_preferences/src/interface/shared_preferences_like.dart';
-import 'package:rxdart/rxdart.dart';
 
 ///
-/// Get [Observable]s by key from persistent storage.
+/// Get [Stream]s by key from persistent storage.
 ///
 abstract class IRxSharedPreferences implements ISharedPreferencesLike {
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with key was changed.
   ///
-  Observable<dynamic> getObservable(String key);
+  Stream<dynamic> getStream(String key);
 
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a bool.
+  /// This stream will emit an error if it's not a bool.
   ///
-  Observable<bool> getBoolObservable(String key);
+  Stream<bool> getBoolStream(String key);
 
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a double.
+  /// This stream will emit an error if it's not a double.
   ///
-  Observable<double> getDoubleObservable(String key);
+  Stream<double> getDoubleStream(String key);
 
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a int.
+  /// This stream will emit an error if it's not a int.
   ///
-  Observable<int> getIntObservable(String key);
+  Stream<int> getIntStream(String key);
 
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a String.
+  /// This stream will emit an error if it's not a String.
   ///
-  Observable<String> getStringObservable(String key);
+  Stream<String> getStringStream(String key);
 
   ///
-  /// Return [Observable] that will emit value read from persistent storage.
+  /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.
-  /// This observable will emit an error if it's not a string set.
+  /// This stream will emit an error if it's not a string set.
   ///
-  Observable<List<String>> getStringListObservable(String key);
+  Stream<List<String>> getStringListStream(String key);
 
   ///
   /// Clean up resources - Closes the streams.

@@ -1,16 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:rxdart/src/observables/observable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_api/test_api.dart' show TypeMatcher;
 
 void main() {
   group('$RxSharedPreferences is like to $SharedPreferences', () {
-    const MethodChannel channel = MethodChannel(
-      'plugins.flutter.io/shared_preferences',
-    );
-
     const Map<String, dynamic> kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
@@ -31,6 +26,12 @@ void main() {
     RxSharedPreferences rxSharedPreferences;
 
     setUp(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      const MethodChannel channel = MethodChannel(
+        'plugins.flutter.io/shared_preferences',
+      );
+
       channel.setMockMethodCallHandler((MethodCall methodCall) async {
         log.add(methodCall);
         if (methodCall.method == 'getAll') {
@@ -272,9 +273,6 @@ void main() {
   });
 
   group('Test Stream', () {
-    const MethodChannel channel = MethodChannel(
-      'plugins.flutter.io/shared_preferences',
-    );
 
     const Map<String, dynamic> kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
@@ -288,6 +286,12 @@ void main() {
     RxSharedPreferences rxSharedPreferences;
 
     setUp(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      const MethodChannel channel = MethodChannel(
+        'plugins.flutter.io/shared_preferences',
+      );
+
       channel.setMockMethodCallHandler((MethodCall methodCall) async {
         log.add(methodCall);
         if (methodCall.method == 'getAll') {
@@ -306,66 +310,64 @@ void main() {
     });
 
     test(
-      'Observable will emit error when read value is not valid type, or emit null when value is not set',
+      'Stream will emit error when read value is not valid type, or emit null when value is not set',
       () async {
-        final Observable<int> intObservable = rxSharedPreferences
-            .getIntObservable('bool'); // Actual: Observable<bool>
+        final Stream<int> intStream =
+            rxSharedPreferences.getIntStream('bool'); // Actual: Stream<bool>
         await expectLater(
-          intObservable,
+          intStream,
           emitsAnyOf([
             isNull,
-            emitsError(const TypeMatcher<TypeError>()),
+            emitsError(isInstanceOf<TypeError>()),
           ]),
         );
 
-        final Observable<List<String>> listStringObservable =
-            rxSharedPreferences.getStringListObservable(
-                'String'); // Actual: Observable<String>
+        final Stream<List<String>> listStringStream = rxSharedPreferences
+            .getStringListStream('String'); // Actual: Stream<String>
         await expectLater(
-          listStringObservable,
+          listStringStream,
           emitsAnyOf([
             isNull,
-            emitsError(const TypeMatcher<TypeError>()),
+            emitsError(isInstanceOf<TypeError>()),
           ]),
         );
 
-        final Observable<int> noSuchObservable =
-            rxSharedPreferences.getIntObservable(
-                '@@@@@@@@@@@String'); // Actual: Observable<String>
+        final Stream<int> noSuchStream = rxSharedPreferences
+            .getIntStream('@@@@@@@@@@@String'); // Actual: Stream<String>
 
         await expectLater(
-          noSuchObservable,
+          noSuchStream,
           emits(isNull),
         );
       },
     );
 
     test(
-      'Observable will emit value as soon as possible after listen',
+      'Stream will emit value as soon as possible after listen',
       () async {
         await Future.wait([
           expectLater(
-            rxSharedPreferences.getIntObservable('int'),
+            rxSharedPreferences.getIntStream('int'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getBoolObservable('bool'),
+            rxSharedPreferences.getBoolStream('bool'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getDoubleObservable('double'),
+            rxSharedPreferences.getDoubleStream('double'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getStringObservable('String'),
+            rxSharedPreferences.getStringStream('String'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getStringListObservable('List'),
+            rxSharedPreferences.getStringListStream('List'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getObservable('No such key'),
+            rxSharedPreferences.getStream('No such key'),
             emits(isNull),
           ),
         ]);
@@ -373,14 +375,14 @@ void main() {
     );
 
     test(
-      'Observable will emit value as soon as possible after listen,'
+      'Stream will emit value as soon as possible after listen,'
       ' and will emit value when value associated with key change',
       () async {
         ///
         /// Bool
         ///
-        final Observable<bool> streamBool =
-            rxSharedPreferences.getBoolObservable('bool');
+        final Stream<bool> streamBool =
+            rxSharedPreferences.getBoolStream('bool');
         final expectStreamBoolFuture = expectLater(
           streamBool,
           emitsInOrder([anything, false, true, false, true, false]),
@@ -394,8 +396,8 @@ void main() {
         ///
         /// Double
         ///
-        final Observable<double> streamDouble =
-            rxSharedPreferences.getDoubleObservable('double');
+        final Stream<double> streamDouble =
+            rxSharedPreferences.getDoubleStream('double');
         final expectStreamDoubleFuture = expectLater(
           streamDouble,
           emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
@@ -411,8 +413,7 @@ void main() {
         ///
         /// Int
         ///
-        final Observable<int> streamInt =
-            rxSharedPreferences.getIntObservable('int');
+        final Stream<int> streamInt = rxSharedPreferences.getIntStream('int');
         final expectStreamIntFuture = expectLater(
           streamInt,
           emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
@@ -429,8 +430,8 @@ void main() {
         ///
         /// String
         ///
-        final Observable<String> streamString =
-            rxSharedPreferences.getStringObservable('String');
+        final Stream<String> streamString =
+            rxSharedPreferences.getStringStream('String');
         final expectStreamStringFuture = expectLater(
           streamString,
           emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
@@ -445,8 +446,8 @@ void main() {
         ///
         /// List<String>
         ///
-        final Observable<List<String>> streamListString =
-            rxSharedPreferences.getStringListObservable('List');
+        final Stream<List<String>> streamListString =
+            rxSharedPreferences.getStringListStream('List');
         final expectStreamListStringFuture = expectLater(
           streamListString,
           emitsInOrder([
@@ -486,7 +487,7 @@ void main() {
     );
 
     test('Does not emit anything after disposed', () async {
-      final observable = rxSharedPreferences.getStringListObservable('List');
+      final observable = rxSharedPreferences.getStringListStream('List');
 
       final later = expectLater(
         observable,
@@ -525,7 +526,7 @@ void main() {
     });
 
     test('Emit null when clearing', () async {
-      final observable = rxSharedPreferences.getStringListObservable('List');
+      final observable = rxSharedPreferences.getStringListStream('List');
 
       final later = expectLater(
         observable,
@@ -543,7 +544,7 @@ void main() {
     });
 
     test('Emit value when reloading', () async {
-      final observable = rxSharedPreferences.getStringListObservable('List');
+      final observable = rxSharedPreferences.getStringListStream('List');
 
       final later = expectLater(
         observable,
@@ -555,6 +556,10 @@ void main() {
             ['WORKING'],
           ],
         ),
+      );
+
+      const MethodChannel channel = MethodChannel(
+        'plugins.flutter.io/shared_preferences',
       );
 
       channel.setMockMethodCallHandler((MethodCall methodCall) async {
