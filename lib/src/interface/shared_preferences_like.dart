@@ -60,11 +60,6 @@ abstract class ISharedPreferencesLike {
   /// (without using the plugin) while the app is running.
   Future<void> reload();
 
-  /// Always returns true.
-  /// On iOS, synchronize is marked deprecated. On Android, we commit every set.
-  @deprecated
-  Future<bool> commit();
-
   ///
   /// Removes an entry from persistent storage.
   ///

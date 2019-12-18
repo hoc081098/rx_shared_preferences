@@ -7,36 +7,37 @@
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preferences)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- Shared preference with RxDart Stream observation.
-- Reactive shared preferences for Flutter.
+- Shared preference with `rxdart` Stream observation.
+- Reactive shared preferences for `Flutter`.
 - Reactive stream wrapper around SharedPreferences.
 - This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
-# More detail about returned `Observable`
-- `Observable` will emit the **initial value** as its first next event (Emit value as soon as possible after is listen to) (**emit `null`** when value is not set) 
+# More detail about returned `Stream`
+- `Stream` will emit the **initial value** as its first next event (Emit value as soon as possible after is listen to) (**emit `null`** when value is not set) 
 - It will automatic emit value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`)
 - When read value is not valid type (wrong type):
   + Will **emit error** if value is present (not `null`)
   + **Emit `null`** when value is absent (value is `null`) (this occurred because `null` can be cast to any type).
-- Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Observable` where data events are skipped if they are equal to the previous data event.
+- Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` 
+(More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
-<img src="https://imgbbb.com/images/2019/08/09/carbon.png" width="600">
+    <img src="https://github.com/hoc081098/hoc081098.github.io/raw/master/rx_shared_preferences/carbon%20(22).png" width="600">
 </p>
 
-# Getting Started
+## Getting Started
 
 In your flutter project, add the dependency to your `pubspec.yaml`
 
 ```yaml
 dependencies:
   ...
-  rx_shared_preferences: <latest_version>
+  rx_shared_preferences: ^1.1.0
 ```
 
-# Usage
+## Usage
 
-## 1. Import and instance
+### 1. Import and instance
 
 Import `rx_shared_preferences` and `shared_preferences`
 
@@ -48,23 +49,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 
 ```dart
-final rxPrefs = RxSharedPreferences(
-  await SharedPreferences.getInstance()
-);
+final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
+final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance());
+// await is optional
 ```
 
-or not need keyword `await` before `SharedPreferences.getInstance()`
-
-```dart
-final rxPrefs = RxSharedPreferences(
-  SharedPreferences.getInstance()
-);
-```
-
-## 2. Can add a logger
+### 2. Can add a logger
 
 You can add logger optional parameter to `RxSharedPreferences` constructor.
-Logger will log messages about operations (such as read, write) and observable values
+Logger will log messages about operations (such as read, write) and stream values
 
 ```dart
 final rxPrefs = RxSharedPreferences(
@@ -90,27 +83,21 @@ final rxPrefs = RxSharedPreferences(
 );
 ```
 
-## 3. Select observable (stream) and use
+### 3. Select stream and use
 
-- And then, just listen `Observable`, transform `Observable` through operators such as (`map`, `flatMap`, etc...).
-- If you need listen to this `Observable` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
-
-- Note: RxDart's `Observables` extends the `Stream` class:
-
-  * All methods defined on the Stream class exist on RxDart's Observables as well.
-  * All Observables can be passed to any API that expects a Dart Stream as an input.
-  * Additional important distinctions are documented as part of the Observable class
+- And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
+- If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
 
 ```dart
 // Listen
-rxPrefs.getStringListObservable('KEY_LIST').listen(print); // [*]
+rxPrefs.getStringListStream('KEY_LIST').listen(print); // [*]
 
 // Broadcast stream
-rxPrefs.getStringListObservable('KEY_LIST').share();
-rxPrefs.getStringListObservable('KEY_LIST').shareValue();
+rxPrefs.getStringListStream('KEY_LIST').share();
+rxPrefs.getStringListStream('KEY_LIST').shareValue();
 
 // Transform stream
-rxPrefs.getIntObservable('KEY_INT')
+rxPrefs.getIntStream('KEY_INT')
   .map((i) => /* Do something cool */)
   .where((i) => /* Filtering */)
   ...
@@ -126,13 +113,13 @@ rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
   + Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
 
 ```dart
-rxPrefs1.getStringListObservable('KEY_LIST').listen(print); // [*]
+rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
 The previous example is wrong using way.
 
-## 4. Get and set methods like to `SharedPreferences`
+### 4. Get and set methods like to `SharedPreferences`
 `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions:
 
 ```dart
@@ -156,13 +143,13 @@ The previous example is wrong using way.
 -  Future<bool> setStringList(String key, List<String> value);
 ```
 
-## 5. Dispose `RxSharedPreferences`
+### 5. Dispose `RxSharedPreferences`
 
 You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPrefs.dispose()`. Usually you call this method on `dispose` of a `State`
 
-# Example demo:
+## Example demo:
 
-## 1. [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)
+### 1. [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)
 
 | Demo          | Code |
 | ------------- | ------------- |
@@ -170,7 +157,7 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
   
 </p>  
 
-## 2. [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)
+### 2. [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)
 
 <p align="center">
 <img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" width="240">

@@ -50,7 +50,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ///
   /// Get [Stream] from the persistent storage
   ///
-  Stream<T> _getStream<T>(String key, Future<T> get(String key)) {
+  Stream<T> _getStream<T>(String key, Future<T> Function(String key) get) {
     return _keyValuesSubject
         .map((pairs) {
           return pairs.firstWhere(
@@ -74,75 +74,86 @@ class RxSharedPreferences implements IRxSharedPreferences {
   }
 
   ///
+  /// Read value from SharedPreferences by [key]
+  ///
+  static T _readFromSharedPreferences<T>(
+    SharedPreferences sharedPrefs,
+    String key,
+  ) {
+    if (T == dynamic) {
+      return sharedPrefs.get(key) as T;
+    }
+    if (T == double) {
+      return sharedPrefs.getDouble(key) as T;
+    }
+    if (T == int) {
+      return sharedPrefs.getInt(key) as T;
+    }
+    if (T == bool) {
+      return sharedPrefs.getBool(key) as T;
+    }
+    if (T == String) {
+      return sharedPrefs.getString(key) as T;
+    }
+    if (T == _typeOf<List<String>>()) {
+      return sharedPrefs.getStringList(key)?.cast<String>() as T;
+    }
+    // Get all keys
+    if (T == _typeOf<Set<String>>() && key == null) {
+      return sharedPrefs.getKeys() as T;
+    }
+    return null;
+  }
+
+  ///
   /// Get value from the persistent storage by [key]
   ///
   Future<T> _get<T>([String key]) async {
-    read<T>(SharedPreferences sharedPreferences, String key) {
-      if (T == dynamic) {
-        return sharedPreferences.get(key) as T;
-      }
-      if (T == double) {
-        return sharedPreferences.getDouble(key) as T;
-      }
-      if (T == int) {
-        return sharedPreferences.getInt(key) as T;
-      }
-      if (T == bool) {
-        return sharedPreferences.getBool(key) as T;
-      }
-      if (T == String) {
-        return sharedPreferences.getString(key) as T;
-      }
-      if (T == _typeOf<List<String>>()) {
-        return sharedPreferences.getStringList(key)?.cast<String>() as T;
-      }
-      // Get all keys
-      if (T == _typeOf<Set<String>>() && key == null) {
-        return sharedPreferences.getKeys() as T;
-      }
-      return null;
-    }
-
     final prefs = await _sharedPrefsFuture;
-    final value = read<T>(prefs, key);
+    final value = _readFromSharedPreferences<T>(prefs, key);
     _logger?.readValue(T, key, value);
 
     return value;
   }
 
   ///
+  /// Write [value] to SharedPreferences associated with [key]
+  ///
+  static Future<bool> _writeToSharedPreferences<T>(
+    SharedPreferences sharedPrefs,
+    String key,
+    T value,
+  ) {
+    if (T == dynamic) {
+      return value != null ? Future.value(false) : sharedPrefs.remove(key);
+    }
+    if (T == double) {
+      return sharedPrefs.setDouble(key, value as double);
+    }
+    if (T == int) {
+      return sharedPrefs.setInt(key, value as int);
+    }
+    if (T == bool) {
+      return sharedPrefs.setBool(key, value as bool);
+    }
+    if (T == String) {
+      return sharedPrefs.setString(key, value as String);
+    }
+    if (T == _typeOf<List<String>>()) {
+      return sharedPrefs.setStringList(
+        key,
+        (value as List)?.cast<String>(),
+      );
+    }
+    return Future.value(false);
+  }
+
+  ///
   /// Set [value] associated with [key]
   ///
   Future<bool> _setValue<T>(String key, T value) async {
-    write<T>(SharedPreferences sharedPreferences, String key, T value) {
-      if (T == dynamic) {
-        return value != null
-            ? Future.value(false)
-            : sharedPreferences.remove(key);
-      }
-      if (T == double) {
-        return sharedPreferences.setDouble(key, value as double);
-      }
-      if (T == int) {
-        return sharedPreferences.setInt(key, value as int);
-      }
-      if (T == bool) {
-        return sharedPreferences.setBool(key, value as bool);
-      }
-      if (T == String) {
-        return sharedPreferences.setString(key, value as String);
-      }
-      if (T == _typeOf<List<String>>()) {
-        return sharedPreferences.setStringList(
-          key,
-          (value as List)?.cast<String>(),
-        );
-      }
-      return Future.value(false);
-    }
-
     final prefs = await _sharedPrefsFuture;
-    final result = await write<T>(prefs, key, value);
+    final result = await _writeToSharedPreferences<T>(prefs, key, value);
     _logger?.writeValue(T, key, value, result);
 
     // Trigger key changes
@@ -244,10 +255,6 @@ class RxSharedPreferences implements IRxSharedPreferences {
           .toList(growable: false),
     );
   }
-
-  @deprecated
-  @override
-  Future<bool> commit() => _sharedPrefsFuture.then((prefs) => prefs.commit());
 
   @override
   Future<bool> remove(String key) => _setValue<dynamic>(key, null);
