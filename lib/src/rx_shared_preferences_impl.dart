@@ -199,6 +199,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   Future<bool> clear() async {
     final SharedPreferences prefs = await _sharedPrefsFuture;
     final Set<String> keys = prefs.getKeys();
+    print(keys);
     final bool result = await prefs.clear();
 
     keys.forEach((key) => _logger?.writeValue(dynamic, key, null, result));
@@ -232,14 +233,15 @@ class RxSharedPreferences implements IRxSharedPreferences {
       },
     );
     _sendKeyValueChanged(
-      prefs.getKeys().map(
-        (key) {
-          return KeyAndValue<dynamic>(
-            key,
-            prefs.get(key),
-          );
-        },
-      ).toList(growable: false),
+      prefs
+          .getKeys()
+          .map(
+            (key) => KeyAndValue<dynamic>(
+              key,
+              prefs.get(key),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 

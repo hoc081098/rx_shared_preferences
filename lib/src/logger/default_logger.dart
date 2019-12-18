@@ -5,23 +5,23 @@ class DefaultLogger implements Logger {
   const DefaultLogger();
 
   @override
-  void keysChanged(Iterable<KeyAndValue> pairs) =>
-      print('[KEYS_CHANGED       ] pairs=$pairs');
+  void keysChanged(Iterable<KeyAndValue> pairs) {
+    print(' ↓ Key changes');
+    print(pairs.map((p) => '    → $p').join('\n'));
+  }
 
   @override
-  void doOnDataStream(KeyAndValue pair) =>
-      print('[ON_DATA_OBSERAVBLE ] data=$pair');
+  void doOnDataStream(KeyAndValue pair) => print(' → Stream emit: $pair');
 
   @override
   void doOnErrorStream(error, StackTrace stackTrace) =>
-      print('[ON_ERROR_OBSERVABLE] error=$error, stackTrace=$stackTrace');
+      print(' → Stream emit error: $error, $stackTrace');
 
   @override
   void readValue(Type type, String key, value) =>
-      print("[READ_VALUE         ] type=$type, key='$key', value=$value");
+      print(' → Read value: type $type, key $key → $value');
 
   @override
-  void writeValue(Type type, String key, value, bool writeResult) =>
-      print("[WRITE_VALUE        ] type=$type, key='$key', "
-          'value=$value, writeResult=$writeResult');
+  void writeValue(Type type, String key, value, bool writeResult) => print(
+      ' → Read value: type $type, key $key, value $value  → result $writeResult');
 }

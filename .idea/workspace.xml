@@ -2,27 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/example/.flutter-plugins-dependencies" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/loggers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/loggers.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/rx_prefs_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/rx_prefs_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -60,13 +42,23 @@
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Does not emit anything after disposed" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Does not emit anything after disposed" />
+    <configuration name="Emit null when clearing" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Emit null when clearing" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Emit value when reloading" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Emit value when reloading" />
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="Test Stream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Test Stream" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="bool" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="bool" />
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
@@ -77,8 +69,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
+        <item itemvalue="Flutter Test.Emit value when reloading" />
         <item itemvalue="Flutter Test.Test Stream" />
-        <item itemvalue="Flutter Test.Does not emit anything after disposed" />
+        <item itemvalue="Flutter Test.Emit null when clearing" />
+        <item itemvalue="Flutter Test.bool" />
       </list>
     </recent_temporary>
   </component>
@@ -93,6 +87,14 @@
       <option name="presentableId" value="Default" />
       <updated>1576550317930</updated>
     </task>
+    <task id="LOCAL-00001" summary="Update rxdart, shared_preferences">
+      <created>1576552794251</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1576552794251</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -100,10 +102,16 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update rxdart, shared_preferences" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update rxdart, shared_preferences" />
   </component>
 </project>

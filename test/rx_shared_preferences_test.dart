@@ -3,10 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   group('$RxSharedPreferences is like to $SharedPreferences', () {
-    const Map<String, dynamic> kTestValues = <String, dynamic>{
+    const kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
       'flutter.int': 42,
@@ -14,7 +17,7 @@ void main() {
       'flutter.List': <String>['foo', 'bar'],
     };
 
-    const Map<String, dynamic> kTestValues2 = <String, dynamic>{
+    const kTestValues2 = <String, dynamic>{
       'flutter.String': 'goodbye world',
       'flutter.bool': false,
       'flutter.int': 1337,
@@ -22,154 +25,99 @@ void main() {
       'flutter.List': <String>['baz', 'quox'],
     };
 
-    final List<MethodCall> log = <MethodCall>[];
-    RxSharedPreferences rxSharedPreferences;
+    FakeSharedPreferencesStore store;
+    RxSharedPreferences rxPrefs;
 
     setUp(() async {
-      WidgetsFlutterBinding.ensureInitialized();
+      store = FakeSharedPreferencesStore(kTestValues);
+      SharedPreferencesStorePlatform.instance = store;
 
-      const MethodChannel channel = MethodChannel(
-        'plugins.flutter.io/shared_preferences',
-      );
+      rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
 
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        log.add(methodCall);
-        if (methodCall.method == 'getAll') {
-          return kTestValues;
-        }
-        if (methodCall.method.startsWith('set') ||
-            methodCall.method == 'clear') {
-          return true;
-        }
-        return null;
-      });
-      rxSharedPreferences =
-          RxSharedPreferences(await SharedPreferences.getInstance());
-      log.clear();
+      store.log.clear();
     });
 
     tearDown(() async {
-      await rxSharedPreferences.clear();
+      await rxPrefs.clear();
     });
 
     test('reading', () async {
-      expect(
-        await rxSharedPreferences.get('String'),
-        kTestValues['flutter.String'],
-      );
-      expect(
-        await rxSharedPreferences.get('bool'),
-        kTestValues['flutter.bool'],
-      );
-      expect(
-        await rxSharedPreferences.get('int'),
-        kTestValues['flutter.int'],
-      );
-      expect(
-        await rxSharedPreferences.get('double'),
-        kTestValues['flutter.double'],
-      );
-      expect(
-        await rxSharedPreferences.get('List'),
-        kTestValues['flutter.List'],
-      );
-      expect(
-        await rxSharedPreferences.getString('String'),
-        kTestValues['flutter.String'],
-      );
-      expect(
-        await rxSharedPreferences.getBool('bool'),
-        kTestValues['flutter.bool'],
-      );
-      expect(
-        await rxSharedPreferences.getInt('int'),
-        kTestValues['flutter.int'],
-      );
-      expect(
-        await rxSharedPreferences.getDouble('double'),
-        kTestValues['flutter.double'],
-      );
-      expect(
-        await rxSharedPreferences.getStringList('List'),
-        kTestValues['flutter.List'],
-      );
-      expect(log, <Matcher>[]);
+      expect(await rxPrefs.get('String'), kTestValues['flutter.String']);
+      expect(await rxPrefs.get('bool'), kTestValues['flutter.bool']);
+      expect(await rxPrefs.get('int'), kTestValues['flutter.int']);
+      expect(await rxPrefs.get('double'), kTestValues['flutter.double']);
+      expect(await rxPrefs.get('List'), kTestValues['flutter.List']);
+      expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
+      expect(await rxPrefs.getBool('bool'), kTestValues['flutter.bool']);
+      expect(await rxPrefs.getInt('int'), kTestValues['flutter.int']);
+      expect(await rxPrefs.getDouble('double'), kTestValues['flutter.double']);
+      expect(await rxPrefs.getStringList('List'), kTestValues['flutter.List']);
+      expect(store.log, <Matcher>[]);
     });
 
     test('writing', () async {
       await Future.wait(<Future<bool>>[
-        rxSharedPreferences.setString('String', kTestValues2['flutter.String']),
-        rxSharedPreferences.setBool('bool', kTestValues2['flutter.bool']),
-        rxSharedPreferences.setInt('int', kTestValues2['flutter.int']),
-        rxSharedPreferences.setDouble('double', kTestValues2['flutter.double']),
-        rxSharedPreferences.setStringList('List', kTestValues2['flutter.List'])
+        rxPrefs.setString('String', kTestValues2['flutter.String']),
+        rxPrefs.setBool('bool', kTestValues2['flutter.bool']),
+        rxPrefs.setInt('int', kTestValues2['flutter.int']),
+        rxPrefs.setDouble('double', kTestValues2['flutter.double']),
+        rxPrefs.setStringList('List', kTestValues2['flutter.List'])
       ]);
       expect(
-        log,
+        store.log,
         <Matcher>[
-          isMethodCall('setString', arguments: <String, dynamic>{
-            'key': 'flutter.String',
-            'value': kTestValues2['flutter.String']
-          }),
-          isMethodCall('setBool', arguments: <String, dynamic>{
-            'key': 'flutter.bool',
-            'value': kTestValues2['flutter.bool']
-          }),
-          isMethodCall('setInt', arguments: <String, dynamic>{
-            'key': 'flutter.int',
-            'value': kTestValues2['flutter.int']
-          }),
-          isMethodCall('setDouble', arguments: <String, dynamic>{
-            'key': 'flutter.double',
-            'value': kTestValues2['flutter.double']
-          }),
-          isMethodCall('setStringList', arguments: <String, dynamic>{
-            'key': 'flutter.List',
-            'value': kTestValues2['flutter.List']
-          }),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'String',
+            'flutter.String',
+            kTestValues2['flutter.String'],
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'Bool',
+            'flutter.bool',
+            kTestValues2['flutter.bool'],
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'Int',
+            'flutter.int',
+            kTestValues2['flutter.int'],
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'Double',
+            'flutter.double',
+            kTestValues2['flutter.double'],
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'StringList',
+            'flutter.List',
+            kTestValues2['flutter.List'],
+          ]),
         ],
       );
-      log.clear();
+      store.log.clear();
 
-      expect(
-        await rxSharedPreferences.getString('String'),
-        kTestValues2['flutter.String'],
-      );
-      expect(
-        await rxSharedPreferences.getBool('bool'),
-        kTestValues2['flutter.bool'],
-      );
-      expect(
-        await rxSharedPreferences.getInt('int'),
-        kTestValues2['flutter.int'],
-      );
-      expect(
-        await rxSharedPreferences.getDouble('double'),
-        kTestValues2['flutter.double'],
-      );
-      expect(
-        await rxSharedPreferences.getStringList('List'),
-        kTestValues2['flutter.List'],
-      );
-      expect(log, equals(<MethodCall>[]));
+      expect(await rxPrefs.getString('String'), kTestValues2['flutter.String']);
+      expect(await rxPrefs.getBool('bool'), kTestValues2['flutter.bool']);
+      expect(await rxPrefs.getInt('int'), kTestValues2['flutter.int']);
+      expect(await rxPrefs.getDouble('double'), kTestValues2['flutter.double']);
+      expect(await rxPrefs.getStringList('List'), kTestValues2['flutter.List']);
+      expect(store.log, equals(<MethodCall>[]));
     });
 
     test('removing', () async {
       const String key = 'testKey';
-      rxSharedPreferences
-        ..setString(key, null)
-        ..setBool(key, null)
-        ..setInt(key, null)
-        ..setDouble(key, null)
-        ..setStringList(key, null);
-      await rxSharedPreferences.remove(key);
+      await rxPrefs.setString(key, null);
+      await rxPrefs.setBool(key, null);
+      await rxPrefs.setInt(key, null);
+      await rxPrefs.setDouble(key, null);
+      await rxPrefs.setStringList(key, null);
+      await rxPrefs.remove(key);
       expect(
-          log,
+          store.log,
           List<Matcher>.filled(
             6,
             isMethodCall(
               'remove',
-              arguments: <String, dynamic>{'key': 'flutter.$key'},
+              arguments: 'flutter.$key',
             ),
             growable: true,
           ));
@@ -178,102 +126,48 @@ void main() {
     test('containsKey', () async {
       const String key = 'testKey';
 
-      expect(false, await rxSharedPreferences.containsKey(key));
+      expect(false, await rxPrefs.containsKey(key));
 
-      rxSharedPreferences.setString(key, 'test');
-      expect(true, await rxSharedPreferences.containsKey(key));
+      await rxPrefs.setString(key, 'test');
+      expect(true, await rxPrefs.containsKey(key));
     });
 
     test('clearing', () async {
-      await rxSharedPreferences.clear();
-      expect(
-        await rxSharedPreferences.getString('String'),
-        null,
-      );
-      expect(
-        await rxSharedPreferences.getBool('bool'),
-        null,
-      );
-      expect(
-        await rxSharedPreferences.getInt('int'),
-        null,
-      );
-      expect(
-        await rxSharedPreferences.getDouble('double'),
-        null,
-      );
-      expect(
-        await rxSharedPreferences.getStringList('List'),
-        null,
-      );
-      expect(log, <Matcher>[isMethodCall('clear', arguments: null)]);
+      await rxPrefs.clear();
+      expect(await rxPrefs.getString('String'), null);
+      expect(await rxPrefs.getBool('bool'), null);
+      expect(await rxPrefs.getInt('int'), null);
+      expect(await rxPrefs.getDouble('double'), null);
+      expect(await rxPrefs.getStringList('List'), null);
+      expect(store.log, <Matcher>[isMethodCall('clear', arguments: null)]);
     });
 
     test('reloading', () async {
-      await rxSharedPreferences.setString(
-          'String', kTestValues['flutter.String']);
-      expect(await rxSharedPreferences.getString('String'),
-          kTestValues['flutter.String']);
+      await rxPrefs.setString('String', kTestValues['flutter.String']);
+      expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
 
       SharedPreferences.setMockInitialValues(kTestValues2);
-      expect(await rxSharedPreferences.getString('String'),
-          kTestValues2['flutter.String']);
+      expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
 
-      await rxSharedPreferences.reload();
-      expect(await rxSharedPreferences.getString('String'),
-          kTestValues2['flutter.String']);
-    });
-
-    group('mocking', () {
-      const String _key = 'dummy';
-      const String _prefixedKey = 'flutter.' + _key;
-
-      test('test 1', () async {
-        SharedPreferences.setMockInitialValues(
-            <String, dynamic>{_prefixedKey: 'my string'});
-
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final RxSharedPreferences rxPrefs = RxSharedPreferences(prefs);
-
-        final String value = prefs.getString(_key);
-        final String valueReadFromRxPrefs = await rxPrefs.getString(_key);
-
-        expect(value, 'my string');
-        expect(value, valueReadFromRxPrefs);
-      });
-
-      test('test 2', () async {
-        SharedPreferences.setMockInitialValues(
-            <String, dynamic>{_prefixedKey: 'my other string'});
-
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final RxSharedPreferences rxPrefs = RxSharedPreferences(prefs);
-
-        final String value = prefs.getString(_key);
-        final String valueReadFromRxPrefs = await rxPrefs.getString(_key);
-
-        expect(value, 'my other string');
-        expect(value, valueReadFromRxPrefs);
-      });
+      await rxPrefs.reload();
+      expect(await rxPrefs.getString('String'), kTestValues2['flutter.String']);
     });
 
     test('writing copy of strings list', () async {
       final List<String> myList = <String>[];
-      await rxSharedPreferences.setStringList("myList", myList);
+      await rxPrefs.setStringList("myList", myList);
       myList.add("foobar");
 
-      final List<String> cachedList =
-          await rxSharedPreferences.getStringList('myList');
+      final List<String> cachedList = await rxPrefs.getStringList('myList');
       expect(cachedList, <String>[]);
 
       cachedList.add("foobar2");
 
-      expect(await rxSharedPreferences.getStringList('myList'), <String>[]);
+      expect(await rxPrefs.getStringList('myList'), <String>[]);
     });
   });
 
   group('Test Stream', () {
-
     const Map<String, dynamic> kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
@@ -282,38 +176,27 @@ void main() {
       'flutter.List': <String>['foo', 'bar'],
     };
 
-    final List<MethodCall> log = <MethodCall>[];
-    RxSharedPreferences rxSharedPreferences;
+    RxSharedPreferences rxPrefs;
 
     setUp(() async {
-      WidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues(kTestValues);
 
-      const MethodChannel channel = MethodChannel(
-        'plugins.flutter.io/shared_preferences',
+      rxPrefs = RxSharedPreferences(
+        await SharedPreferences.getInstance(),
+        const DefaultLogger(),
       );
+    });
 
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        log.add(methodCall);
-        if (methodCall.method == 'getAll') {
-          return kTestValues;
-        }
-        if (methodCall.method.startsWith('set') ||
-            methodCall.method == 'clear' ||
-            methodCall.method == 'remove') {
-          return true;
-        }
-        return null;
-      });
-      rxSharedPreferences =
-          RxSharedPreferences(await SharedPreferences.getInstance());
-      log.clear();
+    tearDown(() async {
+      await rxPrefs.clear();
+      await rxPrefs.dispose();
     });
 
     test(
       'Stream will emit error when read value is not valid type, or emit null when value is not set',
       () async {
         final Stream<int> intStream =
-            rxSharedPreferences.getIntStream('bool'); // Actual: Stream<bool>
+            rxPrefs.getIntStream('bool'); // Actual: Stream<bool>
         await expectLater(
           intStream,
           emitsAnyOf([
@@ -322,8 +205,8 @@ void main() {
           ]),
         );
 
-        final Stream<List<String>> listStringStream = rxSharedPreferences
-            .getStringListStream('String'); // Actual: Stream<String>
+        final Stream<List<String>> listStringStream =
+            rxPrefs.getStringListStream('String'); // Actual: Stream<String>
         await expectLater(
           listStringStream,
           emitsAnyOf([
@@ -332,8 +215,8 @@ void main() {
           ]),
         );
 
-        final Stream<int> noSuchStream = rxSharedPreferences
-            .getIntStream('@@@@@@@@@@@String'); // Actual: Stream<String>
+        final Stream<int> noSuchStream =
+            rxPrefs.getIntStream('###String'); // Actual: Stream<String>
 
         await expectLater(
           noSuchStream,
@@ -347,27 +230,27 @@ void main() {
       () async {
         await Future.wait([
           expectLater(
-            rxSharedPreferences.getIntStream('int'),
+            rxPrefs.getIntStream('int'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getBoolStream('bool'),
+            rxPrefs.getBoolStream('bool'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getDoubleStream('double'),
+            rxPrefs.getDoubleStream('double'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getStringStream('String'),
+            rxPrefs.getStringStream('String'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getStringListStream('List'),
+            rxPrefs.getStringListStream('List'),
             emits(anything),
           ),
           expectLater(
-            rxSharedPreferences.getStream('No such key'),
+            rxPrefs.getStream('No such key'),
             emits(isNull),
           ),
         ]);
@@ -381,73 +264,70 @@ void main() {
         ///
         /// Bool
         ///
-        final Stream<bool> streamBool =
-            rxSharedPreferences.getBoolStream('bool');
+        final Stream<bool> streamBool = rxPrefs.getBoolStream('bool');
         final expectStreamBoolFuture = expectLater(
           streamBool,
           emitsInOrder([anything, false, true, false, true, false]),
         );
-        await rxSharedPreferences.setBool('bool', false);
-        await rxSharedPreferences.setBool('bool', true);
-        await rxSharedPreferences.setBool('bool', false);
-        await rxSharedPreferences.setBool('bool', true);
-        await rxSharedPreferences.setBool('bool', false);
+        await rxPrefs.setBool('bool', false);
+        await rxPrefs.setBool('bool', true);
+        await rxPrefs.setBool('bool', false);
+        await rxPrefs.setBool('bool', true);
+        await rxPrefs.setBool('bool', false);
 
         ///
         /// Double
         ///
-        final Stream<double> streamDouble =
-            rxSharedPreferences.getDoubleStream('double');
+        final Stream<double> streamDouble = rxPrefs.getDoubleStream('double');
         final expectStreamDoubleFuture = expectLater(
           streamDouble,
           emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
         );
-        await rxSharedPreferences.setDouble('double', 0.3333);
-        await rxSharedPreferences.setDouble('double', 1);
-        await rxSharedPreferences.setDouble('double', 2);
-        await rxSharedPreferences.setDouble('double', null);
-        await rxSharedPreferences.setDouble('double', 3);
-        await rxSharedPreferences.remove('double');
-        await rxSharedPreferences.setDouble('double', 4);
+        await rxPrefs.setDouble('double', 0.3333);
+        await rxPrefs.setDouble('double', 1);
+        await rxPrefs.setDouble('double', 2);
+        await rxPrefs.setDouble('double', null);
+        await rxPrefs.setDouble('double', 3);
+        await rxPrefs.remove('double');
+        await rxPrefs.setDouble('double', 4);
 
         ///
         /// Int
         ///
-        final Stream<int> streamInt = rxSharedPreferences.getIntStream('int');
+        final Stream<int> streamInt = rxPrefs.getIntStream('int');
         final expectStreamIntFuture = expectLater(
           streamInt,
           emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
         );
-        await rxSharedPreferences.setInt('int', 1);
-        await rxSharedPreferences.setInt('int', null);
-        await rxSharedPreferences.setInt('int', 2);
-        await rxSharedPreferences.setInt('int', 3);
-        await rxSharedPreferences.remove('int');
-        await rxSharedPreferences.setInt('int', 3);
-        await rxSharedPreferences.setInt('int', 2);
-        await rxSharedPreferences.setInt('int', 1);
+        await rxPrefs.setInt('int', 1);
+        await rxPrefs.setInt('int', null);
+        await rxPrefs.setInt('int', 2);
+        await rxPrefs.setInt('int', 3);
+        await rxPrefs.remove('int');
+        await rxPrefs.setInt('int', 3);
+        await rxPrefs.setInt('int', 2);
+        await rxPrefs.setInt('int', 1);
 
         ///
         /// String
         ///
-        final Stream<String> streamString =
-            rxSharedPreferences.getStringStream('String');
+        final Stream<String> streamString = rxPrefs.getStringStream('String');
         final expectStreamStringFuture = expectLater(
           streamString,
           emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
         );
-        await rxSharedPreferences.setString('String', 'h');
-        await rxSharedPreferences.setString('String', 'e');
-        await rxSharedPreferences.setString('String', 'l');
-        await rxSharedPreferences.setString('String', 'l');
-        await rxSharedPreferences.setString('String', 'o');
-        await rxSharedPreferences.setString('String', null);
+        await rxPrefs.setString('String', 'h');
+        await rxPrefs.setString('String', 'e');
+        await rxPrefs.setString('String', 'l');
+        await rxPrefs.setString('String', 'l');
+        await rxPrefs.setString('String', 'o');
+        await rxPrefs.setString('String', null);
 
         ///
         /// List<String>
         ///
         final Stream<List<String>> streamListString =
-            rxSharedPreferences.getStringListStream('List');
+            rxPrefs.getStringListStream('List');
         final expectStreamListStringFuture = expectLater(
           streamListString,
           emitsInOrder([
@@ -464,17 +344,16 @@ void main() {
             <String>['done'],
           ]),
         );
-        await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
-        await rxSharedPreferences.setStringList('List', ['1', '2', '3', '4']);
-        await rxSharedPreferences
-            .setStringList('List', ['1', '2', '3', '4', '5']);
-        await rxSharedPreferences.setStringList('List', ['1', '2', '3', '4']);
-        await rxSharedPreferences.setStringList('List', ['1', '2', '3']);
-        await rxSharedPreferences.setStringList('List', ['1', '2']);
-        await rxSharedPreferences.setStringList('List', ['1']);
-        await rxSharedPreferences.setStringList('List', []);
-        await rxSharedPreferences.remove('List');
-        await rxSharedPreferences.setStringList('List', ['done']);
+        await rxPrefs.setStringList('List', ['1', '2', '3']);
+        await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
+        await rxPrefs.setStringList('List', ['1', '2', '3', '4', '5']);
+        await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
+        await rxPrefs.setStringList('List', ['1', '2', '3']);
+        await rxPrefs.setStringList('List', ['1', '2']);
+        await rxPrefs.setStringList('List', ['1']);
+        await rxPrefs.setStringList('List', []);
+        await rxPrefs.remove('List');
+        await rxPrefs.setStringList('List', ['done']);
 
         await Future.wait([
           expectStreamBoolFuture,
@@ -487,10 +366,10 @@ void main() {
     );
 
     test('Does not emit anything after disposed', () async {
-      final observable = rxSharedPreferences.getStringListStream('List');
+      final stream = rxPrefs.getStringListStream('List');
 
       final later = expectLater(
-        observable,
+        stream,
         emitsInOrder(
           [
             anything,
@@ -501,7 +380,7 @@ void main() {
         ),
       );
 
-      await rxSharedPreferences.setStringList(
+      await rxPrefs.setStringList(
         'List',
         <String>['before', 'dispose'],
       );
@@ -509,16 +388,17 @@ void main() {
       // delay
       await Future.delayed(const Duration(microseconds: 500));
 
-      await rxSharedPreferences.dispose();
+      await rxPrefs.dispose();
+
       // not emit but persisted
-      await rxSharedPreferences.setStringList(
+      await rxPrefs.setStringList(
         'List',
         <String>['after', 'dispose'],
       );
 
-      // work fine
+      // working fine
       expect(
-        await rxSharedPreferences.getStringList('List'),
+        await rxPrefs.getStringList('List'),
         <String>['after', 'dispose'],
       );
 
@@ -526,10 +406,10 @@ void main() {
     });
 
     test('Emit null when clearing', () async {
-      final observable = rxSharedPreferences.getStringListStream('List');
+      final Stream<List<String>> stream = rxPrefs.getStringListStream('List');
 
       final later = expectLater(
-        observable,
+        stream,
         emitsInOrder(
           [
             anything,
@@ -538,58 +418,79 @@ void main() {
         ),
       );
 
-      await rxSharedPreferences.clear();
+      await rxPrefs.clear();
 
       await later;
     });
 
     test('Emit value when reloading', () async {
-      final observable = rxSharedPreferences.getStringListStream('List');
+      final stream = rxPrefs.getStringListStream('List');
 
       final later = expectLater(
-        observable,
+        stream,
         emitsInOrder(
           [
             anything,
             ['AFTER RELOAD'],
-            ['WORKING'],
-            ['WORKING'],
+            ['WORKING 1'],
+            ['WORKING 2'],
           ],
         ),
       );
 
-      const MethodChannel channel = MethodChannel(
-        'plugins.flutter.io/shared_preferences',
+      SharedPreferencesStorePlatform.instance =
+          InMemorySharedPreferencesStore.withData(
+        {
+          'flutter.List': ['AFTER RELOAD']
+        },
       );
+      await rxPrefs.reload(); // emits ['AFTER RELOAD']
 
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        if (methodCall.method == 'getAll') {
-          return {
-            'flutter.List': ['AFTER RELOAD']
-          };
-        }
+      await rxPrefs.setStringList('List', ['WORKING 1']); // emits ['WORKING']
 
-        if (methodCall.method.startsWith('set')) {
-          return true;
-        }
-        return null;
+      SharedPreferencesStorePlatform.instance =
+          InMemorySharedPreferencesStore.withData({
+        'flutter.List': ['WORKING 2'],
       });
-      await rxSharedPreferences.reload(); // emits ['AFTER RELOAD']
-
-      await rxSharedPreferences
-          .setStringList('List', ['WORKING']); // emits ['WORKING']
-
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        if (methodCall.method == 'getAll') {
-          return {
-            'flutter.List': ['WORKING']
-          };
-        }
-        return null;
-      });
-      await rxSharedPreferences.reload(); // emits ['WORKING']
+      await rxPrefs.reload(); // emits ['WORKING']
 
       await later;
     });
   });
+}
+
+/// Fake Shared Preferences Store
+class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
+  final InMemorySharedPreferencesStore backend;
+  final log = <MethodCall>[];
+
+  FakeSharedPreferencesStore(Map<String, dynamic> data)
+      : backend = InMemorySharedPreferencesStore.withData(data);
+
+  @override
+  bool get isMock => true;
+
+  @override
+  Future<bool> clear() {
+    log.add(MethodCall('clear'));
+    return backend.clear();
+  }
+
+  @override
+  Future<Map<String, Object>> getAll() {
+    log.add(MethodCall('getAll'));
+    return backend.getAll();
+  }
+
+  @override
+  Future<bool> remove(String key) {
+    log.add(MethodCall('remove', key));
+    return backend.remove(key);
+  }
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) {
+    log.add(MethodCall('setValue', [valueType, key, value]));
+    return backend.setValue(valueType, key, value);
+  }
 }
