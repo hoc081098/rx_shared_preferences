@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/analysis_options.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/interface/shared_preferences_like.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/interface/shared_preferences_like.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
@@ -108,7 +100,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576647537327</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="prepare publish v1.1.0">
+      <created>1576675692347</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1576675692347</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -129,6 +128,7 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Update rxdart, shared_preferences" />
     <MESSAGE value="update test, default logger" />
-    <option name="LAST_COMMIT_MESSAGE" value="update test, default logger" />
+    <MESSAGE value="prepare publish v1.1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="prepare publish v1.1.0" />
   </component>
 </project>
