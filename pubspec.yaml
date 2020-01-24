@@ -15,7 +15,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test_api: ^0.2.4
+  test_api: ^0.2.11
   pedantic: ^1.8.0
   shared_preferences_platform_interface: ^1.0.1
 flutter:

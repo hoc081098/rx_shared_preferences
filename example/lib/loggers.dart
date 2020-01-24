@@ -6,7 +6,7 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 // 2. implements Logger
 //
 
-/// Emtpy logger
+/// Empty logger
 class EmptyLogger extends DefaultLogger {
   /// Override method you want
 }
