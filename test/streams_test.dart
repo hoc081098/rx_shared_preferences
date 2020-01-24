@@ -21,10 +21,7 @@ void main() {
     setUp(() async {
       SharedPreferences.setMockInitialValues(kTestValues);
 
-      rxPrefs = RxSharedPreferences(
-        await SharedPreferences.getInstance(),
-        const DefaultLogger(),
-      );
+      rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
     });
 
     tearDown(() async {

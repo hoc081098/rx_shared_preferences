@@ -210,7 +210,6 @@ class RxSharedPreferences implements IRxSharedPreferences {
   Future<bool> clear() async {
     final SharedPreferences prefs = await _sharedPrefsFuture;
     final Set<String> keys = prefs.getKeys();
-    print(keys);
     final bool result = await prefs.clear();
 
     keys.forEach((key) => _logger?.writeValue(dynamic, key, null, result));
