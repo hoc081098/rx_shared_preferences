@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test/logger/default_logger_test.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/model/key_and_value_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/rx_shared_preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/rx_shared_preferences.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,35 +48,37 @@
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Emit value when reloading" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Emit value when reloading" />
-      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
+    <configuration name="DefaultLogger" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="DefaultLogger" />
+      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="removing" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="removing" />
-      <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
+    <configuration name="doOnDataStream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="doOnDataStream" />
+      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="tests in like_shared_prefs_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
+    <configuration name="readValue" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="readValue" />
+      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="tests in streams_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
+    <configuration name="writeValue" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="writeValue" />
+      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
-        <item itemvalue="Flutter Test.removing" />
-        <item itemvalue="Flutter Test.tests in streams_test.dart" />
-        <item itemvalue="Flutter Test.tests in like_shared_prefs_test.dart" />
-        <item itemvalue="Flutter Test.Emit value when reloading" />
+        <item itemvalue="Flutter Test.DefaultLogger" />
+        <item itemvalue="Flutter Test.doOnDataStream" />
+        <item itemvalue="Flutter Test.readValue" />
+        <item itemvalue="Flutter Test.writeValue" />
       </list>
     </recent_temporary>
   </component>
@@ -149,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579858687678</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Update pubspec.yaml and add codecov badge">
+      <created>1579858889326</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1579858889326</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -174,29 +179,30 @@
     <MESSAGE value="update" />
     <MESSAGE value="dartfmt" />
     <MESSAGE value="Update docs, dartfmt" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update docs, dartfmt" />
+    <MESSAGE value="Update pubspec.yaml and add codecov badge" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update pubspec.yaml and add codecov badge" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1579858686047">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1579858888028">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1579858686047" />
-    <state width="1323" height="268" key="GridCell.Tab.0.bottom" timestamp="1579857683234">
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1579858888028" />
+    <state width="1323" height="180" key="GridCell.Tab.0.bottom" timestamp="1579866310068">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="268" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1579857683234" />
-    <state width="1323" height="268" key="GridCell.Tab.0.center" timestamp="1579857683233">
+    <state width="1323" height="180" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1579866310068" />
+    <state width="1323" height="180" key="GridCell.Tab.0.center" timestamp="1579866310068">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="268" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1579857683233" />
-    <state width="1323" height="268" key="GridCell.Tab.0.left" timestamp="1579857683233">
+    <state width="1323" height="180" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1579866310068" />
+    <state width="1323" height="180" key="GridCell.Tab.0.left" timestamp="1579866310068">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="268" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1579857683233" />
-    <state width="1323" height="268" key="GridCell.Tab.0.right" timestamp="1579857683233">
+    <state width="1323" height="180" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1579866310068" />
+    <state width="1323" height="180" key="GridCell.Tab.0.right" timestamp="1579866310068">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="268" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1579857683233" />
+    <state width="1323" height="180" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1579866310068" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -205,10 +211,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1579850624506" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1579858688334">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1579858890099">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1579858688334" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1579858890099" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1579857188603">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

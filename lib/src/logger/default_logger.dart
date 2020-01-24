@@ -17,11 +17,11 @@ class DefaultLogger implements Logger {
   }
 
   @override
-  void doOnDataStream(KeyAndValue pair) => print(' → Stream emit: $pair');
+  void doOnDataStream(KeyAndValue pair) => print(' → Stream emits data: $pair');
 
   @override
   void doOnErrorStream(error, StackTrace stackTrace) =>
-      print(' → Stream emit error: $error, $stackTrace');
+      print(' → Stream emits error: $error, $stackTrace');
 
   @override
   void readValue(Type type, String key, value) =>
