@@ -23,9 +23,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.didChangeDependencies();
 
     if (_subscription == null) {
-      final list$ = RxPrefsProvider.of(context)
-          .getStringListStream(key)
-          .publishValue();
+      final list$ =
+          RxPrefsProvider.of(context).getStringListStream(key).publishValue();
       _subscription = list$.connect();
       _list$ = list$;
     }
