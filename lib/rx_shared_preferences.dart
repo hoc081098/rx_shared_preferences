@@ -1,9 +1,10 @@
+///
+/// ### Author: [Petrus Nguyễn Thái Học](https://github.com/hoc081098).
+///
+/// Reactive shared preferences for Flutter.
+///
 library rx_shared_preferences;
 
-///
-/// Author: Petrus Nguyễn Thái Học
-/// Github: https://github.com/hoc081098
-///
 export 'src/rx_shared_preferences_impl.dart';
 export 'src/interface/shared_preferences_like.dart';
 export 'src/interface/rx_shared_preferences.dart';

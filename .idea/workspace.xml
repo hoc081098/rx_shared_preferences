@@ -3,8 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/streams_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/streams_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/rx_shared_preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/rx_shared_preferences.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/interface/rx_shared_preferences.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +128,21 @@
       <option name="project" value="LOCAL" />
       <updated>1576675692347</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update">
+      <created>1579857750024</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1579857750024</updated>
+    </task>
+    <task id="LOCAL-00005" summary="dartfmt">
+      <created>1579857932012</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1579857932012</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -145,13 +164,15 @@
     <MESSAGE value="Update rxdart, shared_preferences" />
     <MESSAGE value="update test, default logger" />
     <MESSAGE value="prepare publish v1.1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepare publish v1.1.0" />
+    <MESSAGE value="update" />
+    <MESSAGE value="dartfmt" />
+    <option name="LAST_COMMIT_MESSAGE" value="dartfmt" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1579857748224">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1579857930630">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1579857748224" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1579857930630" />
     <state width="1323" height="268" key="GridCell.Tab.0.bottom" timestamp="1579857683234">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -176,10 +197,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1579850624506" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1579857751618">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1579857935545">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1579857751618" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1579857935545" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1579857188603">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

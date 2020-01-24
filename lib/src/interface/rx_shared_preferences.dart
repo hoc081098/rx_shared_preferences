@@ -48,6 +48,7 @@ abstract class IRxSharedPreferences implements ISharedPreferencesLike {
   ///
   /// Clean up resources - Closes the streams.
   /// This method should be called when a [IRxSharedPreferences] is no longer needed.
-  /// Once `dispose` is called, all streams will `not` emit changed value when value changed, and receiver onDone event
+  /// Once `dispose` is called, all streams will `not` emit changed value when value changed, and receiver onDone event.
+  ///
   Future<void> dispose();
 }
