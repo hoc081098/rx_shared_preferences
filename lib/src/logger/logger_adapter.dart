@@ -14,14 +14,14 @@ class LoggerAdapter implements Logger {
   void doOnDataStream(KeyAndValue pair) {}
 
   @override
-  void doOnErrorStream(error, StackTrace stackTrace) {}
+  void doOnErrorStream(dynamic error, StackTrace stackTrace) {}
 
   @override
   void keysChanged(Iterable<KeyAndValue> pairs) {}
 
   @override
-  void readValue(Type type, String key, value) {}
+  void readValue(Type type, String key, dynamic value) {}
 
   @override
-  void writeValue(Type type, String key, value, bool writeResult) {}
+  void writeValue(Type type, String key, dynamic value, bool writeResult) {}
 }

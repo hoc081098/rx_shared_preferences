@@ -20,14 +20,14 @@ class DefaultLogger implements Logger {
   void doOnDataStream(KeyAndValue pair) => print(' → Stream emits data: $pair');
 
   @override
-  void doOnErrorStream(error, StackTrace stackTrace) =>
+  void doOnErrorStream(dynamic error, StackTrace stackTrace) =>
       print(' → Stream emits error: $error, $stackTrace');
 
   @override
-  void readValue(Type type, String key, value) =>
+  void readValue(Type type, String key, dynamic value) =>
       print(' → Read value: type $type, key $key → $value');
 
   @override
-  void writeValue(Type type, String key, value, bool writeResult) => print(
+  void writeValue(Type type, String key, dynamic value, bool writeResult) => print(
       ' → Write value: type $type, key $key, value $value  → result $writeResult');
 }

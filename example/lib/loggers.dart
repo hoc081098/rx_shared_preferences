@@ -23,10 +23,10 @@ class CustomLogger implements Logger {
   void keysChanged(Iterable<KeyAndValue> pairs) => print(pairs);
 
   @override
-  void readValue(Type type, String key, value) => print(value);
+  void readValue(Type type, String key, dynamic value) => print(value);
 
   @override
-  void writeValue(Type type, String key, value, bool writeResult) =>
+  void writeValue(Type type, String key, dynamic value, bool writeResult) =>
       print(writeResult);
 }
 

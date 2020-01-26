@@ -212,10 +212,12 @@ class RxSharedPreferences implements IRxSharedPreferences {
     final Set<String> keys = prefs.getKeys();
     final bool result = await prefs.clear();
 
+    // Log: all values are set to null
     for (final key in keys) {
       _logger?.writeValue(dynamic, key, null, result);
     }
 
+    // Trigger key changes: all values are set to null
     if (result ?? false) {
       final pairs = keys.map((key) => KeyAndValue<dynamic>(key, null));
       _sendKeyValueChanged(pairs);
@@ -229,10 +231,12 @@ class RxSharedPreferences implements IRxSharedPreferences {
     final SharedPreferences prefs = await _sharedPrefsFuture;
     await prefs.reload();
 
+    // Log: read value from prefs
     for (final key in prefs.getKeys()) {
       _logger?.readValue(dynamic, key, prefs.get(key));
     }
 
+    // Trigger key changes: read value from prefs
     final pairs = prefs
         .getKeys()
         .map((key) => KeyAndValue<dynamic>(key, prefs.get(key)))
