@@ -150,19 +150,9 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
 
 ## Example demo:
 
-### 1. [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)
-
-| Demo          | Code |
-| ------------- | ------------- |
-| <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" width="240">  | <img src="https://imgbbb.com/images/2019/08/09/carbon-1.png" width="600">  |
-  
-</p>  
-
-### 2. [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)
-
-<p align="center">
-<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" width="240">
-</p>
+| [Simple authentication app with `BLoC rxdart pattern`](https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart.git)          | [Build ListView from Stream using `RxSharedPreferences`](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)          |  [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme) |
+| ------------- | ------------- | ------- |
+| <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480"> |<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
 
 # License
 
