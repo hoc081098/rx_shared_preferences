@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
@@ -25,7 +24,7 @@ void main() {
     test(
       'keysChanged',
       overridePrint(() {
-        var pairs = [
+        const pairs = [
           KeyAndValue('key1', 'value1'),
           KeyAndValue('key2', 2),
         ];

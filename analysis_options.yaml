@@ -8,3 +8,4 @@ analyzer:
 linter:
   rules:
     - public_member_api_docs
+    - prefer_final_locals

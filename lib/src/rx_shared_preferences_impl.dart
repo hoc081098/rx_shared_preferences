@@ -27,7 +27,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   final Logger _logger;
 
   ///
-  /// Constructor
+  /// Construct a [RxSharedPreferences] with [sharedPreference] and optional logger
   ///
   RxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
@@ -38,9 +38,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
         .listen((pairs) => _logger?.keysChanged(UnmodifiableListView(pairs)));
   }
 
-  ///
-  /// Internal
-  ///
+  //
+  // Internal
+  //
 
   ///
   /// Workaround to capture generics
@@ -96,7 +96,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
       return sharedPrefs.getString(key) as T;
     }
     if (T == _typeOf<List<String>>()) {
-      return sharedPrefs.getStringList(key)?.cast<String>() as T;
+      return sharedPrefs.getStringList(key) as T;
     }
     // Get all keys
     if (T == _typeOf<Set<String>>() && key == null) {
@@ -142,7 +142,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
     if (T == _typeOf<List<String>>()) {
       return sharedPrefs.setStringList(
         key,
-        (value as List)?.cast<String>(),
+        value as List<String>,
       );
     }
     return Future.value(false);
@@ -212,17 +212,13 @@ class RxSharedPreferences implements IRxSharedPreferences {
     final Set<String> keys = prefs.getKeys();
     final bool result = await prefs.clear();
 
-    keys.forEach((key) => _logger?.writeValue(dynamic, key, null, result));
+    for (final key in keys) {
+      _logger?.writeValue(dynamic, key, null, result);
+    }
 
     if (result ?? false) {
-      _sendKeyValueChanged(
-        keys.map((key) {
-          return KeyAndValue<dynamic>(
-            key,
-            null,
-          );
-        }),
-      );
+      final pairs = keys.map((key) => KeyAndValue<dynamic>(key, null));
+      _sendKeyValueChanged(pairs);
     }
 
     return result;
@@ -233,26 +229,15 @@ class RxSharedPreferences implements IRxSharedPreferences {
     final SharedPreferences prefs = await _sharedPrefsFuture;
     await prefs.reload();
 
-    prefs.getKeys().forEach(
-      (key) {
-        _logger?.readValue(
-          dynamic,
-          key,
-          prefs.get(key),
-        );
-      },
-    );
-    _sendKeyValueChanged(
-      prefs
-          .getKeys()
-          .map(
-            (key) => KeyAndValue<dynamic>(
-              key,
-              prefs.get(key),
-            ),
-          )
-          .toList(growable: false),
-    );
+    for (final key in prefs.getKeys()) {
+      _logger?.readValue(dynamic, key, prefs.get(key));
+    }
+
+    final pairs = prefs
+        .getKeys()
+        .map((key) => KeyAndValue<dynamic>(key, prefs.get(key)))
+        .toList(growable: false);
+    _sendKeyValueChanged(pairs);
   }
 
   @override
