@@ -62,7 +62,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
         .startWith(null) // Dummy value to trigger initial load.
         .asyncMap((pair) async {
           if (pair == null) {
-            // Read initial
+            // Initial reading
             return get(key);
           } else {
             return pair.value as T;

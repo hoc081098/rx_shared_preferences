@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/loggers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/loggers.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/logger_adapter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/model/key_and_value.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,11 +55,6 @@
       <option name="testFile" value="$PROJECT_DIR$/test/logger/logger_adapter_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="doOnDataStream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="doOnDataStream" />
-      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
-      <method v="2" />
-    </configuration>
     <configuration name="tests in like_shared_prefs_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
       <method v="2" />
@@ -73,13 +63,17 @@
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
+    <configuration name="tests in streams_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
+        <item itemvalue="Flutter Test.tests in streams_test.dart" />
         <item itemvalue="Flutter Test.tests in like_shared_prefs_test.dart" />
         <item itemvalue="Flutter Test.LoggerAdapter" />
         <item itemvalue="Flutter Test.DefaultLogger" />
-        <item itemvalue="Flutter Test.doOnDataStream" />
       </list>
     </recent_temporary>
   </component>
@@ -176,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580066876034</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Some refactor">
+      <created>1580067340687</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1580067340688</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -204,33 +205,34 @@
     <MESSAGE value="Update pubspec.yaml and add codecov badge" />
     <MESSAGE value="Add tests" />
     <MESSAGE value="Some refactors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Some refactors" />
+    <MESSAGE value="Some refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some refactor" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580067300408">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580067651266">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580067300408" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580067651266" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580066852376">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1580066852376" />
-    <state width="1323" height="25" key="GridCell.Tab.0.bottom" timestamp="1580067273244">
+    <state width="1323" height="215" key="GridCell.Tab.0.bottom" timestamp="1580067859334">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="25" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580067273244" />
-    <state width="1323" height="25" key="GridCell.Tab.0.center" timestamp="1580067273244">
+    <state width="1323" height="215" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580067859334" />
+    <state width="1323" height="215" key="GridCell.Tab.0.center" timestamp="1580067859334">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="25" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580067273244" />
-    <state width="1323" height="25" key="GridCell.Tab.0.left" timestamp="1580067273244">
+    <state width="1323" height="215" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580067859334" />
+    <state width="1323" height="215" key="GridCell.Tab.0.left" timestamp="1580067859333">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="25" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580067273244" />
-    <state width="1323" height="25" key="GridCell.Tab.0.right" timestamp="1580067273244">
+    <state width="1323" height="215" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580067859333" />
+    <state width="1323" height="215" key="GridCell.Tab.0.right" timestamp="1580067859334">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="25" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580067273244" />
+    <state width="1323" height="215" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580067859334" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -239,10 +241,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1579850624506" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580066876883">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580067652857">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580066876883" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580067652857" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1579857188603">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
