@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logger/default_logger.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +45,7 @@
       <recent name="E:\Admin\Documents\Java\rx_shared_preference\example" />
     </key>
   </component>
-  <component name="RunManager" selected="Flutter Test.tests in streams_test.dart">
+  <component name="RunManager" selected="Flutter Test.tests in rx_shared_preferences_test.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
@@ -57,9 +55,9 @@
       <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Rx.mapNotNull" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull" />
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
+    <configuration name="DefaultLogger" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="DefaultLogger" />
+      <option name="testFile" value="$PROJECT_DIR$/test/logger/default_logger_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="tests in key_and_value_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
@@ -76,11 +74,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
+        <item itemvalue="Flutter Test.DefaultLogger" />
         <item itemvalue="Flutter Test.tests in streams_test.dart" />
         <item itemvalue="Flutter Test.tests in key_and_value_test.dart" />
         <item itemvalue="Flutter Test.Default instance" />
-        <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
-        <item itemvalue="Flutter Test.Rx.mapNotNull" />
       </list>
     </recent_temporary>
   </component>
@@ -247,7 +245,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580133412026</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Update">
+      <created>1580134133926</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1580134133927</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -282,30 +287,30 @@
     <option name="LAST_COMMIT_MESSAGE" value="Update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580133410972">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580134132288">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580133410972" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580134132288" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580116968220">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1580116968220" />
-    <state width="1323" height="329" key="GridCell.Tab.0.bottom" timestamp="1580133743472">
+    <state width="1323" height="312" key="GridCell.Tab.0.bottom" timestamp="1580134364869">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="329" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580133743472" />
-    <state width="1323" height="329" key="GridCell.Tab.0.center" timestamp="1580133743472">
+    <state width="1323" height="312" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580134364869" />
+    <state width="1323" height="312" key="GridCell.Tab.0.center" timestamp="1580134364869">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="329" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580133743472" />
-    <state width="1323" height="329" key="GridCell.Tab.0.left" timestamp="1580133743472">
+    <state width="1323" height="312" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580134364869" />
+    <state width="1323" height="312" key="GridCell.Tab.0.left" timestamp="1580134364869">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="329" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580133743472" />
-    <state width="1323" height="329" key="GridCell.Tab.0.right" timestamp="1580133743472">
+    <state width="1323" height="312" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580134364869" />
+    <state width="1323" height="312" key="GridCell.Tab.0.right" timestamp="1580134364869">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="329" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580133743472" />
+    <state width="1323" height="312" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580134364869" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -318,10 +323,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580133412529">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580134134823">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580133412529" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580134134823" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580127342398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
