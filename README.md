@@ -8,10 +8,10 @@
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preferences)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-  - Shared preference with `rxdart` Stream observation.
-  - Reactive shared preferences for `Flutter`.
-  - Reactive stream wrapper around SharedPreferences.
-  - This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
+  -  Shared preference with `rxdart` Stream observation.
+  -  Reactive shared preferences for `Flutter`.
+  -  Reactive stream wrapper around SharedPreferences.
+  -  This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## More detail about returned `Stream`
   - `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set)
