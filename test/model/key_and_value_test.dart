@@ -13,6 +13,13 @@ void main() {
       expect(true, isTrue);
     });
 
+    test('KeyAndValue.fromMapEntry', () {
+      const mapEntry = MapEntry('key', 'value');
+      final keyAndValue = KeyAndValue.fromMapEntry(mapEntry);
+      expect(mapEntry.key, keyAndValue.key);
+      expect(mapEntry.value, keyAndValue.value);
+    });
+
     test('KeyAndValue.toString', () {
       expect(
         KeyAndValue('key1', 'value').toString(),
