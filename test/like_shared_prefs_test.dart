@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
+
 import 'fake_shared_prefs_store.dart';
 
 void main() {
@@ -33,7 +35,9 @@ void main() {
       store = FakeSharedPreferencesStore(kTestValues);
       SharedPreferencesStorePlatform.instance = store;
 
-      rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
+      rxPrefs = RxSharedPreferences(
+          await SharedPreferences.getInstance(), const DefaultLogger());
+      await rxPrefs.reload();
 
       store.log.clear();
     });
@@ -165,6 +169,21 @@ void main() {
       cachedList.add("foobar2");
 
       expect(await rxPrefs.getStringList('myList'), <String>[]);
+    });
+
+    test('getKeys', () async {
+      const String _prefix = 'flutter.';
+      final keys = await rxPrefs.getKeys();
+      final expected = Set.of(
+        kTestValues.keys.map(
+          (s) => s.substring(_prefix.length),
+        ),
+      );
+
+      expect(
+        SetEquality<String>().equals(keys, expected),
+        isTrue,
+      );
     });
   });
 }

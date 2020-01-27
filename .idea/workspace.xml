@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/like_shared_prefs_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/like_shared_prefs_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +48,7 @@
       <recent name="E:\Admin\Documents\Java\rx_shared_preference\example" />
     </key>
   </component>
-  <component name="RunManager" selected="Flutter Test.Dispose">
+  <component name="RunManager" selected="Flutter Test.getKeys">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
@@ -61,25 +63,26 @@
       <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="tests in key_and_value_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/model/key_and_value_test.dart" />
+    <configuration name="getKeys" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="getKeys" />
+      <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in like_shared_prefs_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="tests in streams_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Flutter Test.getKeys" />
+        <item itemvalue="Flutter Test.tests in like_shared_prefs_test.dart" />
         <item itemvalue="Flutter Test.Dispose" />
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
         <item itemvalue="Flutter Test.DefaultLogger" />
-        <item itemvalue="Flutter Test.tests in streams_test.dart" />
-        <item itemvalue="Flutter Test.tests in key_and_value_test.dart" />
       </list>
     </recent_temporary>
   </component>
@@ -267,7 +270,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580134766574</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Update README.md">
+      <created>1580139914266</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1580139914266</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -304,10 +314,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Update README.md" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580134765772">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580139913039">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580134765772" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580139913039" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580116968220">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -316,22 +326,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1580134926826" />
-    <state width="1323" height="126" key="GridCell.Tab.0.bottom" timestamp="1580134928071">
+    <state width="1323" height="186" key="GridCell.Tab.0.bottom" timestamp="1580142006441">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="126" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580134928071" />
-    <state width="1323" height="126" key="GridCell.Tab.0.center" timestamp="1580134928071">
+    <state width="1323" height="186" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580142006441" />
+    <state width="1323" height="186" key="GridCell.Tab.0.center" timestamp="1580142006441">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="126" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580134928071" />
-    <state width="1323" height="126" key="GridCell.Tab.0.left" timestamp="1580134928070">
+    <state width="1323" height="186" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580142006441" />
+    <state width="1323" height="186" key="GridCell.Tab.0.left" timestamp="1580142006441">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="126" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580134928070" />
-    <state width="1323" height="126" key="GridCell.Tab.0.right" timestamp="1580134928071">
+    <state width="1323" height="186" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580142006441" />
+    <state width="1323" height="186" key="GridCell.Tab.0.right" timestamp="1580142006441">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="126" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580134928071" />
+    <state width="1323" height="186" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580142006441" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -344,10 +354,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580134767151">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580139914816">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580134767151" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580139914816" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580127342398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
