@@ -15,24 +15,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ValueStream<List<String>> _list$;
-  StreamSubscription<List<String>> _subscription;
+  ValueStream<List<String>> list$;
+  StreamSubscription<List<String>> subscription;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_subscription == null) {
-      final list$ =
+    if (subscription == null) {
+      final listConnectable$ =
           RxPrefsProvider.of(context).getStringListStream(key).publishValue();
-      _subscription = list$.connect();
-      _list$ = list$;
+      list$ = listConnectable$;
+      subscription = listConnectable$.connect();
     }
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -43,19 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Home'),
       ),
       body: StreamBuilder<List<String>>(
-        stream: _list$,
-        initialData: _list$.value,
+        stream: list$,
+        initialData: list$.value,
         builder: (context, snapshot) {
           final list = snapshot.data ?? <String>[];
+
           return ListView.builder(
             itemCount: list.length,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
+              final item = list[index];
+
               return ListTile(
-                title: Text(list[index]),
+                title: Text(item),
                 trailing: IconButton(
                   icon: Icon(Icons.remove_circle),
-                  onPressed: () => showDialogRemove(list[index], context),
+                  onPressed: () => showDialogRemove(item, context),
                 ),
               );
             },

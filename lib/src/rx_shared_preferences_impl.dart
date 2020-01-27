@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:rx_shared_preferences/src/interface/rx_shared_preferences.dart';
-import 'package:rx_shared_preferences/src/logger/logger.dart';
-import 'package:rx_shared_preferences/src/model/key_and_value.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'interface/rx_shared_preferences.dart';
+import 'logger/logger.dart';
+import 'map_not_null_stream_transformer.dart';
+import 'model/key_and_value.dart';
 
 ///
 /// Default [IRxSharedPreferences] implementation
@@ -14,7 +17,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ///
   /// Trigger subject
   ///
-  final _keyValuesSubject = PublishSubject<Iterable<KeyAndValue<dynamic>>>();
+  final _keyValuesSubject = PublishSubject<Map<String, dynamic>>();
+  StreamSubscription<dynamic> _subscription;
 
   ///
   /// Future of [SharedPreferences]
@@ -34,9 +38,22 @@ class RxSharedPreferences implements IRxSharedPreferences {
     this._logger,
   ])  : assert(sharedPreference != null),
         _sharedPrefsFuture = Future.value(sharedPreference) {
-    _keyValuesSubject
-        .listen((pairs) => _logger?.keysChanged(UnmodifiableListView(pairs)));
+    _subscription = _keyValuesSubject.listen((map) {
+      final pairs = map.entries.map((entry) => KeyAndValue.fromMapEntry(entry));
+      _logger?.keysChanged(UnmodifiableListView(pairs));
+    });
   }
+
+  static RxSharedPreferences _defaultInstance;
+
+  ///
+  /// Return default singleton instance
+  ///
+  factory RxSharedPreferences.getInstance() =>
+      _defaultInstance ??= RxSharedPreferences(
+        SharedPreferences.getInstance(),
+        const DefaultLogger(),
+      );
 
   //
   // Internal
@@ -52,20 +69,20 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ///
   Stream<T> _getStream<T>(String key, Future<T> Function(String key) get) {
     return _keyValuesSubject
-        .map((pairs) {
-          return pairs.firstWhere(
-            (pair) => pair.key == key,
-            orElse: () => null,
-          );
+        .mapNotNull((map) {
+          if (map.containsKey(key)) {
+            return MapEntry(key, map[key]);
+          } else {
+            return null;
+          }
         })
-        .where((pair) => pair != null)
         .startWith(null) // Dummy value to trigger initial load.
-        .asyncMap((pair) async {
-          if (pair == null) {
+        .asyncMap((entry) async {
+          if (entry == null) {
             // Initial reading
             return get(key);
           } else {
-            return pair.value as T;
+            return entry.value as T;
           }
         })
         .doOnData((value) => _logger?.doOnDataStream(KeyAndValue(key, value)))
@@ -157,7 +174,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
 
     // Trigger key changes
     if (result ?? false) {
-      _sendKeyValueChanged([KeyAndValue<T>(key, value)]);
+      _sendKeyValueChanged({key: value});
     }
 
     return result;
@@ -167,9 +184,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
   /// Add pairs to subject to trigger.
   /// Do nothing if subject already closed.
   ///
-  void _sendKeyValueChanged(Iterable<KeyAndValue<dynamic>> pairs) {
+  void _sendKeyValueChanged(Map<String, dynamic> map) {
     try {
-      _keyValuesSubject.add(pairs);
+      _keyValuesSubject.add(map);
     } catch (e) {
       print(e);
       // Do nothing
@@ -218,8 +235,12 @@ class RxSharedPreferences implements IRxSharedPreferences {
 
     // Trigger key changes: all values are set to null
     if (result ?? false) {
-      final pairs = keys.map((key) => KeyAndValue<dynamic>(key, null));
-      _sendKeyValueChanged(pairs);
+      final map = Map<String, dynamic>.fromIterable(
+        keys,
+        key: (k) => k,
+        value: (_) => null,
+      );
+      _sendKeyValueChanged(map);
     }
 
     return result;
@@ -236,11 +257,12 @@ class RxSharedPreferences implements IRxSharedPreferences {
     }
 
     // Trigger key changes: read value from prefs
-    final pairs = prefs
-        .getKeys()
-        .map((key) => KeyAndValue<dynamic>(key, prefs.get(key)))
-        .toList(growable: false);
-    _sendKeyValueChanged(pairs);
+    final map = Map<String, dynamic>.fromIterable(
+      prefs.getKeys(),
+      key: (k) => k,
+      value: (k) => prefs.get(k),
+    );
+    _sendKeyValueChanged(map);
   }
 
   @override
@@ -290,5 +312,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _getStream<List<String>>(key, getStringList);
 
   @override
-  Future<void> dispose() => _keyValuesSubject.close();
+  Future<void> dispose() {
+    final futures = [_keyValuesSubject.close(), _subscription?.cancel()]
+        .where((future) => future != null);
+    return Future.wait(futures);
+  }
 }

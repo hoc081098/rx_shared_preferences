@@ -76,7 +76,7 @@ void main() {
 
         expect(
           logs,
-          [' → Read value: type String, key key → value'],
+          [" → Read value: type String, key 'key' → value"],
         );
       }),
     );
@@ -92,7 +92,7 @@ void main() {
 
         expect(
           logs,
-          [' → Write value: type String, key key, value value  → result true'],
+          [" → Write value: type String, key 'key', value value  → result true"],
         );
       }),
     );
