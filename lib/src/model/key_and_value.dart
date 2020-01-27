@@ -17,6 +17,12 @@ class KeyAndValue<T> {
   ///
   const KeyAndValue(this.key, this.value);
 
+  ///
+  /// Construct a [KeyAndValue] from a [MapEntry]
+  ///
+  factory KeyAndValue.fromMapEntry(MapEntry<String, T> mapEntry) =>
+      KeyAndValue(mapEntry.key, mapEntry.value);
+
   @override
   String toString() => "{ '$key': $value }";
 }

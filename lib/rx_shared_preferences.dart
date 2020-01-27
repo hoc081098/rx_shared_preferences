@@ -5,10 +5,10 @@
 ///
 library rx_shared_preferences;
 
-export 'src/rx_shared_preferences_impl.dart';
-export 'src/interface/shared_preferences_like.dart';
 export 'src/interface/rx_shared_preferences.dart';
+export 'src/interface/shared_preferences_like.dart';
 export 'src/logger/default_logger.dart';
-export 'src/logger/logger_adapter.dart';
 export 'src/logger/logger.dart';
+export 'src/logger/logger_adapter.dart';
 export 'src/model/key_and_value.dart';
+export 'src/rx_shared_preferences_impl.dart';
