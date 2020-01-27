@@ -17,9 +17,9 @@
 -  `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set).
 -  It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`).
 -  When read value is invalid type (ie. wrong type):
-    -  Will **emit error** if value is present (ie. not `null`).
-    -  **Emit `null`** when value is not set (ie. value is `null`) (this occurred because `null` can be cast to any type).
-    -  Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
+   -  Will **emit error** if value is present (ie. not `null`).
+   -  **Emit `null`** when value is not set (ie. value is `null`) (this occurred because `null` can be cast to any type).
+   -  Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
     <img src="https://github.com/hoc081098/hoc081098.github.io/raw/master/rx_shared_preferences/carbon%20(22).png" width="600">
@@ -110,9 +110,9 @@ rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
 -  In the previous example we re-used the RxSharedPreferences object `rxPrefs` for set operations. All set operations must go through this object in order to correctly notify subscribers.
 
 -  In flutter, you:
-    -  Can create global `RxSharedPreferences` instance.
-    -  Using singleton instance `RxSharedPreferences.getInstance()`
-    -  Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
+   -  Can create global `RxSharedPreferences` instance.
+   -  Using singleton instance `RxSharedPreferences.getInstance()`
+   -  Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
 
 ```dart
 rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
