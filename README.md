@@ -8,18 +8,23 @@
 [![Build Status](https://travis-ci.org/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.org/hoc081098/rx_shared_preferences)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- Shared preference with `rxdart` Stream observation.
-- Reactive shared preferences for `Flutter`.
-- Reactive stream wrapper around SharedPreferences.
-- This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
+  - Shared preference with `rxdart` Stream observation.
+  - Reactive shared preferences for `Flutter`.
+  - Reactive stream wrapper around SharedPreferences.
+  - This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## More detail about returned `Stream`
-- `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set) 
-- It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`)
-- When read value is invalid type (ie. wrong type):
-  + Will **emit error** if value is present (ie. not `null`)
-  + **Emit `null`** when value is absent (ie. value is `null`) (this occurred because `null` can be cast to any type).
-- Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` 
+  - `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set)
+  
+  - It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`).
+  
+  - When read value is invalid type (ie. wrong type):
+  
+    - Will **emit error** if value is present (ie. not `null`).
+    
+    - **Emit `null`** when value is absent (ie. value is `null`) (this occurred because `null` can be cast to any type).
+    
+  - Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` 
 (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
@@ -154,7 +159,7 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
 | ------------- | ------------- | ------- |
 | <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480"> |<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
 
-# License
+## License
 
     MIT License
 

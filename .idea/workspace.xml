@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/map_not_null_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/map_not_null_stream_transformer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/map_not_null_stream_transformer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580114805800</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="update">
+      <created>1580118293112</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1580118293112</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -230,7 +236,6 @@
     <MESSAGE value="Update rxdart, shared_preferences" />
     <MESSAGE value="update test, default logger" />
     <MESSAGE value="prepare publish v1.1.0" />
-    <MESSAGE value="update" />
     <MESSAGE value="dartfmt" />
     <MESSAGE value="Update docs, dartfmt" />
     <MESSAGE value="Update pubspec.yaml and add codecov badge" />
@@ -239,13 +244,14 @@
     <MESSAGE value="Some refactor" />
     <MESSAGE value="better comments" />
     <MESSAGE value="Change implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change implementation" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580114804162">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580118292009">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580114804162" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580118292009" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580116968220">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -278,10 +284,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580114806638">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580118293832">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580114806638" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580118293832" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580111625222">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
