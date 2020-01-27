@@ -214,7 +214,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580118293112</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="update">
+      <created>1580126456409</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1580126456410</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -248,10 +255,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580118292009">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580126455115">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580118292009" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580126455115" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580116968220">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -284,10 +291,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580126449551">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580126457313">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580126449551" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580126457313" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580126386668">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
