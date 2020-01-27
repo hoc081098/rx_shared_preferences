@@ -294,4 +294,14 @@ void main() {
       await later;
     });
   });
+
+  test('Default instance', () {
+    expect(
+      identical(
+        RxSharedPreferences.getInstance(),
+        RxSharedPreferences.getInstance(),
+      ),
+      isTrue,
+    );
+  });
 }

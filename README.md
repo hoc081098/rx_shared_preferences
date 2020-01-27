@@ -17,9 +17,9 @@
 -  `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set)  
 -  It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`).
 -  When read value is invalid type (ie. wrong type):
-  -  Will **emit error** if value is present (ie. not `null`).
-  -  **Emit `null`** when value is absent (ie. value is `null`) (this occurred because `null` can be cast to any type).
-  -  Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` 
+    -  Will **emit error** if value is present (ie. not `null`).
+    -  **Emit `null`** when value is absent (ie. value is `null`) (this occurred because `null` can be cast to any type).
+    -  Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` 
 (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">

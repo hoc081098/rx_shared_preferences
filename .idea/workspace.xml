@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/streams_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/streams_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,18 +48,18 @@
       <recent name="E:\Admin\Documents\Java\rx_shared_preference\example" />
     </key>
   </component>
-  <component name="RunManager" selected="Flutter Test.tests in rx_shared_preferences_test.dart">
+  <component name="RunManager" selected="Flutter Test.tests in streams_test.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Rx.mapNotNull" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull" />
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
+    <configuration name="Default instance" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Default instance" />
+      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Rx.mapNotNull.asBroadcastStream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull.asBroadcastStream" />
+    <configuration name="Rx.mapNotNull" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Rx.mapNotNull" />
       <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
       <method v="2" />
     </configuration>
@@ -67,22 +68,21 @@
       <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Rx.mapNotNull.shouldThrowC" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull.shouldThrowC" />
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
-      <method v="2" />
-    </configuration>
     <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
+    <configuration name="tests in streams_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Flutter Test.tests in streams_test.dart" />
+        <item itemvalue="Flutter Test.Default instance" />
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
         <item itemvalue="Flutter Test.Rx.mapNotNull" />
         <item itemvalue="Flutter Test.Rx.mapNotNull.pause.resume" />
-        <item itemvalue="Flutter Test.Rx.mapNotNull.asBroadcastStream" />
-        <item itemvalue="Flutter Test.Rx.mapNotNull.shouldThrowC" />
       </list>
     </recent_temporary>
   </component>
@@ -221,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580126456410</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="update">
+      <created>1580126777144</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1580126777144</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -255,30 +262,30 @@
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580126455115">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580126776074">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580126455115" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580126776074" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580116968220">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1580116968220" />
-    <state width="1323" height="155" key="GridCell.Tab.0.bottom" timestamp="1580118280728">
+    <state width="1323" height="126" key="GridCell.Tab.0.bottom" timestamp="1580132794081">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="155" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580118280728" />
-    <state width="1323" height="155" key="GridCell.Tab.0.center" timestamp="1580118280728">
+    <state width="1323" height="126" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580132794081" />
+    <state width="1323" height="126" key="GridCell.Tab.0.center" timestamp="1580132794081">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="155" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580118280728" />
-    <state width="1323" height="155" key="GridCell.Tab.0.left" timestamp="1580118280728">
+    <state width="1323" height="126" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580132794081" />
+    <state width="1323" height="126" key="GridCell.Tab.0.left" timestamp="1580132794081">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="155" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580118280728" />
-    <state width="1323" height="155" key="GridCell.Tab.0.right" timestamp="1580118280728">
+    <state width="1323" height="126" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580132794081" />
+    <state width="1323" height="126" key="GridCell.Tab.0.right" timestamp="1580132794081">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="155" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580118280728" />
+    <state width="1323" height="126" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580132794081" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -291,14 +298,14 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580126457313">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580126777826">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580126457313" />
-    <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580126386668">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580126777826" />
+    <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580127342398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="391" y="193" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1580126386668" />
+    <state x="391" y="193" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1580127342398" />
     <state x="379" y="168" key="git4idea.merge.GitPullDialog" timestamp="1580066056723">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -307,5 +314,16 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="346" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1580114136388" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.6/lib/shared_preferences.dart</url>
+          <line>28</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

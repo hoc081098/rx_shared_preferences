@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +43,17 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _logger?.keysChanged(UnmodifiableListView(pairs));
     });
   }
+
+  static RxSharedPreferences _defaultInstance;
+
+  ///
+  /// Return default singleton instance
+  ///
+  factory RxSharedPreferences.getInstance() =>
+      _defaultInstance ??= RxSharedPreferences(
+        SharedPreferences.getInstance(),
+        const DefaultLogger(),
+      );
 
   //
   // Internal
