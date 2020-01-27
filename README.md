@@ -50,14 +50,14 @@ Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 
 ```dart
 final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
-final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance());
-// await is optional
+final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance()); // await is optional
+final rxPrefs = RxSharedPreferences.getInstance(); // default singleton instance
 ```
 
 ### 2. Can add a logger
 
 You can add logger optional parameter to `RxSharedPreferences` constructor.
-Logger will log messages about operations (such as read, write) and stream values
+Logger will log messages about operations (such as read, write) and stream events
 
 ```dart
 final rxPrefs = RxSharedPreferences(
@@ -85,8 +85,8 @@ final rxPrefs = RxSharedPreferences(
 
 ### 3. Select stream and use
 
-- And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
-- If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
+-  And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
+-  If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
 
 ```dart
 // Listen
@@ -106,18 +106,21 @@ rxPrefs.getIntStream('KEY_INT')
 rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
 
 ```
-- In the previous example we re-used the RxSharedPreferences object `rxPrefs` for set operations. All set operations must go through this object in order to correctly notify subscribers.
 
-- In flutter, you:
-  + Can create global `RxSharedPreferences` instance.
-  + Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
+-  In the previous example we re-used the RxSharedPreferences object `rxPrefs` for set operations. All set operations must go through this object in order to correctly notify subscribers.
+
+-  In flutter, you:
+    -  Can create global `RxSharedPreferences` instance.
+    -  Using singleton instance `RxSharedPreferences.getInstance()`
+    -  Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
 
 ```dart
 rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
-The previous example is wrong using way.
+
+The previous example is wrong usage.
 
 ### 4. Get and set methods like to `SharedPreferences`
 `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions:

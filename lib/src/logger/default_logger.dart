@@ -25,9 +25,9 @@ class DefaultLogger implements Logger {
 
   @override
   void readValue(Type type, String key, dynamic value) =>
-      print(' → Read value: type $type, key $key → $value');
+      print(" → Read value: type $type, key '$key' → $value");
 
   @override
   void writeValue(Type type, String key, dynamic value, bool writeResult) => print(
-      ' → Write value: type $type, key $key, value $value  → result $writeResult');
+      " → Write value: type $type, key '$key', value $value  → result $writeResult");
 }
