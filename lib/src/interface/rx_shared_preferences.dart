@@ -46,6 +46,12 @@ abstract class IRxSharedPreferences implements ISharedPreferencesLike {
   Stream<List<String>> getStringListStream(String key);
 
   ///
+  /// Return [Stream] that will emit all keys read from persistent storage.
+  /// It will automatic emit all keys when any value was changed.
+  ///
+  Stream<Set<String>> getKeysStream();
+
+  ///
   /// Clean up resources - Closes the streams.
   /// This method should be called when a [IRxSharedPreferences] is no longer needed.
   /// Once `dispose` is called, all streams will `not` emit changed value when value changed, and receiver onDone event.

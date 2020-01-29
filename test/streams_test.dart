@@ -24,10 +24,7 @@ void main() {
       rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
     });
 
-    tearDown(() async {
-      await rxPrefs.clear();
-      await rxPrefs.dispose();
-    });
+    tearDown(() async => await rxPrefs.dispose());
 
     test(
       'Stream will emit error when read value is not valid type, or emit null when value is not set',
@@ -292,6 +289,26 @@ void main() {
       await rxPrefs.reload(); // emits ['WORKING']
 
       await later;
+    });
+
+    test('Emit keys', () async {
+      final keysStream = rxPrefs.getKeysStream();
+
+      final future = expectLater(
+        keysStream,
+        emitsInOrder([
+          anything,
+          anything,
+          anything,
+          anything,
+        ]),
+      );
+
+      await rxPrefs.setInt('int', 0);
+      await rxPrefs.setDouble('double', 0);
+      await rxPrefs.setString('String', '');
+
+      await future;
     });
   });
 

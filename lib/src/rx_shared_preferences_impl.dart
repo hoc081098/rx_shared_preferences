@@ -312,6 +312,10 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _getStream<List<String>>(key, getStringList);
 
   @override
+  Stream<Set<String>> getKeysStream() =>
+      _keyValuesSubject.startWith(null).asyncMap((_) => getKeys());
+
+  @override
   Future<void> dispose() {
     final futures = [_keyValuesSubject.close(), _subscription?.cancel()]
         .where((future) => future != null);
