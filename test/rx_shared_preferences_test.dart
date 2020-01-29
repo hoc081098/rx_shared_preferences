@@ -16,6 +16,16 @@ void main() {
     );
   });
 
+  test('RxSharedPreferences.getInstance', () {
+    expect(
+      identical(
+        RxSharedPreferences.getInstance(),
+        RxSharedPreferences.getInstance(),
+      ),
+      isTrue,
+    );
+  });
+
   // logger
   default_logger_test.main();
   logger_adapter_test.main();

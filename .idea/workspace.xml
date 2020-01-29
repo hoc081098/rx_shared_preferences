@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/streams_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/streams_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,7 +304,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580297272384</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Add test: RxSharedPreferences.asserts">
+      <created>1580297878659</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1580297878659</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -341,17 +349,18 @@
     <MESSAGE value="Publish 1.1.1" />
     <MESSAGE value="Publish 1.1.1+1" />
     <MESSAGE value="update CHANGELOG.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="update CHANGELOG.md" />
+    <MESSAGE value="Add test: RxSharedPreferences.asserts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add test: RxSharedPreferences.asserts" />
   </component>
   <component name="WindowStateProjectService">
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1580293980694">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1580293980694" />
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580297271529">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580297877022">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580297271529" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580297877022" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580142064003">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -360,22 +369,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1580134926826" />
-    <state width="1323" height="196" key="GridCell.Tab.0.bottom" timestamp="1580297865610">
+    <state width="1323" height="312" key="GridCell.Tab.0.bottom" timestamp="1580297932265">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="196" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580297865610" />
-    <state width="1323" height="196" key="GridCell.Tab.0.center" timestamp="1580297865610">
+    <state width="1323" height="312" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
+    <state width="1323" height="312" key="GridCell.Tab.0.center" timestamp="1580297932265">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="196" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580297865610" />
-    <state width="1323" height="196" key="GridCell.Tab.0.left" timestamp="1580297865609">
+    <state width="1323" height="312" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
+    <state width="1323" height="312" key="GridCell.Tab.0.left" timestamp="1580297932265">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="196" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580297865609" />
-    <state width="1323" height="196" key="GridCell.Tab.0.right" timestamp="1580297865610">
+    <state width="1323" height="312" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
+    <state width="1323" height="312" key="GridCell.Tab.0.right" timestamp="1580297932265">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="196" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580297865610" />
+    <state width="1323" height="312" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -388,10 +397,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580297273777">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580297879366">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580297273777" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580297879366" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580297669575">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

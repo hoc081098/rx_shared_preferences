@@ -311,14 +311,4 @@ void main() {
       await future;
     });
   });
-
-  test('Default instance', () {
-    expect(
-      identical(
-        RxSharedPreferences.getInstance(),
-        RxSharedPreferences.getInstance(),
-      ),
-      isTrue,
-    );
-  });
 }
