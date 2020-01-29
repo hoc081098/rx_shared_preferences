@@ -310,5 +310,15 @@ void main() {
 
       await future;
     });
+
+    test('RxSharedPreferences.getInstance', () {
+      expect(
+        identical(
+          RxSharedPreferences.getInstance(),
+          RxSharedPreferences.getInstance(),
+        ),
+        isTrue,
+      );
+    });
   });
 }
