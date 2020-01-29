@@ -1,3 +1,7 @@
+## 1.1.1+1
+
+*   Update `description` in `pubspec.yaml`
+
 ## 1.1.1 - Jan 29, 2020
 
 *   Add `getKeysStream` method to `IRxSharedPreferences`.
