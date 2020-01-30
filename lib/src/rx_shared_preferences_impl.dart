@@ -118,7 +118,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
     if (T == _typeOf<Set<String>>() && key == null) {
       return sharedPrefs.getKeys() as T;
     }
-    return null;
+
+    throw Exception('Unsupported type');
   }
 
   ///
@@ -161,7 +162,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
         value as List<String>,
       );
     }
-    return Future.value(false);
+    throw Exception('Unsupported type');
   }
 
   ///

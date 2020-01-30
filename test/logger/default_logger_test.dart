@@ -17,7 +17,7 @@ void main() {
   }
 
   group('DefaultLogger', () {
-    const logger = DefaultLogger();
+    final logger = DefaultLogger();
 
     setUp(() => logs.clear());
 

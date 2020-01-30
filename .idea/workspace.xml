@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/streams_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/streams_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/logger/default_logger_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/logger/default_logger_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/logger/logger_adapter_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/logger/logger_adapter_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,14 +63,14 @@
       <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
       <method v="2" />
     </configuration>
+    <configuration name="RxSharedPreferences.getInstance" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="RxSharedPreferences.getInstance" />
+      <option name="testFile" value="$PROJECT_DIR$/test/rx_shared_preferences_test.dart" />
+      <method v="2" />
+    </configuration>
     <configuration name="Test Stream" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
       <option name="testName" value="Test Stream" />
       <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
-      <method v="2" />
-    </configuration>
-    <configuration name="getKeys" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="getKeys" />
-      <option name="testFile" value="$PROJECT_DIR$/test/like_shared_prefs_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
@@ -78,10 +80,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
+        <item itemvalue="Flutter Test.RxSharedPreferences.getInstance" />
         <item itemvalue="Flutter Test.RxSharedPreferences.asserts" />
         <item itemvalue="Flutter Test.Test Stream" />
         <item itemvalue="Flutter Test.Emit keys" />
-        <item itemvalue="Flutter Test.getKeys" />
       </list>
     </recent_temporary>
   </component>
@@ -311,7 +313,21 @@
       <option name="project" value="LOCAL" />
       <updated>1580297878659</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Refactor test">
+      <created>1580297939428</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1580297939428</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Revert">
+      <created>1580298022486</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1580298022486</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -350,17 +366,19 @@
     <MESSAGE value="Publish 1.1.1+1" />
     <MESSAGE value="update CHANGELOG.md" />
     <MESSAGE value="Add test: RxSharedPreferences.asserts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add test: RxSharedPreferences.asserts" />
+    <MESSAGE value="Refactor test" />
+    <MESSAGE value="Revert" />
+    <option name="LAST_COMMIT_MESSAGE" value="Revert" />
   </component>
   <component name="WindowStateProjectService">
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1580293980694">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1580293980694" />
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580297877022">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1580298021579">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580297877022" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1580298021579" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580142064003">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -369,22 +387,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1580134926826" />
-    <state width="1323" height="312" key="GridCell.Tab.0.bottom" timestamp="1580297932265">
+    <state width="1323" height="356" key="GridCell.Tab.0.bottom" timestamp="1580378253531">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="312" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
-    <state width="1323" height="312" key="GridCell.Tab.0.center" timestamp="1580297932265">
+    <state width="1323" height="356" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1580378253531" />
+    <state width="1323" height="356" key="GridCell.Tab.0.center" timestamp="1580378253530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="312" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
-    <state width="1323" height="312" key="GridCell.Tab.0.left" timestamp="1580297932265">
+    <state width="1323" height="356" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1580378253530" />
+    <state width="1323" height="356" key="GridCell.Tab.0.left" timestamp="1580378253530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="312" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
-    <state width="1323" height="312" key="GridCell.Tab.0.right" timestamp="1580297932265">
+    <state width="1323" height="356" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1580378253530" />
+    <state width="1323" height="356" key="GridCell.Tab.0.right" timestamp="1580378253530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="312" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580297932265" />
+    <state width="1323" height="356" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1580378253530" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -397,10 +415,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580297879366">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1580298023028">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580297879366" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1580298023028" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1580297669575">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

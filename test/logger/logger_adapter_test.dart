@@ -4,7 +4,7 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 void main() {
   group('LoggerAdapter', () {
     test('Works', () {
-      const logger = LoggerAdapter();
+      final logger = LoggerAdapter();
       const keyAndValue = KeyAndValue('key', 'value');
       logger.keysChanged([keyAndValue]);
       logger.doOnDataStream(keyAndValue);
