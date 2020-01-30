@@ -118,8 +118,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
     if (T == _typeOf<Set<String>>() && key == null) {
       return sharedPrefs.getKeys() as T;
     }
-
-    throw Exception('Unsupported type');
+    return null;
   }
 
   ///
@@ -141,8 +140,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
     String key,
     T value,
   ) {
-    if (T == dynamic) {
-      return value != null ? Future.value(false) : sharedPrefs.remove(key);
+    if (T == dynamic && value == null) {
+      return sharedPrefs.remove(key);
     }
     if (T == double) {
       return sharedPrefs.setDouble(key, value as double);
@@ -162,7 +161,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
         value as List<String>,
       );
     }
-    throw Exception('Unsupported type');
+    return null;
   }
 
   ///
