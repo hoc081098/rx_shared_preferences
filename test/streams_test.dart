@@ -311,14 +311,41 @@ void main() {
       await future;
     });
 
-    test('RxSharedPreferences.getInstance', () {
+    test('RxSharedPreferences.getInstance', () async {
+      RxSharedPreferences rxPrefs1;
       expect(
         identical(
           RxSharedPreferences.getInstance(),
-          RxSharedPreferences.getInstance(),
+          rxPrefs1 = RxSharedPreferences.getInstance(),
         ),
         isTrue,
       );
+
+      // dispose rxPrefs
+      await rxPrefs.dispose();
+
+      RxSharedPreferences rxPrefs2;
+      expect(
+        identical(
+          RxSharedPreferences.getInstance(),
+          rxPrefs2 = RxSharedPreferences.getInstance(),
+        ),
+        isTrue,
+      );
+      expect(identical(rxPrefs1, rxPrefs2) && rxPrefs1 != null, isTrue);
+
+      // dispose default singleton
+      await RxSharedPreferences.getInstance().dispose();
+
+      RxSharedPreferences rxPrefs3;
+      expect(
+        identical(
+          RxSharedPreferences.getInstance(),
+          rxPrefs3 = RxSharedPreferences.getInstance(),
+        ),
+        isTrue,
+      );
+      expect(identical(rxPrefs3, rxPrefs1) && rxPrefs3 != null, isFalse);
     });
   });
 }
