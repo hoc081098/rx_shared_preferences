@@ -316,9 +316,14 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _keyValuesSubject.startWith(null).asyncMap((_) => getKeys());
 
   @override
-  Future<void> dispose() {
+  Future<void> dispose() async {
     final futures = [_keyValuesSubject.close(), _subscription?.cancel()]
         .where((future) => future != null);
-    return Future.wait(futures);
+    await Future.wait(futures);
+
+    // if dispose _defaultInstance then set it to null
+    if (identical(this, _defaultInstance)) {
+      _defaultInstance = null;
+    }
   }
 }
