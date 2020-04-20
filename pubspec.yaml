@@ -11,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^0.5.6
-  rxdart: ^0.23.1
+  shared_preferences: ^0.5.6+3
+  rxdart: ^0.24.0
 
 dev_dependencies:
   flutter_test:

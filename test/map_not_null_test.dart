@@ -22,7 +22,7 @@ void main() {
     test('Rx.mapNotNull.shouldThrowA', () {
       expect(
         () => Stream.value(42).mapNotNull(null),
-        throwsArgumentError,
+        throwsAssertionError,
       );
     });
 
@@ -54,7 +54,7 @@ void main() {
       );
     });
 
-    test('Rx.mapNotNull.asBroadcastStream', () async {
+    test('Rx.mapNotNull.asBroadcastStream', () {
       final stream = Stream.fromIterable([2, 3, 4, 5, 6])
           .mapNotNull((i) => null)
           .asBroadcastStream();
@@ -64,7 +64,7 @@ void main() {
       stream.listen(null);
 
       // code should reach here
-      await expectLater(true, true);
+      expect(true, true);
     });
 
     test('Rx.mapNotNull.pause.resume', () async {
@@ -82,6 +82,28 @@ void main() {
 
       subscription.pause();
       subscription.resume();
+    });
+
+    test('Rx.mapNotNull.broadcast', () {
+      final streamController = StreamController<int>.broadcast();
+      final stream = streamController.stream.mapNotNull((i) => i);
+
+      expect(stream.isBroadcast, isTrue);
+      stream.listen(null);
+      stream.listen(null);
+
+      expect(true, true);
+    });
+
+    test('Rx.mapNotNull.not.broadcast', () {
+      final streamController = StreamController<int>();
+      final stream = streamController.stream.mapNotNull((i) => i);
+
+      expect(stream.isBroadcast, isFalse);
+      stream.listen(null);
+      expect(() => stream.listen(null), throwsStateError);
+
+      streamController.add(1);
     });
   });
 }

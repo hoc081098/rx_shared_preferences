@@ -2,57 +2,64 @@ import 'dart:async';
 
 /// Map stream and reject null
 class MapNotNullStreamTransformer<T, R> extends StreamTransformerBase<T, R> {
-  final StreamTransformer<T, R> _transformer;
+  final R Function(T) _mapper;
 
   /// Construct a [MapNotNullStreamTransformer] with [mapper]
   MapNotNullStreamTransformer(R Function(T) mapper)
-      : _transformer = _buildTransformer(mapper);
+      : assert(mapper != null),
+        _mapper = mapper;
 
   @override
-  Stream<R> bind(Stream<T> stream) => _transformer.bind(stream);
+  Stream<R> bind(Stream<T> stream) {
+    StreamController<R> controller;
+    StreamSubscription<T> subscription;
 
-  static StreamTransformer<T, R> _buildTransformer<T, R>(R Function(T) mapper) {
-    ArgumentError.checkNotNull(mapper, 'mapper');
-
-    return StreamTransformer<T, R>((stream, cancelOnError) {
-      StreamController<R> controller;
-      StreamSubscription<T> subscription;
-
-      void onDone() {
-        if (!controller.isClosed) {
-          controller.close();
-        }
+    void onDone() {
+      if (!controller.isClosed) {
+        controller.close();
       }
+    }
 
+    void onListen() {
+      subscription = stream.listen(
+        (data) {
+          R mappedValue;
+
+          try {
+            mappedValue = _mapper(data);
+          } catch (e, s) {
+            controller.addError(e, s);
+            return;
+          }
+
+          if (mappedValue != null) {
+            controller.add(mappedValue);
+          }
+        },
+        onError: controller.addError,
+        onDone: onDone,
+      );
+    }
+
+    void onCancel() => subscription.cancel();
+
+    if (stream.isBroadcast) {
+      controller = StreamController<R>.broadcast(
+        sync: true,
+        onListen: onListen,
+        onCancel: onCancel,
+      );
+    } else {
       controller = StreamController<R>(
         sync: true,
-        onListen: () {
-          subscription = stream.listen(
-            (data) {
-              R mappedValue;
-
-              try {
-                mappedValue = mapper(data);
-              } catch (e, s) {
-                controller.addError(e, s);
-                return;
-              }
-
-              if (mappedValue != null) {
-                controller.add(mappedValue);
-              }
-            },
-            onError: controller.addError,
-            onDone: onDone,
-          );
-        },
+        onListen: onListen,
         onPause: ([Future resumeSignal]) => subscription.pause(resumeSignal),
         onResume: () => subscription.resume(),
-        onCancel: () => subscription.cancel(),
+        onCancel: onCancel,
       );
+    }
 
-      return controller.stream.listen(null);
-    });
+    return controller.stream;
   }
 }
 
