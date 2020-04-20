@@ -1,3 +1,9 @@
+## 1.2.0 - Apr 20, 2020
+
+*   Breaking change: support for `rxdart` 0.24.x.
+*   Reset default singleton instance after disposing it.
+*   Internal implementation refactor.
+
 ## 1.1.1+1 - Jan 29, 2020
 
 *   Update `description` in `pubspec.yaml`.

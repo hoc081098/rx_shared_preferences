@@ -321,7 +321,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
         .where((future) => future != null);
     await Future.wait(futures);
 
-    // if dispose _defaultInstance then set it to null
+    // if dispose default instance, then set it to null
     if (identical(this, _defaultInstance)) {
       _defaultInstance = null;
     }
