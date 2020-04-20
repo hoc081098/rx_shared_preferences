@@ -46,7 +46,7 @@
       <recent name="E:\Admin\Documents\Java\rx_shared_preference\example" />
     </key>
   </component>
-  <component name="RunManager" selected="Flutter Test.tests in map_not_null_test.dart">
+  <component name="RunManager" selected="Flutter Test.tests in rx_shared_preferences_test.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
@@ -76,8 +76,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Flutter Test.tests in map_not_null_test.dart" />
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
+        <item itemvalue="Flutter Test.tests in map_not_null_test.dart" />
         <item itemvalue="Flutter Test.Rx.mapNotNull.not.broadcast" />
         <item itemvalue="Flutter Test.Rx.mapNotNull.broadcast" />
         <item itemvalue="Flutter Test.RxSharedPreferences.getInstance (1)" />
@@ -407,10 +407,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1580293980694" />
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1587371629092">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1587371780527">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1587371629092" />
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1587371780527" />
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580142064003">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -419,22 +419,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1580134926826" />
-    <state width="1323" height="130" key="GridCell.Tab.0.bottom" timestamp="1587371498060">
+    <state width="1323" height="243" key="GridCell.Tab.0.bottom" timestamp="1587371852156">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="130" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1587371498060" />
-    <state width="1323" height="130" key="GridCell.Tab.0.center" timestamp="1587371498060">
+    <state width="1323" height="243" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
+    <state width="1323" height="243" key="GridCell.Tab.0.center" timestamp="1587371852156">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="130" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1587371498060" />
-    <state width="1323" height="130" key="GridCell.Tab.0.left" timestamp="1587371498060">
+    <state width="1323" height="243" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
+    <state width="1323" height="243" key="GridCell.Tab.0.left" timestamp="1587371852156">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="130" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1587371498060" />
-    <state width="1323" height="130" key="GridCell.Tab.0.right" timestamp="1587371498060">
+    <state width="1323" height="243" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
+    <state width="1323" height="243" key="GridCell.Tab.0.right" timestamp="1587371852156">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="130" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1587371498060" />
+    <state width="1323" height="243" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -447,10 +447,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587371631901">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587371783235">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1587371631901" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1587371783235" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1587290605540">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
