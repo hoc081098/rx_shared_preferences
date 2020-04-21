@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rx_shared_preferences/src/map_not_null_stream_transformer.dart';
+import 'package:rx_shared_preferences/src/stream_extensions/map_not_null_stream_transformer.dart';
 
 void main() {
   group('Rx.mapNotNull', () {

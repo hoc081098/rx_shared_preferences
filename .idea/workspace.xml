@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95a07bc-13e4-4d7d-82e1-82c78a48719d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/src/stream_extensions/share_value_stream.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/map_not_null_stream_transformer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/stream_extensions/map_not_null_stream_transformer.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/rx_shared_preferences_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/map_not_null_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/map_not_null_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +24,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="reset_default_instance" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -45,32 +45,36 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Admin\Documents\Java\rx_shared_preference\lib\src\stream_extensions" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Admin\Documents\Java\rx_shared_preference\example" />
     </key>
   </component>
   <component name="RunManager" selected="Flutter Test.tests in rx_shared_preferences_test.dart">
+    <configuration name="map_not_null_stream_transformer.dart" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application" temporary="true" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/lib/src/stream_extensions/map_not_null_stream_transformer.dart" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="share_value_stream.dart" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application" temporary="true" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/lib/src/stream_extensions/share_value_stream.dart" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="RxSharedPreferences.getInstance (1)" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="RxSharedPreferences.getInstance" />
+    <configuration name="Does not emit anything after disposed" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Does not emit anything after disposed" />
       <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="Rx.mapNotNull.broadcast" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull.broadcast" />
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Rx.mapNotNull.not.broadcast" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="Rx.mapNotNull.not.broadcast" />
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
-      <method v="2" />
-    </configuration>
-    <configuration name="tests in map_not_null_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testFile" value="$PROJECT_DIR$/test/map_not_null_test.dart" />
+    <configuration name="Stream will emit value as soon as possible after listen" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Stream will emit value as soon as possible after listen" />
+      <option name="testFile" value="$PROJECT_DIR$/test/streams_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="tests in rx_shared_preferences_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
@@ -80,10 +84,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Flutter Test.tests in rx_shared_preferences_test.dart" />
-        <item itemvalue="Flutter Test.tests in map_not_null_test.dart" />
-        <item itemvalue="Flutter Test.Rx.mapNotNull.not.broadcast" />
-        <item itemvalue="Flutter Test.Rx.mapNotNull.broadcast" />
-        <item itemvalue="Flutter Test.RxSharedPreferences.getInstance (1)" />
+        <item itemvalue="Dart Command Line App.share_value_stream.dart" />
+        <item itemvalue="Dart Command Line App.map_not_null_stream_transformer.dart" />
+        <item itemvalue="Flutter Test.Does not emit anything after disposed" />
+        <item itemvalue="Flutter Test.Stream will emit value as soon as possible after listen" />
       </list>
     </recent_temporary>
   </component>
@@ -369,7 +373,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587371879438</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="publish 1.2.0">
+      <created>1587372636945</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1587372636945</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -388,7 +399,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="update test, default logger" />
     <MESSAGE value="prepare publish v1.1.0" />
     <MESSAGE value="dartfmt" />
     <MESSAGE value="Update docs, dartfmt" />
@@ -413,7 +423,8 @@
     <MESSAGE value="Push" />
     <MESSAGE value="update rxdart + map not null" />
     <MESSAGE value="update shared_preferences_platform_interface" />
-    <option name="LAST_COMMIT_MESSAGE" value="update shared_preferences_platform_interface" />
+    <MESSAGE value="publish 1.2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="publish 1.2.0" />
   </component>
   <component name="WindowStateProjectService">
     <state x="275" y="26" key="#Plugins" timestamp="1587290575283">
@@ -424,50 +435,50 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="363" y="104" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1580293980694" />
-    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1587371878571">
+    <state x="311" y="0" key="CommitChangelistDialog2" timestamp="1587372635638">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1587371878571" />
-    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1580142064003">
+    <state x="311" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1587372635638" />
+    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1587497717606">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1580142064003" />
+    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1587497717606" />
     <state x="463" y="123" key="FileChooserDialogImpl" timestamp="1580134926826">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1580134926826" />
-    <state width="1323" height="243" key="GridCell.Tab.0.bottom" timestamp="1587371852156">
+    <state width="1323" height="246" key="GridCell.Tab.0.bottom" timestamp="1587497712967">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="243" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
-    <state width="1323" height="243" key="GridCell.Tab.0.center" timestamp="1587371852156">
+    <state width="1323" height="246" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1587497712967" />
+    <state width="1323" height="246" key="GridCell.Tab.0.center" timestamp="1587497712967">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="243" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
-    <state width="1323" height="243" key="GridCell.Tab.0.left" timestamp="1587371852156">
+    <state width="1323" height="246" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1587497712967" />
+    <state width="1323" height="246" key="GridCell.Tab.0.left" timestamp="1587497712967">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="243" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
-    <state width="1323" height="243" key="GridCell.Tab.0.right" timestamp="1587371852156">
+    <state width="1323" height="246" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1587497712967" />
+    <state width="1323" height="246" key="GridCell.Tab.0.right" timestamp="1587497712967">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="243" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1587371852156" />
+    <state width="1323" height="246" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1587497712967" />
     <state x="263" y="103" key="IDE.errors.dialog" timestamp="1579850546807">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="263" y="103" key="IDE.errors.dialog/0.0.1366.728@0.0.1366.728" timestamp="1579850546807" />
-    <state x="415" y="79" key="RollbackChangesDialog" timestamp="1580113917627">
+    <state x="415" y="79" key="RollbackChangesDialog" timestamp="1587491640737">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="415" y="79" key="RollbackChangesDialog/0.0.1366.728@0.0.1366.728" timestamp="1580113917627" />
+    <state x="415" y="79" key="RollbackChangesDialog/0.0.1366.728@0.0.1366.728" timestamp="1587491640737" />
     <state x="79" y="20" key="SettingsEditor" timestamp="1580112315654">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="79" y="20" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580112315654" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587371880629">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587372638733">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1587371880629" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1587372638733" />
     <state x="391" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1587290605540">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
