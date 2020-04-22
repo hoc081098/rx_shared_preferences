@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'interface/rx_shared_preferences.dart';
 import 'logger/logger.dart';
-import 'map_not_null_stream_transformer.dart';
 import 'model/key_and_value.dart';
+import 'stream_extensions/map_not_null_stream_transformer.dart';
 
 ///
 /// Default [IRxSharedPreferences] implementation
@@ -86,7 +86,8 @@ class RxSharedPreferences implements IRxSharedPreferences {
           }
         })
         .doOnData((value) => _logger?.doOnDataStream(KeyAndValue(key, value)))
-        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s));
+        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s))
+        .shareValue();
   }
 
   ///

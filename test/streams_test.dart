@@ -202,41 +202,45 @@ void main() {
     test('Does not emit anything after disposed', () async {
       final stream = rxPrefs.getStringListStream('List');
 
-      final later = expectLater(
-        stream,
-        emitsInOrder(
-          [
-            anything,
-            <String>['before', 'dispose'],
-            emitsDone,
-            neverEmits(anything),
-          ],
-        ),
+      const expected = [
+        anything,
+        ['before', 'dispose', '1'],
+        ['before', 'dispose', '2'],
+      ];
+      var index = 0;
+      final result = <bool>[];
+      stream.listen(
+        (data) => result.add(index == 0 ? true : data == expected[index++]),
       );
 
-      await rxPrefs.setStringList(
-        'List',
-        <String>['before', 'dispose'],
-      );
+      for (final v in expected.skip(1)) {
+        await rxPrefs.setStringList(
+          'List',
+          <String>['before', 'dispose'],
+        );
+        await Future.delayed(Duration.zero);
+      }
 
       // delay
       await Future.delayed(const Duration(microseconds: 500));
-
       await rxPrefs.dispose();
+      await Future.delayed(Duration.zero);
 
       // not emit but persisted
       await rxPrefs.setStringList(
         'List',
         <String>['after', 'dispose'],
       );
-
       // working fine
       expect(
         await rxPrefs.getStringList('List'),
         <String>['after', 'dispose'],
       );
 
-      await later;
+      // timeout is 2 seconds
+      await Future.delayed(const Duration(seconds: 2));
+      expect(result.length, expected.length);
+      expect(result.every((element) => element), isTrue);
     });
 
     test('Emit null when clearing', () async {
@@ -346,6 +350,93 @@ void main() {
         isTrue,
       );
       expect(identical(rxPrefs3, rxPrefs1) && rxPrefs3 != null, isFalse);
+    });
+
+    test('Stream is broadcast', () {
+      final stream = rxPrefs.getStringListStream('List');
+      expect(stream.isBroadcast, isTrue);
+      stream.listen(null);
+      stream.listen(null);
+      expect(true, true);
+    });
+
+    test(
+      'Stream replay last data event when subscribing',
+      () async {
+        const values = [
+          ['1', '1', '1'],
+          ['2', '2', '2'],
+          ['3', '3', '3'],
+          ['4', '4', '4'],
+          ['5', '5', '5'],
+          ['6', '6', '6'],
+          ['7', '7', '7'],
+        ];
+        final stream = rxPrefs.getStringListStream('List');
+
+        // emits initial value and all values.
+        final expect1 = <dynamic>[anything, ...values];
+        var index1 = 0;
+        stream.listen(expectAsync1(
+          (event) => expect(event, expect1[index1++]),
+          count: expect1.length,
+        ));
+
+        await rxPrefs.setStringList('List', values[0]);
+        await Future.delayed(Duration.zero);
+
+        // replay values[0] and emits rest.
+        const expect2 = values;
+        var index2 = 0;
+        stream.listen(expectAsync1(
+          (event) => expect(event, expect2[index2++]),
+          count: expect2.length,
+        ));
+
+        for (final v in values.skip(1)) {
+          await rxPrefs.setStringList('List', v);
+          await Future.delayed(Duration.zero);
+        }
+      },
+    );
+
+    test('Stream replay last error event when subscribing', () async {
+      // replay error event
+      final listStringsStream = rxPrefs.getStringListStream('int');
+      listStringsStream.listen(
+        null,
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      listStringsStream.listen(
+        null,
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      // replay error event and continue emits events after subscribing.
+      final intStream = rxPrefs.getIntStream('String');
+      intStream.listen(
+        expectAsync1((event) => expect(event, 42)),
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      intStream.listen(
+        expectAsync1((event) => expect(event, 42)),
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      await rxPrefs.setInt('String', 42);
     });
   });
 }

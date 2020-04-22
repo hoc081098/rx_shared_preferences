@@ -14,14 +14,17 @@
 -   This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## More detail about returned `Stream`
--   `Stream` will emit the **initial value** as its first next event when it is listen to (**emit `null`** when value is not set).
+-   It's broadcast stream (ie. it can be listened to more than once).
+
+-   `Stream` will emit the **value** or **error** as its first event when it is listen to (**emit `null`** when value is not set).
 
 -   It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`).
 
 -   When read value is invalid type (ie. wrong type):
-    -   Will **emit error** if value is present (ie. not `null`).
-    -   **Emit `null`** when value is not set (ie. value is `null`) (this occurred because `null` can be cast to any type).
-    -   Can emit **two consecutive data events that are equal**. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
+    -   If value is present (ie. not `null`), the stream will **emit `TypeError` error** .
+    -   Otherwise, the stream will **emit `null`** (this occurred because `null` can be cast to any type).
+
+-   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
     <img src="https://github.com/hoc081098/hoc081098.github.io/raw/master/rx_shared_preferences/carbon%20(22).png" width="600">
@@ -88,15 +91,10 @@ final rxPrefs = RxSharedPreferences(
 ### 3. Select stream and use
 
 -   And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
--   If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, ...
 
 ```dart
 // Listen
 rxPrefs.getStringListStream('KEY_LIST').listen(print); // [*]
-
-// Broadcast stream
-rxPrefs.getStringListStream('KEY_LIST').share();
-rxPrefs.getStringListStream('KEY_LIST').shareValue();
 
 // Transform stream
 rxPrefs.getIntStream('KEY_INT')
