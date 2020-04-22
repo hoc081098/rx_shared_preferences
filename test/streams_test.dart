@@ -208,8 +208,6 @@ void main() {
           [
             anything,
             <String>['before', 'dispose'],
-            emitsDone,
-            neverEmits(anything),
           ],
         ),
       );
@@ -357,39 +355,82 @@ void main() {
     });
 
     test(
-      'Stream replay last data event or error event when subscribing',
+      'Stream replay last data event when subscribing',
       () async {
-        const value1 = ['A', 'B', 'C'];
-        const value2 = ['D', 'E', 'F'];
-
+        const values = [
+          ['1', '1', '1'],
+          ['2', '2', '2'],
+          ['3', '3', '3'],
+          ['4', '4', '4'],
+          ['5', '5', '5'],
+          ['6', '6', '6'],
+          ['7', '7', '7'],
+        ];
         final stream = rxPrefs.getStringListStream('List');
-        final expect1 = expectLater(
-          stream,
-          emitsInOrder(
-            [
-              anything,
-              value1,
-              value2,
-            ],
-          ),
-        );
-        await rxPrefs.setStringList('List', value1);
 
-        await Future.delayed(const Duration(milliseconds: 400));
+        // emits initial value and all values.
+        final expect1 = <dynamic>[anything, ...values];
+        var index1 = 0;
+        stream.listen(expectAsync1(
+          (event) => expect(event, expect1[index1++]),
+          count: expect1.length,
+        ));
 
-        final expect2 = expectLater(
-          stream,
-          emitsInOrder(
-            [
-              value1,
-              value2,
-            ],
-          ),
-        );
-        await rxPrefs.setStringList('List', value2);
+        await rxPrefs.setStringList('List', values[0]);
+        await Future.delayed(Duration.zero);
 
-        await expect1;
+        // replay values[0] and emits rest.
+        const expect2 = values;
+        var index2 = 0;
+        stream.listen(expectAsync1(
+          (event) => expect(event, expect2[index2++]),
+          count: expect2.length,
+        ));
+
+        for (final v in values.skip(1)) {
+          await rxPrefs.setStringList('List', v);
+          await Future.delayed(Duration.zero);
+        }
       },
     );
+
+    test('Stream replay last error event when subscribing', () async {
+      // replay error event
+      final listStringsStream = rxPrefs.getStringListStream('int');
+      listStringsStream.listen(
+        null,
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      listStringsStream.listen(
+        null,
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      // replay error event and continue emits events after subscribing.
+      final intStream = rxPrefs.getIntStream('String');
+      intStream.listen(
+        expectAsync1((event) => expect(event, 42)),
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      intStream.listen(
+        expectAsync1((event) => expect(event, 42)),
+        onError: expectAsync1(
+          (error) => expect(error, isA<TypeError>()),
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      await rxPrefs.setInt('String', 42);
+    });
   });
 }
