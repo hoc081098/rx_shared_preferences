@@ -347,5 +347,49 @@ void main() {
       );
       expect(identical(rxPrefs3, rxPrefs1) && rxPrefs3 != null, isFalse);
     });
+
+    test('Stream is broadcast', () {
+      final stream = rxPrefs.getStringListStream('List');
+      expect(stream.isBroadcast, isTrue);
+      stream.listen(null);
+      stream.listen(null);
+      expect(true, true);
+    });
+
+    test(
+      'Stream replay last data event or error event when subscribing',
+      () async {
+        const value1 = ['A', 'B', 'C'];
+        const value2 = ['D', 'E', 'F'];
+
+        final stream = rxPrefs.getStringListStream('List');
+        final expect1 = expectLater(
+          stream,
+          emitsInOrder(
+            [
+              anything,
+              value1,
+              value2,
+            ],
+          ),
+        );
+        await rxPrefs.setStringList('List', value1);
+
+        await Future.delayed(const Duration(milliseconds: 400));
+
+        final expect2 = expectLater(
+          stream,
+          emitsInOrder(
+            [
+              value1,
+              value2,
+            ],
+          ),
+        );
+        await rxPrefs.setStringList('List', value2);
+
+        await expect1;
+      },
+    );
   });
 }
