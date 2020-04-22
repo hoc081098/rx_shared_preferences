@@ -23,7 +23,7 @@
 -   When read value is invalid type (ie. wrong type):
     -   If value is present (ie. not `null`), the stream will **emit `TypeError` error** .
     -   Otherwise, the stream will **emit `null`** (this occurred because `null` can be cast to any type).
-    
+
 -   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
