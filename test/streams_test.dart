@@ -202,39 +202,45 @@ void main() {
     test('Does not emit anything after disposed', () async {
       final stream = rxPrefs.getStringListStream('List');
 
-      final later = expectLater(
-        stream,
-        emitsInOrder(
-          [
-            anything,
-            <String>['before', 'dispose'],
-          ],
-        ),
+      const expected = [
+        anything,
+        ['before', 'dispose', '1'],
+        ['before', 'dispose', '2'],
+      ];
+      var index = 0;
+      final result = <bool>[];
+      stream.listen(
+        (data) => result.add(index == 0 ? true : data == expected[index++]),
       );
 
-      await rxPrefs.setStringList(
-        'List',
-        <String>['before', 'dispose'],
-      );
+      for (final v in expected.skip(1)) {
+        await rxPrefs.setStringList(
+          'List',
+          <String>['before', 'dispose'],
+        );
+        await Future.delayed(Duration.zero);
+      }
 
       // delay
       await Future.delayed(const Duration(microseconds: 500));
-
       await rxPrefs.dispose();
+      await Future.delayed(Duration.zero);
 
       // not emit but persisted
       await rxPrefs.setStringList(
         'List',
         <String>['after', 'dispose'],
       );
-
       // working fine
       expect(
         await rxPrefs.getStringList('List'),
         <String>['after', 'dispose'],
       );
 
-      await later;
+      // timeout is 2 seconds
+      await Future.delayed(const Duration(seconds: 2));
+      expect(result.length, expected.length);
+      expect(result.every((element) => element), isTrue);
     });
 
     test('Emit null when clearing', () async {
