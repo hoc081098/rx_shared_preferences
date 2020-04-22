@@ -27,7 +27,7 @@
 -   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
 <p align="center">
-    <img src="https://github.com/hoc081098/hoc081098.github.io/raw/master/rx_shared_preferences/carbon%20(22).png" width="600">
+    <img src="https://github.com/hoc081098/rx_shared_preferences/raw/master/rx_prefs.png" width="700">
 </p>
 
 ## Getting Started
