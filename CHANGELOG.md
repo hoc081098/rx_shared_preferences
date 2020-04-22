@@ -1,6 +1,7 @@
 ## 1.2.0 - Apr 20, 2020
 
 *   Breaking change: support for `rxdart` 0.24.x.
+*   Now, returned stream is broadcast stream.
 *   Reset default singleton instance after disposing it.
 *   Internal implementation refactor.
 
