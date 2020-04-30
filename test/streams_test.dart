@@ -216,7 +216,7 @@ void main() {
       for (final v in expected.skip(1)) {
         await rxPrefs.setStringList(
           'List',
-          <String>['before', 'dispose'],
+          v,
         );
         await Future.delayed(Duration.zero);
       }

@@ -5,15 +5,15 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'interface/rx_shared_preferences.dart';
-import 'logger/logger.dart';
-import 'model/key_and_value.dart';
-import 'stream_extensions/map_not_null_stream_transformer.dart';
+import '../interface/rx_shared_preferences.dart';
+import '../logger/logger.dart';
+import '../model/key_and_value.dart';
+import '../stream_extensions/map_not_null_stream_transformer.dart';
 
 ///
-/// Default [IRxSharedPreferences] implementation
+/// Default [RxSharedPreferences] implementation
 ///
-class RxSharedPreferences implements IRxSharedPreferences {
+class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   /// Trigger subject
   ///
@@ -31,9 +31,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
   final Logger _logger;
 
   ///
-  /// Construct a [RxSharedPreferences] with [sharedPreference] and optional logger
+  /// Construct a [RealRxSharedPreferences] with [sharedPreference] and optional logger
   ///
-  RxSharedPreferences(
+  RealRxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
     this._logger,
   ])  : assert(sharedPreference != null),
@@ -44,13 +44,13 @@ class RxSharedPreferences implements IRxSharedPreferences {
     });
   }
 
-  static RxSharedPreferences _defaultInstance;
+  static RealRxSharedPreferences _defaultInstance;
 
   ///
   /// Return default singleton instance
   ///
-  factory RxSharedPreferences.getInstance() =>
-      _defaultInstance ??= RxSharedPreferences(
+  factory RealRxSharedPreferences.getInstance() =>
+      _defaultInstance ??= RealRxSharedPreferences(
         SharedPreferences.getInstance(),
         const DefaultLogger(),
       );
