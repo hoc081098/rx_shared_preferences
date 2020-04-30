@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+import 'package:rx_shared_preferences/src/stream_extensions/single_subscription.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,6 +70,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   Stream<T> _getStream<T>(String key, Future<T> Function(String key) get) {
     return _keyValuesSubject
+        .toSingleSubscriptionStream()
         .mapNotNull((map) {
           if (map.containsKey(key)) {
             return MapEntry(key, map[key]);
@@ -86,8 +88,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
           }
         })
         .doOnData((value) => _logger?.doOnDataStream(KeyAndValue(key, value)))
-        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s))
-        .shareValue();
+        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s));
   }
 
   ///
@@ -313,8 +314,10 @@ class RealRxSharedPreferences implements RxSharedPreferences {
       _getStream<List<String>>(key, getStringList);
 
   @override
-  Stream<Set<String>> getKeysStream() =>
-      _keyValuesSubject.startWith(null).asyncMap((_) => getKeys());
+  Stream<Set<String>> getKeysStream() => _keyValuesSubject
+      .toSingleSubscriptionStream()
+      .startWith(null)
+      .asyncMap((_) => getKeys());
 
   @override
   Future<void> dispose() async {
