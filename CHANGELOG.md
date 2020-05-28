@@ -1,4 +1,4 @@
-## 1.3.0 - Apr 20, 2020
+## 1.3.0 - May 28, 2020
 
 *   **Breaking change**: returned stream is a ***single-subscription*** stream.
 *   Internal implementation refactor.
