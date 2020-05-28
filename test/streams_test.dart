@@ -8,7 +8,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   group('Test Stream', () {
-    const Map<String, dynamic> kTestValues = <String, dynamic>{
+    const kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
       'flutter.int': 42,
@@ -32,8 +32,7 @@ void main() {
     test(
       'Stream will emit error when read value is not valid type, or emit null when value is not set',
       () async {
-        final Stream<int> intStream =
-            rxPrefs.getIntStream('bool'); // Actual: Stream<bool>
+        final intStream = rxPrefs.getIntStream('bool'); // Actual: Stream<bool>
         await expectLater(
           intStream,
           emitsAnyOf([
@@ -42,7 +41,7 @@ void main() {
           ]),
         );
 
-        final Stream<List<String>> listStringStream =
+        final listStringStream =
             rxPrefs.getStringListStream('String'); // Actual: Stream<String>
         await expectLater(
           listStringStream,
@@ -52,7 +51,7 @@ void main() {
           ]),
         );
 
-        final Stream<int> noSuchStream =
+        final noSuchStream =
             rxPrefs.getIntStream('###String'); // Actual: Stream<String>
 
         await expectLater(
@@ -101,7 +100,7 @@ void main() {
         ///
         /// Bool
         ///
-        final Stream<bool> streamBool = rxPrefs.getBoolStream('bool');
+        final streamBool = rxPrefs.getBoolStream('bool');
         final expectStreamBoolFuture = expectLater(
           streamBool,
           emitsInOrder([anything, false, true, false, true, false]),
@@ -115,7 +114,7 @@ void main() {
         ///
         /// Double
         ///
-        final Stream<double> streamDouble = rxPrefs.getDoubleStream('double');
+        final streamDouble = rxPrefs.getDoubleStream('double');
         final expectStreamDoubleFuture = expectLater(
           streamDouble,
           emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
@@ -131,7 +130,7 @@ void main() {
         ///
         /// Int
         ///
-        final Stream<int> streamInt = rxPrefs.getIntStream('int');
+        final streamInt = rxPrefs.getIntStream('int');
         final expectStreamIntFuture = expectLater(
           streamInt,
           emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
@@ -148,7 +147,7 @@ void main() {
         ///
         /// String
         ///
-        final Stream<String> streamString = rxPrefs.getStringStream('String');
+        final streamString = rxPrefs.getStringStream('String');
         final expectStreamStringFuture = expectLater(
           streamString,
           emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
@@ -163,8 +162,7 @@ void main() {
         ///
         /// List<String>
         ///
-        final Stream<List<String>> streamListString =
-            rxPrefs.getStringListStream('List');
+        final streamListString = rxPrefs.getStringListStream('List');
         final expectStreamListStringFuture = expectLater(
           streamListString,
           emitsInOrder([
@@ -247,7 +245,7 @@ void main() {
     });
 
     test('Emit null when clearing', () async {
-      final Stream<List<String>> stream = rxPrefs.getStringListStream('List');
+      final stream = rxPrefs.getStringListStream('List');
 
       final later = expectLater(
         stream,

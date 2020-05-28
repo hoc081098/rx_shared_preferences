@@ -41,7 +41,7 @@ class MapNotNullStreamTransformer<T, R> extends StreamTransformerBase<T, R> {
       );
     }
 
-    onCancel() => subscription.cancel();
+    Future<void> onCancel() => subscription.cancel();
 
     if (stream.isBroadcast) {
       controller = StreamController<R>.broadcast(

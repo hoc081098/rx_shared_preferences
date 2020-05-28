@@ -226,9 +226,9 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
   @override
   Future<bool> clear() async {
-    final SharedPreferences prefs = await _sharedPrefsFuture;
-    final Set<String> keys = prefs.getKeys();
-    final bool result = await prefs.clear();
+    final prefs = await _sharedPrefsFuture;
+    final keys = prefs.getKeys();
+    final result = await prefs.clear();
 
     // Log: all values are set to null
     for (final key in keys) {
@@ -237,11 +237,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
     // Trigger key changes: all values are set to null
     if (result ?? false) {
-      final map = Map<String, dynamic>.fromIterable(
-        keys,
-        key: (k) => k,
-        value: (_) => null,
-      );
+      final map = {for (final k in keys) k: null};
       _sendKeyValueChanged(map);
     }
 
@@ -250,7 +246,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
   @override
   Future<void> reload() async {
-    final SharedPreferences prefs = await _sharedPrefsFuture;
+    final prefs = await _sharedPrefsFuture;
     await prefs.reload();
 
     // Log: read value from prefs
@@ -259,11 +255,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
     }
 
     // Trigger key changes: read value from prefs
-    final map = Map<String, dynamic>.fromIterable(
-      prefs.getKeys(),
-      key: (k) => k,
-      value: (k) => prefs.get(k),
-    );
+    final map = {for (final k in prefs.getKeys()) k: prefs.get(k)};
     _sendKeyValueChanged(map);
   }
 
