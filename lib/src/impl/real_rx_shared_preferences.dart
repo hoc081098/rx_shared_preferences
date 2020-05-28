@@ -2,18 +2,19 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+import 'package:rx_shared_preferences/src/stream_extensions/single_subscription.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'interface/rx_shared_preferences.dart';
-import 'logger/logger.dart';
-import 'model/key_and_value.dart';
-import 'stream_extensions/map_not_null_stream_transformer.dart';
+import '../interface/rx_shared_preferences.dart';
+import '../logger/logger.dart';
+import '../model/key_and_value.dart';
+import '../stream_extensions/map_not_null_stream_transformer.dart';
 
 ///
-/// Default [IRxSharedPreferences] implementation
+/// Default [RxSharedPreferences] implementation
 ///
-class RxSharedPreferences implements IRxSharedPreferences {
+class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   /// Trigger subject
   ///
@@ -31,9 +32,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
   final Logger _logger;
 
   ///
-  /// Construct a [RxSharedPreferences] with [sharedPreference] and optional logger
+  /// Construct a [RealRxSharedPreferences] with [sharedPreference] and optional logger
   ///
-  RxSharedPreferences(
+  RealRxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
     this._logger,
   ])  : assert(sharedPreference != null),
@@ -44,13 +45,13 @@ class RxSharedPreferences implements IRxSharedPreferences {
     });
   }
 
-  static RxSharedPreferences _defaultInstance;
+  static RealRxSharedPreferences _defaultInstance;
 
   ///
   /// Return default singleton instance
   ///
-  factory RxSharedPreferences.getInstance() =>
-      _defaultInstance ??= RxSharedPreferences(
+  factory RealRxSharedPreferences.getInstance() =>
+      _defaultInstance ??= RealRxSharedPreferences(
         SharedPreferences.getInstance(),
         const DefaultLogger(),
       );
@@ -69,6 +70,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
   ///
   Stream<T> _getStream<T>(String key, Future<T> Function(String key) get) {
     return _keyValuesSubject
+        .toSingleSubscriptionStream()
         .mapNotNull((map) {
           if (map.containsKey(key)) {
             return MapEntry(key, map[key]);
@@ -86,8 +88,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
           }
         })
         .doOnData((value) => _logger?.doOnDataStream(KeyAndValue(key, value)))
-        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s))
-        .shareValue();
+        .doOnError((e, StackTrace s) => _logger?.doOnErrorStream(e, s));
   }
 
   ///
@@ -225,9 +226,9 @@ class RxSharedPreferences implements IRxSharedPreferences {
 
   @override
   Future<bool> clear() async {
-    final SharedPreferences prefs = await _sharedPrefsFuture;
-    final Set<String> keys = prefs.getKeys();
-    final bool result = await prefs.clear();
+    final prefs = await _sharedPrefsFuture;
+    final keys = prefs.getKeys();
+    final result = await prefs.clear();
 
     // Log: all values are set to null
     for (final key in keys) {
@@ -236,11 +237,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
 
     // Trigger key changes: all values are set to null
     if (result ?? false) {
-      final map = Map<String, dynamic>.fromIterable(
-        keys,
-        key: (k) => k,
-        value: (_) => null,
-      );
+      final map = {for (final k in keys) k: null};
       _sendKeyValueChanged(map);
     }
 
@@ -249,7 +246,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
 
   @override
   Future<void> reload() async {
-    final SharedPreferences prefs = await _sharedPrefsFuture;
+    final prefs = await _sharedPrefsFuture;
     await prefs.reload();
 
     // Log: read value from prefs
@@ -258,11 +255,7 @@ class RxSharedPreferences implements IRxSharedPreferences {
     }
 
     // Trigger key changes: read value from prefs
-    final map = Map<String, dynamic>.fromIterable(
-      prefs.getKeys(),
-      key: (k) => k,
-      value: (k) => prefs.get(k),
-    );
+    final map = {for (final k in prefs.getKeys()) k: prefs.get(k)};
     _sendKeyValueChanged(map);
   }
 
@@ -313,8 +306,10 @@ class RxSharedPreferences implements IRxSharedPreferences {
       _getStream<List<String>>(key, getStringList);
 
   @override
-  Stream<Set<String>> getKeysStream() =>
-      _keyValuesSubject.startWith(null).asyncMap((_) => getKeys());
+  Stream<Set<String>> getKeysStream() => _keyValuesSubject
+      .toSingleSubscriptionStream()
+      .startWith(null)
+      .asyncMap((_) => getKeys());
 
   @override
   Future<void> dispose() async {

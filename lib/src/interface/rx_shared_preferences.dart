@@ -1,9 +1,29 @@
+import 'dart:async';
+
+import 'package:rx_shared_preferences/src/impl/real_rx_shared_preferences.dart';
 import 'package:rx_shared_preferences/src/interface/shared_preferences_like.dart';
+import 'package:rx_shared_preferences/src/logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ///
 /// Get [Stream]s by key from persistent storage.
 ///
-abstract class IRxSharedPreferences implements ISharedPreferencesLike {
+abstract class RxSharedPreferences implements SharedPreferencesLike {
+  ///
+  /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional [Logger]
+  ///
+  factory RxSharedPreferences(
+    FutureOr<SharedPreferences> sharedPreference, [
+    Logger logger,
+  ]) =>
+      RealRxSharedPreferences(sharedPreference, logger);
+
+  ///
+  /// Return default singleton instance
+  ///
+  factory RxSharedPreferences.getInstance() =>
+      RealRxSharedPreferences.getInstance();
+
   ///
   /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with key was changed.
@@ -53,7 +73,7 @@ abstract class IRxSharedPreferences implements ISharedPreferencesLike {
 
   ///
   /// Clean up resources - Closes the streams.
-  /// This method should be called when a [IRxSharedPreferences] is no longer needed.
+  /// This method should be called when a [RxSharedPreferences] is no longer needed.
   /// Once `dispose` is called, all streams will `not` emit changed value when value changed.
   ///
   Future<void> dispose();

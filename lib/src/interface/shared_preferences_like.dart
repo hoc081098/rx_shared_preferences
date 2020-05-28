@@ -2,7 +2,7 @@
 /// a persistent store for simple data.
 ///
 /// Data is persisted to disk asynchronously.
-abstract class ISharedPreferencesLike {
+abstract class SharedPreferencesLike {
   ///
   /// Returns a future complete with value true if the persistent storage
   /// contains the given [key].

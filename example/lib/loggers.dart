@@ -2,13 +2,13 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 //
 // Using logger:
-// 1. extends DefaultLogger
+// 1. extends LoggerAdapter
 // 2. implements Logger
 //
 
 /// Empty logger
-class EmptyLogger extends DefaultLogger {
-  /// Override method you want
+class EmptyLogger extends LoggerAdapter {
+  /// Override methods you want
 }
 
 /// Implements all methods

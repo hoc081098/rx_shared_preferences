@@ -109,7 +109,7 @@ void main() {
     });
 
     test('removing', () async {
-      const String key = 'testKey';
+      const key = 'testKey';
       await rxPrefs.setString(key, null);
       await rxPrefs.setBool(key, null);
       await rxPrefs.setInt(key, null);
@@ -129,7 +129,7 @@ void main() {
     });
 
     test('containsKey', () async {
-      const String key = 'testKey';
+      const key = 'testKey';
 
       expect(false, await rxPrefs.containsKey(key));
 
@@ -159,20 +159,20 @@ void main() {
     });
 
     test('writing copy of strings list', () async {
-      final List<String> myList = <String>[];
-      await rxPrefs.setStringList("myList", myList);
-      myList.add("foobar");
+      final myList = <String>[];
+      await rxPrefs.setStringList('myList', myList);
+      myList.add('foobar');
 
-      final List<String> cachedList = await rxPrefs.getStringList('myList');
+      final cachedList = await rxPrefs.getStringList('myList');
       expect(cachedList, <String>[]);
 
-      cachedList.add("foobar2");
+      cachedList.add('foobar2');
 
       expect(await rxPrefs.getStringList('myList'), <String>[]);
     });
 
     test('getKeys', () async {
-      const String _prefix = 'flutter.';
+      const _prefix = 'flutter.';
       final keys = await rxPrefs.getKeys();
       final expected = Set.of(
         kTestValues.keys.map(

@@ -33,7 +33,7 @@ void main() {
           logs,
           <String>[
             ' ↓ Key changes',
-            "    → { 'key1': value1 }" + '\n' + "    → { 'key2': 2 }",
+            "    → { 'key1': value1 }" '\n' "    → { 'key2': 2 }",
           ],
         );
       }),
@@ -61,7 +61,7 @@ void main() {
 
         expect(
           logs,
-          [" → Stream emits error: $exception, $stackTrace"],
+          [' → Stream emits error: $exception, $stackTrace'],
         );
       }),
     );
