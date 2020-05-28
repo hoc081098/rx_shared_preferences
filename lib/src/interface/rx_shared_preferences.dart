@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:rx_shared_preferences/src/impl/real_rx_shared_preferences_impl.dart';
+import 'package:rx_shared_preferences/src/impl/real_rx_shared_preferences.dart';
 import 'package:rx_shared_preferences/src/interface/shared_preferences_like.dart';
 import 'package:rx_shared_preferences/src/logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
