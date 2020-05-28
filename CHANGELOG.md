@@ -1,3 +1,7 @@
+## 1.3.1 - May 29, 2020
+
+*   Update docs.
+
 ## 1.3.0 - May 28, 2020
 
 *   **Breaking change**: returned stream is a ***single-subscription*** stream.
