@@ -7,6 +7,8 @@ import 'logger/logger_adapter_test.dart' as logger_adapter_test;
 import 'map_not_null_test.dart' as map_not_null_test;
 import 'model/key_and_value_test.dart' as key_and_value_test;
 import 'streams_test.dart' as streams_test;
+import 'to_single_subscription_stream_test.dart'
+    as to_single_subscription_stream_test;
 
 void main() {
   test('RxSharedPreferences.asserts', () {
@@ -27,6 +29,7 @@ void main() {
   like_shared_prefs_test.main();
   streams_test.main();
 
-  // map not null
+  // map not null & to single subscription
   map_not_null_test.main();
+  to_single_subscription_stream_test.main();
 }
