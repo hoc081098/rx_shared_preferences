@@ -14,7 +14,7 @@
 -   This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## More detail about returned `Stream`
--   It's broadcast stream (ie. it can be listened to more than once).
+-   It's a single-subscription stream (ie. it can only be listened once).
 
 -   `Stream` will emit the **value** or **error** as its first event when it is listen to (**emit `null`** when value is not set).
 
@@ -91,10 +91,16 @@ final rxPrefs = RxSharedPreferences(
 ### 3. Select stream and use
 
 -   And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
+-   If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
 
 ```dart
 // Listen
 rxPrefs.getStringListStream('KEY_LIST').listen(print); // [*]
+
+// Broadcast stream
+rxPrefs.getStringListStream('KEY_LIST').share();
+rxPrefs.getStringListStream('KEY_LIST').shareValue();
+rxPrefs.getStringListStream('KEY_LIST').asBroadcastStream();
 
 // Transform stream
 rxPrefs.getIntStream('KEY_INT')
