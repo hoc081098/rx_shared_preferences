@@ -14,12 +14,6 @@ class MapNotNullStreamTransformer<T, R> extends StreamTransformerBase<T, R> {
     StreamController<R> controller;
     StreamSubscription<T> subscription;
 
-    void onDone() {
-      if (!controller.isClosed) {
-        controller.close();
-      }
-    }
-
     void onListen() {
       subscription = stream.listen(
         (data) {
@@ -37,7 +31,7 @@ class MapNotNullStreamTransformer<T, R> extends StreamTransformerBase<T, R> {
           }
         },
         onError: controller.addError,
-        onDone: onDone,
+        onDone: controller.close,
       );
     }
 
@@ -53,7 +47,7 @@ class MapNotNullStreamTransformer<T, R> extends StreamTransformerBase<T, R> {
       controller = StreamController<R>(
         sync: true,
         onListen: onListen,
-        onPause: ([Future resumeSignal]) => subscription.pause(resumeSignal),
+        onPause: () => subscription.pause(),
         onResume: () => subscription.resume(),
         onCancel: onCancel,
       );
