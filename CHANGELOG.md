@@ -1,9 +1,13 @@
+## 1.3.3 - Oct 10, 2020
+
+*   Fix: missing export `RxSharedPreferencesConfigs`.
+
 ## 1.3.2 - Oct 10, 2020
 
 *   Add extension: `RxSharedPreferences get rx` for `SharedPreferences`.
     This allows writing concise code like this: `sharedPreferences.rx.getStringStream('key')`.
 
-*   Allows changing logger for default singleton instance or extension: `RxSharedPreferencesConfig.logger = ...`;
+*   Allows changing logger for default singleton instance or extension: `RxSharedPreferencesConfigs.logger = ...`;
 
 *   Internal implementation refactor.
 

@@ -1,4 +1,4 @@
-import 'package:rx_shared_preferences/src/model/key_and_value.dart';
+import '../model/key_and_value.dart';
 
 ///
 /// Log messages about operations (such as read, write, value change) and stream events.
