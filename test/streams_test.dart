@@ -359,5 +359,17 @@ void main() {
       stream.listen(null);
       expect(() => stream.listen(null), throwsStateError);
     });
+
+    test('rx', () async {
+      expect(
+        SharedPreferences.getInstance().rx.getStringStream('key'),
+        emits(anything),
+      );
+
+      expect(
+        (await SharedPreferences.getInstance()).rx.getStringStream('key'),
+        emits(anything),
+      );
+    });
   });
 }
