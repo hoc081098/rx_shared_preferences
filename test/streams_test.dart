@@ -359,5 +359,19 @@ void main() {
       stream.listen(null);
       expect(() => stream.listen(null), throwsStateError);
     });
+
+    test('rx', () async {
+      final prefs = await SharedPreferences.getInstance();
+
+      expect(prefs.rx.getStringStream('key'), emits(anything));
+      expect(prefs.rx.getStringListStream('flutter.List'), emits(anything));
+      expect(prefs.rx.getDoubleStream('flutter.double'), emits(anything));
+
+      final old = prefs.rx;
+      expect(identical(old, prefs.rx), true);
+
+      await old.dispose();
+      expect(identical(old, prefs.rx), false);
+    });
   });
 }

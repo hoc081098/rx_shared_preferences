@@ -37,7 +37,7 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
   ...
-  rx_shared_preferences: ^1.3.0
+  rx_shared_preferences: ^1.3.2
 ```
 
 ## Usage
@@ -57,6 +57,9 @@ Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
 final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance()); // await is optional
 final rxPrefs = RxSharedPreferences.getInstance(); // default singleton instance
+
+// via extension.
+final rxPrefs = (await SharedPreferences.getInstance()).rx;
 ```
 
 ### 2. Can add a logger
