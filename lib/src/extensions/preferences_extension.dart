@@ -1,6 +1,7 @@
-import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:rx_shared_preferences/src/config/global_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../rx_shared_preferences.dart';
+import '../config/global_config.dart';
 
 final _instances = <SharedPreferences, RxSharedPreferences>{};
 
@@ -17,7 +18,7 @@ extension SharedPreferencesRxExtension on SharedPreferences {
 
     return instances[this] = RxSharedPreferences(
       this,
-      RxSharedPreferencesConfig.logger,
+      RxSharedPreferencesConfigs.logger,
       () => instances.remove(this),
     );
   }

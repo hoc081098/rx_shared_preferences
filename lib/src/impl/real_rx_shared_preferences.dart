@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:rx_shared_preferences/src/config/global_config.dart';
-import 'package:rx_shared_preferences/src/stream_extensions/single_subscription.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../rx_shared_preferences.dart';
+import '../config/global_config.dart';
 import '../interface/rx_shared_preferences.dart';
 import '../logger/logger.dart';
 import '../model/key_and_value.dart';
 import '../stream_extensions/map_not_null_stream_transformer.dart';
+import '../stream_extensions/single_subscription.dart';
 
 ///
 /// Default [RxSharedPreferences] implementation
@@ -58,7 +58,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   factory RealRxSharedPreferences.getInstance() =>
       _defaultInstance ??= RealRxSharedPreferences(
         SharedPreferences.getInstance(),
-        RxSharedPreferencesConfig.logger,
+        RxSharedPreferencesConfigs.logger,
         () => _defaultInstance = null,
       );
 

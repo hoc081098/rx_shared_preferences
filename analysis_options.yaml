@@ -2,10 +2,11 @@ include: package:pedantic/analysis_options.1.9.0.yaml
 analyzer:
   exclude:
     # Ignore generated files
-    - '**/*.g.dart'
-    - 'lib/src/generated/*.dart'
-    - 'lib/generated/*.dart'
+    - "**/*.g.dart"
+    - "lib/src/generated/*.dart"
+    - "lib/generated/*.dart"
 linter:
   rules:
     - public_member_api_docs
     - prefer_final_locals
+    - prefer_relative_imports
