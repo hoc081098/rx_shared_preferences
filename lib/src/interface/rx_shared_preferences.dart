@@ -15,8 +15,13 @@ abstract class RxSharedPreferences implements SharedPreferencesLike {
   factory RxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
     Logger logger,
+    void Function() onDispose,
   ]) =>
-      RealRxSharedPreferences(sharedPreference, logger);
+      RealRxSharedPreferences(
+        sharedPreference,
+        logger,
+        onDispose,
+      );
 
   ///
   /// Return default singleton instance

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+import 'package:rx_shared_preferences/src/config/global_config.dart';
 import 'package:rx_shared_preferences/src/stream_extensions/single_subscription.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,12 +32,16 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   final Logger _logger;
 
+  /// On dispose
+  void Function() _onDispose;
+
   ///
   /// Construct a [RealRxSharedPreferences] with [sharedPreference] and optional logger
   ///
   RealRxSharedPreferences(
     FutureOr<SharedPreferences> sharedPreference, [
     this._logger,
+    this._onDispose,
   ])  : assert(sharedPreference != null),
         _sharedPrefsFuture = Future.value(sharedPreference) {
     _subscription = _keyValuesSubject.listen((map) {
@@ -53,7 +58,8 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   factory RealRxSharedPreferences.getInstance() =>
       _defaultInstance ??= RealRxSharedPreferences(
         SharedPreferences.getInstance(),
-        const DefaultLogger(),
+        RxSharedPreferencesConfig.logger,
+        () => _defaultInstance = null,
       );
 
   //
@@ -317,9 +323,6 @@ class RealRxSharedPreferences implements RxSharedPreferences {
         .where((future) => future != null);
     await Future.wait(futures);
 
-    // if dispose default instance, then set it to null
-    if (identical(this, _defaultInstance)) {
-      _defaultInstance = null;
-    }
+    _onDispose?.call();
   }
 }

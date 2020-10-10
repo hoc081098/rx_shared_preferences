@@ -361,15 +361,17 @@ void main() {
     });
 
     test('rx', () async {
-      expect(
-        SharedPreferences.getInstance().rx.getStringStream('key'),
-        emits(anything),
-      );
+      final prefs = await SharedPreferences.getInstance();
 
-      expect(
-        (await SharedPreferences.getInstance()).rx.getStringStream('key'),
-        emits(anything),
-      );
+      expect(prefs.rx.getStringStream('key'), emits(anything));
+      expect(prefs.rx.getStringListStream('flutter.List'), emits(anything));
+      expect(prefs.rx.getDoubleStream('flutter.double'), emits(anything));
+
+      final old = prefs.rx;
+      expect(identical(old, prefs.rx), true);
+
+      await old.dispose();
+      expect(identical(old, prefs.rx), false);
     });
   });
 }
