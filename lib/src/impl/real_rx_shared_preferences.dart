@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../rx_shared_preferences.dart';
-import '../config/global_config.dart';
 import '../interface/rx_shared_preferences.dart';
 import '../logger/logger.dart';
 import '../model/key_and_value.dart';
@@ -25,7 +24,21 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   /// Future of [SharedPreferences]
   ///
-  final Future<SharedPreferences> _sharedPrefsFuture;
+  SharedPreferencesLike _prefsCached;
+
+  Future<SharedPreferencesLike> get _prefs {
+    if (_prefsCached != null) {
+      return SynchronousFuture(_prefsCached);
+    }
+    if (_prefsOrFuture is SharedPreferencesLike) {
+      return SynchronousFuture(
+          _prefsCached = _prefsOrFuture as SharedPreferencesLike);
+    }
+    return (_prefsOrFuture as Future<SharedPreferencesLike>)
+        .then((value) => _prefsCached = value);
+  }
+
+  final FutureOr<SharedPreferencesLike> _prefsOrFuture;
 
   ///
   /// Logger
@@ -33,34 +46,22 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   final Logger _logger;
 
   /// On dispose
-  void Function() _onDispose;
+  final void Function() _onDispose;
 
-  ///
-  /// Construct a [RealRxSharedPreferences] with [sharedPreference] and optional logger
-  ///
+  /// TODO
   RealRxSharedPreferences(
-    FutureOr<SharedPreferences> sharedPreference, [
+    this._prefsOrFuture, [
     this._logger,
     this._onDispose,
-  ])  : assert(sharedPreference != null),
-        _sharedPrefsFuture = Future.value(sharedPreference) {
-    _subscription = _keyValuesSubject.listen((map) {
-      final pairs = map.entries.map((entry) => KeyAndValue.fromMapEntry(entry));
-      _logger?.keysChanged(UnmodifiableListView(pairs));
-    });
+  ]) : assert(_prefsOrFuture != null) {
+    if (_logger != null) {
+      _subscription = _keyValuesSubject.listen((map) {
+        final pairs =
+            map.entries.map((entry) => KeyAndValue.fromMapEntry(entry));
+        _logger.keysChanged(UnmodifiableListView(pairs));
+      });
+    }
   }
-
-  static RealRxSharedPreferences _defaultInstance;
-
-  ///
-  /// Return default singleton instance
-  ///
-  factory RealRxSharedPreferences.getInstance() =>
-      _defaultInstance ??= RealRxSharedPreferences(
-        SharedPreferences.getInstance(),
-        RxSharedPreferencesConfigs.logger,
-        () => _defaultInstance = null,
-      );
 
   //
   // Internal
@@ -100,31 +101,31 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   ///
   /// Read value from SharedPreferences by [key]
   ///
-  static T _readFromSharedPreferences<T>(
-    SharedPreferences sharedPrefs,
+  static Future<T> _readFromSharedPreferences<T>(
+    SharedPreferencesLike sharedPrefs,
     String key,
   ) {
     if (T == dynamic) {
-      return sharedPrefs.get(key) as T;
+      return sharedPrefs.get(key).cast<T>();
     }
     if (T == double) {
-      return sharedPrefs.getDouble(key) as T;
+      return sharedPrefs.getDouble(key).cast<T>();
     }
     if (T == int) {
-      return sharedPrefs.getInt(key) as T;
+      return sharedPrefs.getInt(key).cast<T>();
     }
     if (T == bool) {
-      return sharedPrefs.getBool(key) as T;
+      return sharedPrefs.getBool(key).cast<T>();
     }
     if (T == String) {
-      return sharedPrefs.getString(key) as T;
+      return sharedPrefs.getString(key).cast<T>();
     }
     if (T == _typeOf<List<String>>()) {
-      return sharedPrefs.getStringList(key) as T;
+      return sharedPrefs.getStringList(key).cast<T>();
     }
     // Get all keys
     if (T == _typeOf<Set<String>>() && key == null) {
-      return sharedPrefs.getKeys() as T;
+      return sharedPrefs.getKeys().cast<T>();
     }
     return null;
   }
@@ -133,8 +134,8 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   /// Get value from the persistent storage by [key]
   ///
   Future<T> _get<T>([String key]) async {
-    final prefs = await _sharedPrefsFuture;
-    final value = _readFromSharedPreferences<T>(prefs, key);
+    final prefs = await _prefs;
+    final value = await _readFromSharedPreferences<T>(prefs, key);
     _logger?.readValue(T, key, value);
 
     return value;
@@ -144,7 +145,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   /// Write [value] to SharedPreferences associated with [key]
   ///
   static Future<bool> _writeToSharedPreferences<T>(
-    SharedPreferences sharedPrefs,
+    SharedPreferencesLike sharedPrefs,
     String key,
     T value,
   ) {
@@ -176,7 +177,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
   /// Set [value] associated with [key]
   ///
   Future<bool> _setValue<T>(String key, T value) async {
-    final prefs = await _sharedPrefsFuture;
+    final prefs = await _prefs;
     final result = await _writeToSharedPreferences<T>(prefs, key, value);
     _logger?.writeValue(T, key, value, result);
 
@@ -207,7 +208,7 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
   @override
   Future<bool> containsKey(String key) =>
-      _sharedPrefsFuture.then((prefs) => prefs.containsKey(key));
+      _prefs.then((value) => value.containsKey(key));
 
   @override
   Future<dynamic> get(String key) => _get<dynamic>(key);
@@ -232,8 +233,8 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
   @override
   Future<bool> clear() async {
-    final prefs = await _sharedPrefsFuture;
-    final keys = prefs.getKeys();
+    final prefs = await _prefs;
+    final keys = await prefs.getKeys();
     final result = await prefs.clear();
 
     // Log: all values are set to null
@@ -252,16 +253,18 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
   @override
   Future<void> reload() async {
-    final prefs = await _sharedPrefsFuture;
+    final prefs = await _prefs;
     await prefs.reload();
 
+    final keys = await prefs.getKeys();
+
     // Log: read value from prefs
-    for (final key in prefs.getKeys()) {
+    for (final key in keys) {
       _logger?.readValue(dynamic, key, prefs.get(key));
     }
 
     // Trigger key changes: read value from prefs
-    final map = {for (final k in prefs.getKeys()) k: prefs.get(k)};
+    final map = {for (final k in keys) k: await prefs.get(k)};
     _sendKeyValueChanged(map);
   }
 
@@ -325,4 +328,10 @@ class RealRxSharedPreferences implements RxSharedPreferences {
 
     _onDispose?.call();
   }
+}
+
+/// TODO
+extension CastFuture<T> on Future<T> {
+  /// TODO
+  Future<R> cast<R>() => then((value) => value as R);
 }

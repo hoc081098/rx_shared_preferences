@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../rx_shared_preferences.dart';
+import '../adapters/shared_preferences_adapter.dart';
 import '../impl/real_rx_shared_preferences.dart';
 import '../logger/logger.dart';
 import 'shared_preferences_like.dart';
@@ -10,25 +12,43 @@ import 'shared_preferences_like.dart';
 /// Get [Stream]s by key from persistent storage.
 ///
 abstract class RxSharedPreferences implements SharedPreferencesLike {
-  ///
-  /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional [Logger]
-  ///
-  factory RxSharedPreferences(
-    FutureOr<SharedPreferences> sharedPreference, [
-    Logger logger,
-    void Function() onDispose,
-  ]) =>
-      RealRxSharedPreferences(
-        sharedPreference,
-        logger,
-        onDispose,
-      );
+  static RealRxSharedPreferences _defaultInstance;
 
   ///
   /// Return default singleton instance
   ///
   factory RxSharedPreferences.getInstance() =>
-      RealRxSharedPreferences.getInstance();
+      _defaultInstance ??= RxSharedPreferences(
+        SharedPreferences.getInstance(),
+        RxSharedPreferencesConfigs.logger,
+        () => _defaultInstance = null,
+      );
+
+  ///
+  /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional [Logger]
+  ///
+  factory RxSharedPreferences(
+    FutureOr<SharedPreferences> prefsOrFuture, [
+    Logger logger,
+    void Function() onDispose,
+  ]) =>
+      RxSharedPreferences.from(
+        SharedPreferencesAdapter.from(prefsOrFuture),
+        logger,
+        onDispose,
+      );
+
+  /// TODO
+  factory RxSharedPreferences.from(
+    FutureOr<SharedPreferencesLike> sharedPreferencesLikeOrFuture, [
+    Logger logger,
+    void Function() onDispose,
+  ]) =>
+      RealRxSharedPreferences(
+        sharedPreferencesLikeOrFuture,
+        logger,
+        onDispose,
+      );
 
   ///
   /// Return [Stream] that will emit value read from persistent storage.
