@@ -5,14 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interface/shared_preferences_like.dart';
 
-/// TODO
+/// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
 class SharedPreferencesAdapter implements SharedPreferencesLike {
   final SharedPreferences _prefs;
 
-  /// TODO
   SharedPreferencesAdapter._(this._prefs);
 
-  Future<T> _wrap<T>(T value) => SynchronousFuture(value);
+  static Future<T> _wrap<T>(T value) => SynchronousFuture(value);
 
   @override
   Future<bool> clear() => _prefs.clear();
@@ -66,15 +65,14 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   Future<bool> setStringList(String key, List<String> value) =>
       _prefs.setStringList(key, value);
 
-  /// TODO
-  static FutureOr<SharedPreferencesLike> from(
-      FutureOr<SharedPreferences> prefsOrFuture) {
+  /// Create [SharedPreferencesAdapter] from [SharedPreferences].
+  static FutureOr<SharedPreferencesAdapter> from(
+    FutureOr<SharedPreferences> prefsOrFuture,
+  ) {
     assert(prefsOrFuture != null);
 
-    if (prefsOrFuture is Future<SharedPreferences>) {
-      return prefsOrFuture.then((p) => SharedPreferencesAdapter._(p));
-    }
-
-    return SharedPreferencesAdapter._(prefsOrFuture as SharedPreferences);
+    return prefsOrFuture is Future<SharedPreferences>
+        ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
+        : SharedPreferencesAdapter._(prefsOrFuture as SharedPreferences);
   }
 }

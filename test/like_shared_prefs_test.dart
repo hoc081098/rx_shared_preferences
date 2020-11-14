@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,9 +8,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 import 'fake_shared_prefs_store.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  group('$RxSharedPreferences is like to $SharedPreferences', () {
+  group('RxSharedPreferences is like to SharedPreferences', () {
     const kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
