@@ -1,10 +1,9 @@
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
-//
 // Using logger:
 // 1. extends LoggerAdapter
 // 2. implements Logger
-//
+// 3. DefaultLogger
 
 /// Empty logger
 class EmptyLogger extends LoggerAdapter {
@@ -14,20 +13,20 @@ class EmptyLogger extends LoggerAdapter {
 /// Implements all methods
 class CustomLogger implements Logger {
   @override
-  void doOnDataStream(KeyAndValue pair) => print(pair);
+  void doOnDataStream(KeyAndValue<dynamic> pair) {}
 
   @override
-  void doOnErrorStream(error, StackTrace stackTrace) => print(error);
+  void doOnErrorStream(dynamic error, StackTrace stackTrace) =>
+      print('Error: $error');
 
   @override
-  void keysChanged(Iterable<KeyAndValue> pairs) => print(pairs);
+  void keysChanged(Iterable<KeyAndValue<dynamic>> pairs) {}
 
   @override
-  void readValue(Type type, String key, dynamic value) => print(value);
+  void readValue(Type type, String key, dynamic value) {}
 
   @override
-  void writeValue(Type type, String key, dynamic value, bool writeResult) =>
-      print(writeResult);
+  void writeValue(Type type, String key, dynamic value, bool writeResult) {}
 }
 
 /// Or using default logger

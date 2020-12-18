@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:example/dialog.dart';
 import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 
 const key = 'com.hoc.list';
@@ -22,12 +23,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (subscription == null) {
-      final listConnectable$ =
-          RxPrefsProvider.of(context).getStringListStream(key).publishValue();
-      list$ = listConnectable$;
-      subscription = listConnectable$.connect();
-    }
+    subscription ??= (list$ =
+            context.rxPrefs.getStringListStream(key).shareValue())
+        .listen(null);
   }
 
   @override
@@ -58,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text(item),
                 trailing: IconButton(
                   icon: Icon(Icons.remove_circle),
-                  onPressed: () => showDialogRemove(item, context),
+                  onPressed: () => context.showDialogRemove(item),
                 ),
               );
             },
@@ -68,13 +66,26 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-            onPressed: () => showDialogAdd(context),
+            onPressed: () => context.showDialogAdd(),
             child: Icon(Icons.add),
             tooltip: 'Add a string',
           );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+extension BuildContextX on BuildContext {
+  RxSharedPreferences get rxPrefs => RxPrefsProvider.of(this);
+
+  void showSnackBar(String message) {
+    Scaffold.of(this).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 }
