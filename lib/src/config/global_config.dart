@@ -1,4 +1,4 @@
-import '../../rx_shared_preferences.dart';
+import 'package:rx_storage/rx_storage.dart';
 
 /// Global configs for default singleton or extension.
 class RxSharedPreferencesConfigs {

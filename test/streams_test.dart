@@ -1,13 +1,10 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  group('Test Stream', () {
+  group('RxSharedPreferences stream tests', () {
     const kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,

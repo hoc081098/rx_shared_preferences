@@ -5,11 +5,9 @@
 ///
 library rx_shared_preferences;
 
+export 'package:rx_storage/rx_storage.dart';
+
 export 'src/config/global_config.dart';
 export 'src/extensions/preferences_extension.dart';
 export 'src/interface/rx_shared_preferences.dart';
 export 'src/interface/shared_preferences_like.dart';
-export 'src/logger/default_logger.dart';
-export 'src/logger/logger.dart';
-export 'src/logger/logger_adapter.dart';
-export 'src/model/key_and_value.dart';

@@ -1,3 +1,8 @@
+## 1.3.4 - Dec 18, 2020
+
+*   Now, the internal implementation based on [rx_storage](https://pub.dev/packages/rx_storage/versions/0.0.1) package.
+*   The public API stays the same.
+
 ## 1.3.3 - Oct 10, 2020
 
 *   Fix: missing export `RxSharedPreferencesConfigs`.
