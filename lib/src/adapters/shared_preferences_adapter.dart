@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interface/shared_preferences_like.dart';
@@ -8,6 +9,7 @@ import '../interface/shared_preferences_like.dart';
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
 class SharedPreferencesAdapter implements SharedPreferencesLike {
   final SharedPreferences _prefs;
+  final _stringList = (<T>() => T)<List<String>>();
 
   SharedPreferencesAdapter._(this._prefs);
 
@@ -74,5 +76,56 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     return prefsOrFuture is Future<SharedPreferences>
         ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
         : SharedPreferencesAdapter._(prefsOrFuture as SharedPreferences);
+  }
+
+  @override
+  Future<T> read<T>(String key, Encoder<T> decoder) {
+    if (T == dynamic) {
+      return _prefs.get(key);
+    }
+    if (T == double) {
+      return _wrap(_prefs.getDouble(key) as dynamic);
+    }
+    if (T == int) {
+      return _wrap(_prefs.getInt(key) as dynamic);
+    }
+    if (T == bool) {
+      return _wrap(_prefs.getBool(key) as dynamic);
+    }
+    if (T == String) {
+      return _wrap(_prefs.getString(key) as dynamic);
+    }
+    if (T == _stringList) {
+      return _wrap(_prefs.getStringList(key) as dynamic);
+    }
+    throw StateError('Unhandled type $T');
+  }
+
+  @override
+  Future<Map<String, dynamic>> readAll() => _wrap({
+        for (final k in _prefs.getKeys()) k: _prefs.get(k),
+      });
+
+  @override
+  Future<bool> write<T>(String key, T value, Encoder<T> encoder) {
+    final dynamicVal = value as dynamic;
+
+    if (T == double) {
+      return _prefs.setDouble(key, dynamicVal);
+    }
+    if (T == int) {
+      return _prefs.setInt(key, dynamicVal);
+    }
+    if (T == bool) {
+      return _prefs.setBool(key, dynamicVal);
+    }
+    if (T == String) {
+      return _prefs.setString(key, dynamicVal);
+    }
+    if (T == _stringList) {
+      return _prefs.setStringList(key, dynamicVal);
+    }
+
+    throw StateError('Unhandled type $T');
   }
 }
