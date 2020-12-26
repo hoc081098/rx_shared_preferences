@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,23 +9,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'fake_shared_prefs_store.dart';
+import 'model/user.dart';
 
 void main() {
   group('SharedPreferencesAdapter', () {
-    const kTestValues = <String, dynamic>{
+    const user1 = User('1', 'Name 1', 20);
+    const user2 = User('2', 'Name 2', 30);
+
+    final kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
       'flutter.int': 42,
       'flutter.double': 3.14159,
       'flutter.List': <String>['foo', 'bar'],
+      'flutter.User': jsonEncode(user1),
     };
 
-    const kTestValues2 = <String, dynamic>{
+    final kTestValues2 = <String, dynamic>{
       'flutter.String': 'goodbye world',
       'flutter.bool': false,
       'flutter.int': 1337,
       'flutter.double': 2.71828,
       'flutter.List': <String>['baz', 'quox'],
+      'flutter.User': jsonEncode(user2),
     };
 
     FakeSharedPreferencesStore store;
@@ -52,9 +60,18 @@ void main() {
       expect(value, isA<SharedPreferencesAdapter>());
     });
 
-    test('get', () {
-      adapter.get('int').then((value) => print(value));
-      print('done');
+    test('get', () async {
+      await adapter.get('int').then((value) => print(value));
+      expect(
+        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        user1,
+      );
+
+      await adapter.write<User>('User', user2, (u) => jsonEncode(u.toJson()));
+      expect(
+        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        user2,
+      );
     });
 
     test('reading', () async {

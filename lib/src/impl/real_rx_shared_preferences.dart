@@ -9,15 +9,12 @@ import '../interface/rx_shared_preferences.dart';
 class RealRxSharedPreferences
     extends RealRxStorage<String, SharedPreferencesLike>
     implements RxSharedPreferences {
-  final Logger _logger;
-
   ///
   RealRxSharedPreferences(
     FutureOr<SharedPreferencesLike> prefsLikeOrFuture, [
     Logger logger,
     void Function() onDispose,
-  ])  : _logger = logger,
-        super(prefsLikeOrFuture, logger, onDispose);
+  ]) : super(prefsLikeOrFuture, logger, onDispose);
 
   @override
   Future<void> reload() async {
