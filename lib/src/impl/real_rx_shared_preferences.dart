@@ -22,11 +22,6 @@ class RealRxSharedPreferences
   @override
   Future<void> reload() async {
     await useStorage((s) => s.reload());
-
-    final all = await readAll();
-    if (_logger != null) {
-      all.forEach((key, value) => _logger.readValue(dynamic, key, value));
-    }
-    sendChange(all);
+    sendChange(await readAll());
   }
 }
