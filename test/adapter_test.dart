@@ -60,31 +60,22 @@ void main() {
       expect(value, isA<SharedPreferencesAdapter>());
     });
 
-    test('get', () async {
-      await adapter.get('int').then((value) => print(value));
-      expect(
-        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
-        user1,
-      );
-
-      await adapter.write<User>('User', user2, (u) => jsonEncode(u.toJson()));
-      expect(
-        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
-        user2,
-      );
-    });
-
     test('reading', () async {
-      expect(await adapter.get('String'), kTestValues['flutter.String']);
-      expect(await adapter.get('bool'), kTestValues['flutter.bool']);
-      expect(await adapter.get('int'), kTestValues['flutter.int']);
-      expect(await adapter.get('double'), kTestValues['flutter.double']);
-      expect(await adapter.get('List'), kTestValues['flutter.List']);
       expect(await adapter.getString('String'), kTestValues['flutter.String']);
       expect(await adapter.getBool('bool'), kTestValues['flutter.bool']);
       expect(await adapter.getInt('int'), kTestValues['flutter.int']);
       expect(await adapter.getDouble('double'), kTestValues['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues['flutter.List']);
+      expect(await adapter.getString('String'), kTestValues['flutter.String']);
+      expect(await adapter.getBool('bool'), kTestValues['flutter.bool']);
+      expect(await adapter.getInt('int'), kTestValues['flutter.int']);
+      expect(await adapter.getDouble('double'), kTestValues['flutter.double']);
+      expect(await adapter.getStringList('List'), kTestValues['flutter.List']);
+      expect(
+        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        user1,
+      );
+
       expect(store.log, <Matcher>[]);
     });
 
@@ -94,7 +85,12 @@ void main() {
         adapter.setBool('bool', kTestValues2['flutter.bool']),
         adapter.setInt('int', kTestValues2['flutter.int']),
         adapter.setDouble('double', kTestValues2['flutter.double']),
-        adapter.setStringList('List', kTestValues2['flutter.List'])
+        adapter.setStringList('List', kTestValues2['flutter.List']),
+        adapter.write<User>(
+          'User',
+          user2,
+          (u) => jsonEncode(u),
+        ),
       ]);
       expect(
         store.log,
@@ -124,6 +120,11 @@ void main() {
             'flutter.List',
             kTestValues2['flutter.List'],
           ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'String',
+            'flutter.User',
+            kTestValues2['flutter.User'],
+          ]),
         ],
       );
       store.log.clear();
@@ -133,6 +134,10 @@ void main() {
       expect(await adapter.getInt('int'), kTestValues2['flutter.int']);
       expect(await adapter.getDouble('double'), kTestValues2['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues2['flutter.List']);
+      expect(
+        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        user2,
+      );
       expect(store.log, equals(<MethodCall>[]));
     });
 

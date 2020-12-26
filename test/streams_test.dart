@@ -24,7 +24,11 @@ void main() {
       );
     });
 
-    tearDown(() async => await rxPrefs.dispose());
+    tearDown(() {
+      try {
+        rxPrefs.dispose();
+      } catch (_) {}
+    });
 
     test(
       'Stream will emit error when read value is not valid type, or emit null when value is not set',

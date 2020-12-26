@@ -6,10 +6,6 @@ T _cast<T>(dynamic value) => value;
 
 /// Extensions for primitive type
 extension SharedPreferencesExtensions on SharedPreferencesLike {
-  /// Reads a value of any type from persistent storage.
-  Future<T> get<T>(String key, [Decoder<T> decoder]) =>
-      read<T>(key, decoder ?? _cast);
-
   /// Reads a value from persistent storage, return a future that completes
   /// with an error if it's not a bool.
   Future<bool> getBool(String key) => read<bool>(key, _cast);
