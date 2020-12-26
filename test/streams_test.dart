@@ -224,16 +224,25 @@ void main() {
       await rxPrefs.dispose();
       await Future.delayed(Duration.zero);
 
-      // not emit but persisted
-      await rxPrefs.setStringList(
-        'List',
-        <String>['after', 'dispose'],
-      );
-      // working fine
-      expect(
-        await rxPrefs.getStringList('List'),
-        <String>['after', 'dispose'],
-      );
+      try {
+        // cannot use anymore
+        await rxPrefs.setStringList(
+          'List',
+          <String>['after', 'dispose'],
+        );
+      } catch (e) {
+        expect(e, isStateError);
+      }
+
+      try {
+        // cannot use anymore
+        expect(
+          await rxPrefs.getStringList('List'),
+          <String>['after', 'dispose'],
+        );
+      } catch (e) {
+        expect(e, isStateError);
+      }
 
       // timeout is 2 seconds
       await Future.delayed(const Duration(seconds: 2));

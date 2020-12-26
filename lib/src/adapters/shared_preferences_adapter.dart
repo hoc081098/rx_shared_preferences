@@ -6,14 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interface/shared_preferences_like.dart';
 
+final _stringList = (<T>() => T)<List<String>>();
+
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
 class SharedPreferencesAdapter implements SharedPreferencesLike {
   final SharedPreferences _prefs;
-  final _stringList = (<T>() => T)<List<String>>();
 
   SharedPreferencesAdapter._(this._prefs);
 
-  static Future<T> _wrap<T>(T value) => SynchronousFuture(value);
+  static Future<T> _wrap<T>(T value) => SynchronousFuture<T>(value);
 
   @override
   Future<bool> clear() => _prefs.clear();
@@ -22,50 +23,10 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   Future<bool> containsKey(String key) => _wrap(_prefs.containsKey(key));
 
   @override
-  Future<dynamic> get(String key) => _wrap(_prefs.get(key));
-
-  @override
-  Future<bool> getBool(String key) => _wrap(_prefs.getBool(key));
-
-  @override
-  Future<double> getDouble(String key) => _wrap(_prefs.getDouble(key));
-
-  @override
-  Future<int> getInt(String key) => _wrap(_prefs.getInt(key));
-
-  @override
-  Future<Set<String>> getKeys() => _wrap(_prefs.getKeys());
-
-  @override
-  Future<String> getString(String key) => _wrap(_prefs.getString(key));
-
-  @override
-  Future<List<String>> getStringList(String key) =>
-      _wrap(_prefs.getStringList(key));
-
-  @override
   Future<void> reload() => _prefs.reload();
 
   @override
   Future<bool> remove(String key) => _prefs.remove(key);
-
-  @override
-  Future<bool> setBool(String key, bool value) => _prefs.setBool(key, value);
-
-  @override
-  Future<bool> setDouble(String key, double value) =>
-      _prefs.setDouble(key, value);
-
-  @override
-  Future<bool> setInt(String key, int value) => _prefs.setInt(key, value);
-
-  @override
-  Future<bool> setString(String key, String value) =>
-      _prefs.setString(key, value);
-
-  @override
-  Future<bool> setStringList(String key, List<String> value) =>
-      _prefs.setStringList(key, value);
 
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
@@ -80,9 +41,6 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 
   @override
   Future<T> read<T>(String key, Encoder<T> decoder) {
-    if (T == dynamic) {
-      return _prefs.get(key);
-    }
     if (T == double) {
       return _wrap(_prefs.getDouble(key) as dynamic);
     }
@@ -98,16 +56,22 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     if (T == _stringList) {
       return _wrap(_prefs.getStringList(key) as dynamic);
     }
-    throw StateError('Unhandled type $T');
+    return _wrap(decoder(_prefs.get(key)));
   }
 
   @override
-  Future<Map<String, dynamic>> readAll() => _wrap({
-        for (final k in _prefs.getKeys()) k: _prefs.get(k),
-      });
+  Future<Map<String, dynamic>> readAll() {
+    return _wrap({
+      for (final k in _prefs.getKeys()) k: _prefs.get(k),
+    });
+  }
 
   @override
   Future<bool> write<T>(String key, T value, Encoder<T> encoder) {
+    if (value == null) {
+      return _prefs.remove(key);
+    }
+
     final dynamicVal = value as dynamic;
 
     if (T == double) {
@@ -126,6 +90,6 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
       return _prefs.setStringList(key, dynamicVal);
     }
 
-    throw StateError('Unhandled type $T');
+    return _prefs.setString(key, encoder(dynamicVal) as String);
   }
 }

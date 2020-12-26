@@ -26,4 +26,4 @@ dependency_overrides:
   rx_storage:
     git:
       url: https://github.com/Flutter-Dart-Open-Source/rx_storage.git
-      ref: refactor
+      ref: bf1b6da3d6900ab580c225246561a1910f1832f1
