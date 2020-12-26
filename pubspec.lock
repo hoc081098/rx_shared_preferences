@@ -168,7 +168,7 @@ packages:
     description:
       path: "."
       ref: refactor
-      resolved-ref: "2dfc16e5a84ac6eaa61ac1aaa81889b557e49fbb"
+      resolved-ref: "13fc234757ae2e93e973f9385b459c5ce9c724df"
       url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
     source: git
     version: "0.0.1"

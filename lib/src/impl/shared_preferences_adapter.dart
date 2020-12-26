@@ -17,16 +17,17 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   static Future<T> _wrap<T>(T value) => SynchronousFuture<T>(value);
 
   @override
-  Future<bool> clear() => _prefs.clear();
+  Future<bool> clear([void _]) => _prefs.clear();
 
   @override
-  Future<bool> containsKey(String key) => _wrap(_prefs.containsKey(key));
+  Future<bool> containsKey(String key, [void _]) =>
+      _wrap(_prefs.containsKey(key));
 
   @override
   Future<void> reload() => _prefs.reload();
 
   @override
-  Future<bool> remove(String key) => _prefs.remove(key);
+  Future<bool> remove(String key, [void _]) => _prefs.remove(key);
 
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
@@ -40,7 +41,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   @override
-  Future<T> read<T>(String key, Decoder<T> decoder) {
+  Future<T> read<T>(String key, Decoder<T> decoder, [void _]) {
     if (T == double) {
       return _wrap(_prefs.getDouble(key) as dynamic);
     }
@@ -61,14 +62,14 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   @override
-  Future<Map<String, dynamic>> readAll() {
+  Future<Map<String, dynamic>> readAll([void _]) {
     return _wrap({
       for (final k in _prefs.getKeys()) k: _prefs.get(k),
     });
   }
 
   @override
-  Future<bool> write<T>(String key, T value, Encoder<T> encoder) {
+  Future<bool> write<T>(String key, T value, Encoder<T> encoder, [void _]) {
     if (value == null) {
       return _prefs.remove(key);
     }

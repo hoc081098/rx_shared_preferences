@@ -7,7 +7,7 @@ import '../interface/rx_shared_preferences.dart';
 
 /// Default [RxSharedPreferences] implementation
 class RealRxSharedPreferences
-    extends RealRxStorage<String, SharedPreferencesLike>
+    extends RealRxStorage<String, void, SharedPreferencesLike>
     implements RxSharedPreferences {
   ///
   RealRxSharedPreferences(
