@@ -7,7 +7,8 @@ T _cast<T>(dynamic value) => value;
 /// Extensions for primitive type
 extension SharedPreferencesExtensions on SharedPreferencesLike {
   /// Reads a value of any type from persistent storage.
-  Future<dynamic> get(String key) => read<dynamic>(key, _identity);
+  Future<T> get<T>(String key, [Decoder<T> decoder]) =>
+      read<T>(key, decoder ?? _cast);
 
   /// Reads a value from persistent storage, return a future that completes
   /// with an error if it's not a bool.
@@ -36,7 +37,8 @@ extension SharedPreferencesExtensions on SharedPreferencesLike {
   /// Saves a boolean [value] to persistent storage in the background.
   ///
   /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  Future<bool> setBool(String key, bool value) => write(key, value, _identity);
+  Future<bool> setBool(String key, bool value) =>
+      write<bool>(key, value, _identity);
 
   /// Saves a double [value] to persistent storage in the background.
   ///
@@ -44,31 +46,33 @@ extension SharedPreferencesExtensions on SharedPreferencesLike {
   ///
   /// If [value] is null, this is equivalent to calling [remove()] on the [key].
   Future<bool> setDouble(String key, double value) =>
-      write(key, value, _identity);
+      write<double>(key, value, _identity);
 
   /// Saves an integer [value] to persistent storage in the background.
   ///
   /// If [value] is null, this is equivalent to calling [remove()] on the [key].
-  Future<bool> setInt(String key, int value) => write(key, value, _identity);
+  Future<bool> setInt(String key, int value) =>
+      write<int>(key, value, _identity);
 
   /// Saves a string [value] to persistent storage in the background.
   ///
   /// If [value] is null, this is equivalent to calling [remove()] on the [key].
   Future<bool> setString(String key, String value) =>
-      write(key, value, _identity);
+      write<String>(key, value, _identity);
 
   /// Saves a list of strings [value] to persistent storage in the background.
   ///
   /// If [value] is null, this is equivalent to calling [remove()] on the [key].
   Future<bool> setStringList(String key, List<String> value) =>
-      write(key, value, _identity);
+      write<List<String>>(key, value, _identity);
 }
 
 /// Extensions for primitive type
 extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with key was changed.
-  Stream<dynamic> getStream(String key) => observe<dynamic>(key, _cast);
+  Stream<T> getStream<T>(String key, [Decoder<T> decoder]) =>
+      observe<T>(key, decoder ?? _cast);
 
   /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.

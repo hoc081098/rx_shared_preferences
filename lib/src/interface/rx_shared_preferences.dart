@@ -4,8 +4,8 @@ import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../rx_shared_preferences.dart';
-import '../adapters/shared_preferences_adapter.dart';
 import '../impl/real_rx_shared_preferences.dart';
+import '../impl/shared_preferences_adapter.dart';
 import 'shared_preferences_like.dart';
 
 /// Get [Stream]s by key from persistent storage.

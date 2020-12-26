@@ -41,10 +41,6 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 
   @override
   Future<T> read<T>(String key, Decoder<T> decoder) {
-    if (T == dynamic) {
-      return _wrap(_prefs.get(key));
-    }
-
     if (T == double) {
       return _wrap(_prefs.getDouble(key) as dynamic);
     }
@@ -95,6 +91,9 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
       return _prefs.setStringList(key, dynamicVal);
     }
 
-    return _prefs.setString(key, encoder(dynamicVal) as String);
+    return _prefs.setString(
+      key,
+      encoder(dynamicVal) as String,
+    );
   }
 }
