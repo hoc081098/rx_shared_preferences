@@ -16,6 +16,8 @@ void main() {
     const user1 = User('1', 'Name 1', 20);
     const user2 = User('2', 'Name 2', 30);
 
+    const _prefix = 'flutter.';
+
     final kTestValues = <String, dynamic>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
@@ -205,8 +207,6 @@ void main() {
     });
 
     test('getKeys', () async {
-      const _prefix = 'flutter.';
-
       final keys = await adapter.getKeys();
       final expected = Set.of(
         kTestValues.keys.map(
@@ -217,6 +217,31 @@ void main() {
       expect(
         SetEquality<String>().equals(keys, expected),
         isTrue,
+      );
+    });
+
+    test('readAll', () async {
+      expect(
+        await adapter.readAll(),
+        kTestValues.map(
+          (key, value) => MapEntry(
+            key.substring(_prefix.length),
+            value,
+          ),
+        ),
+      );
+
+      SharedPreferences.setMockInitialValues(kTestValues2);
+      await adapter.reload();
+
+      expect(
+        await adapter.readAll(),
+        kTestValues2.map(
+          (key, value) => MapEntry(
+            key.substring(_prefix.length),
+            value,
+          ),
+        ),
       );
     });
   });
