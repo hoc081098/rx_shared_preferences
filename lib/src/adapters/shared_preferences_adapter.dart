@@ -56,7 +56,8 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     if (T == _stringList) {
       return _wrap(_prefs.getStringList(key) as dynamic);
     }
-    return _wrap(decoder(_prefs.get(key)));
+
+    return _wrap(decoder(_prefs.getString(key) as dynamic));
   }
 
   @override
