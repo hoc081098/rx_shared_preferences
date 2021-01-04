@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interface/shared_preferences_like.dart';
 
-final _stringList = (<T>() => T)<List<String>>();
-
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
 class SharedPreferencesAdapter implements SharedPreferencesLike {
   final SharedPreferences _prefs;
@@ -41,24 +39,14 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   @override
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
   Future<T> read<T>(String key, Decoder<T> decoder, [void _]) {
-    if (T == double) {
-      return _wrap(_prefs.getDouble(key) as dynamic);
+    var val = _prefs.get(key);
+    if (val is List) {
+      val = _prefs.getStringList(key);
     }
-    if (T == int) {
-      return _wrap(_prefs.getInt(key) as dynamic);
-    }
-    if (T == bool) {
-      return _wrap(_prefs.getBool(key) as dynamic);
-    }
-    if (T == String) {
-      return _wrap(_prefs.getString(key) as dynamic);
-    }
-    if (T == _stringList) {
-      return _wrap(_prefs.getStringList(key) as dynamic);
-    }
-
-    return _wrap(decoder(_prefs.getString(key)));
+    return _wrap(decoder(val));
   }
 
   @override
@@ -69,32 +57,31 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   @override
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
   Future<bool> write<T>(String key, T value, Encoder<T> encoder, [void _]) {
-    if (value == null) {
+    final val = encoder(value);
+
+    if (val == null) {
       return _prefs.remove(key);
     }
-
-    final dynamicVal = value as dynamic;
-
-    if (T == double) {
-      return _prefs.setDouble(key, dynamicVal);
+    if (val is double) {
+      return _prefs.setDouble(key, val);
     }
-    if (T == int) {
-      return _prefs.setInt(key, dynamicVal);
+    if (val is int) {
+      return _prefs.setInt(key, val);
     }
-    if (T == bool) {
-      return _prefs.setBool(key, dynamicVal);
+    if (val is bool) {
+      return _prefs.setBool(key, val);
     }
-    if (T == String) {
-      return _prefs.setString(key, dynamicVal);
+    if (val is String) {
+      return _prefs.setString(key, val);
     }
-    if (T == _stringList) {
-      return _prefs.setStringList(key, dynamicVal);
+    if (val is List<String>) {
+      return _prefs.setStringList(key, val);
     }
 
-    return _prefs.setString(
-      key,
-      encoder(dynamicVal) as String,
-    );
+    throw StateError('Value $val has type ${val.runtimeType} is not supported. '
+        'Encoder must return a value of a supported type, eg. double, int, bool, String or List<String>');
   }
 }
