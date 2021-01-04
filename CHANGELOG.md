@@ -1,3 +1,8 @@
+## 1.3.5 - Jan 4, 2021
+
+*   Refactor based on [rx_storage: ^0.0.2](https://pub.dev/packages/rx_storage/versions/0.0.2) package.
+*   The public API stays the same.
+
 ## 1.3.4 - Dec 18, 2020
 
 *   Now, the internal implementation based on [rx_storage](https://pub.dev/packages/rx_storage/versions/0.0.1) package.
