@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -141,6 +142,11 @@ void main() {
         user2,
       );
       expect(store.log, equals(<MethodCall>[]));
+
+      await runZonedGuarded(
+        () => adapter.write('unsupported_type', 1, (v) => <String>{}),
+        (e, s) => expect(e, isA<StateError>()),
+      );
     });
 
     test('removing', () async {

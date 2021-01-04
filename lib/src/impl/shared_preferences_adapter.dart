@@ -81,7 +81,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
       return _prefs.setStringList(key, val);
     }
 
-    throw StateError('Value $val has type ${val.runtimeType} is not supported. '
-        'Encoder must return a value of a supported type, eg. double, int, bool, String or List<String>');
+    throw StateError('Value $val of type ${val.runtimeType} is not supported. '
+        'Encoder must return the value of a supported type, eg. double, int, bool, String or List<String>');
   }
 }
