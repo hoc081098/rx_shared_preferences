@@ -44,11 +44,11 @@ void main() {
     });
 
     test('reading', () async {
-      expect(await rxPrefs.get('String'), kTestValues['flutter.String']);
-      expect(await rxPrefs.get('bool'), kTestValues['flutter.bool']);
-      expect(await rxPrefs.get('int'), kTestValues['flutter.int']);
-      expect(await rxPrefs.get('double'), kTestValues['flutter.double']);
-      expect(await rxPrefs.get('List'), kTestValues['flutter.List']);
+      expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
+      expect(await rxPrefs.getBool('bool'), kTestValues['flutter.bool']);
+      expect(await rxPrefs.getInt('int'), kTestValues['flutter.int']);
+      expect(await rxPrefs.getDouble('double'), kTestValues['flutter.double']);
+      expect(await rxPrefs.getStringList('List'), kTestValues['flutter.List']);
       expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
       expect(await rxPrefs.getBool('bool'), kTestValues['flutter.bool']);
       expect(await rxPrefs.getInt('int'), kTestValues['flutter.int']);

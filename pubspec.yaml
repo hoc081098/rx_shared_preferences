@@ -6,14 +6,14 @@ repository: https://github.com/hoc081098/rx_shared_preferences.git
 issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
 
 environment:
-  sdk: '>=2.6.0 <3.0.0'
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   shared_preferences: '>=0.5.7+3 <2.0.0'
   rxdart: '>=0.25.0 <0.26.0'
-  rx_storage: ^0.0.1
+  rx_storage: ^0.0.2
 
 dev_dependencies:
   flutter_test:

@@ -24,7 +24,11 @@ void main() {
       );
     });
 
-    tearDown(() async => await rxPrefs.dispose());
+    tearDown(() {
+      try {
+        rxPrefs.dispose();
+      } catch (_) {}
+    });
 
     test(
       'Stream will emit error when read value is not valid type, or emit null when value is not set',
@@ -224,16 +228,25 @@ void main() {
       await rxPrefs.dispose();
       await Future.delayed(Duration.zero);
 
-      // not emit but persisted
-      await rxPrefs.setStringList(
-        'List',
-        <String>['after', 'dispose'],
-      );
-      // working fine
-      expect(
-        await rxPrefs.getStringList('List'),
-        <String>['after', 'dispose'],
-      );
+      try {
+        // cannot use anymore
+        await rxPrefs.setStringList(
+          'List',
+          <String>['after', 'dispose'],
+        );
+      } catch (e) {
+        expect(e, isStateError);
+      }
+
+      try {
+        // cannot use anymore
+        expect(
+          await rxPrefs.getStringList('List'),
+          <String>['after', 'dispose'],
+        );
+      } catch (e) {
+        expect(e, isStateError);
+      }
 
       // timeout is 2 seconds
       await Future.delayed(const Duration(seconds: 2));

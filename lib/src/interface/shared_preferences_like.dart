@@ -4,4 +4,10 @@ import 'package:rx_storage/rx_storage.dart';
 /// a persistent store for simple data.
 ///
 /// Data is persisted to disk asynchronously.
-abstract class SharedPreferencesLike extends Storage {}
+abstract class SharedPreferencesLike extends Storage<String, void> {
+  /// Fetches the latest values from the host platform.
+  ///
+  /// Use this method to observe modifications that were made in native code
+  /// (without using the plugin) while the app is running.
+  Future<void> reload();
+}
