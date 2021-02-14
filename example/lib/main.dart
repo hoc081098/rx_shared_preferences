@@ -1,6 +1,6 @@
 import 'package:example/home.dart';
-import 'package:example/loggers.dart';
 import 'package:example/rx_prefs_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +11,9 @@ void main() {
   /// Singleton instance for app
   final rxPrefs = RxSharedPreferences(
     SharedPreferences.getInstance(),
-    defaultLogger,
+    kReleaseMode ? null : RxSharedPreferencesDefaultLogger(),
   );
+
   runApp(
     RxPrefsProvider(
       rxPrefs: rxPrefs,
