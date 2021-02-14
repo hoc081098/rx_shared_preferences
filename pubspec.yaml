@@ -1,23 +1,28 @@
 name: rx_shared_preferences
 description: Rxdart streaming shared preferences. Reactive stream rxdart wrapper around SharedPreferences. A stream based wrapper over shared_preferences, allowing reactive key-value storage.
-version: 1.3.5
+version: 2.0.0-nullsafety.0
 homepage: https://github.com/hoc081098/rx_shared_preferences.git
 repository: https://github.com/hoc081098/rx_shared_preferences.git
 issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: '>=0.5.7+3 <2.0.0'
-  rxdart: '>=0.25.0 <0.26.0'
+  shared_preferences: ^2.0.0-nullsafety
   rx_storage: ^0.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.9.0
-  shared_preferences_platform_interface: ^1.0.4
-  collection: ^1.14.11
+  pedantic: ^1.10.0
+  shared_preferences_platform_interface: ^2.0.0-nullsafety
+  collection: ^1.15.0
+
+dependency_overrides:
+  rx_storage:
+    git:
+      url: https://github.com/Flutter-Dart-Open-Source/rx_storage.git
+      ref: master

@@ -7,7 +7,7 @@ class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
   final InMemorySharedPreferencesStore backend;
   final log = <MethodCall>[];
 
-  FakeSharedPreferencesStore(Map<String, dynamic> data)
+  FakeSharedPreferencesStore(Map<String, Object> data)
       : backend = InMemorySharedPreferencesStore.withData(data);
 
   @override

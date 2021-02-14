@@ -9,5 +9,5 @@ abstract class SharedPreferencesLike extends Storage<String, void> {
   ///
   /// Use this method to observe modifications that were made in native code
   /// (without using the plugin) while the app is running.
-  Future<void> reload();
+  Future<Map<String, Object?>> reload();
 }

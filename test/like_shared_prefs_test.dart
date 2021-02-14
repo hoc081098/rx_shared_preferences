@@ -9,7 +9,7 @@ import 'fake_shared_prefs_store.dart';
 
 void main() {
   group('RxSharedPreferences is like to SharedPreferences', () {
-    const kTestValues = <String, dynamic>{
+    const kTestValues = <String, Object>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
       'flutter.int': 42,
@@ -17,7 +17,7 @@ void main() {
       'flutter.List': <String>['foo', 'bar'],
     };
 
-    const kTestValues2 = <String, dynamic>{
+    const kTestValues2 = <String, Object>{
       'flutter.String': 'goodbye world',
       'flutter.bool': false,
       'flutter.int': 1337,
@@ -25,15 +25,17 @@ void main() {
       'flutter.List': <String>['baz', 'quox'],
     };
 
-    FakeSharedPreferencesStore store;
-    RxSharedPreferences rxPrefs;
+    late FakeSharedPreferencesStore store;
+    late RxSharedPreferences rxPrefs;
 
     setUp(() async {
       store = FakeSharedPreferencesStore(kTestValues);
       SharedPreferencesStorePlatform.instance = store;
 
       rxPrefs = RxSharedPreferences(
-          await SharedPreferences.getInstance(), const DefaultLogger());
+        await SharedPreferences.getInstance(),
+        const RxSharedPreferencesDefaultLogger(),
+      );
       await rxPrefs.reload();
 
       store.log.clear();
@@ -58,12 +60,13 @@ void main() {
     });
 
     test('writing', () async {
-      await Future.wait(<Future<bool>>[
-        rxPrefs.setString('String', kTestValues2['flutter.String']),
-        rxPrefs.setBool('bool', kTestValues2['flutter.bool']),
-        rxPrefs.setInt('int', kTestValues2['flutter.int']),
-        rxPrefs.setDouble('double', kTestValues2['flutter.double']),
-        rxPrefs.setStringList('List', kTestValues2['flutter.List'])
+      await Future.wait([
+        rxPrefs.setString('String', kTestValues2['flutter.String'] as String),
+        rxPrefs.setBool('bool', kTestValues2['flutter.bool'] as bool),
+        rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
+        rxPrefs.setDouble('double', kTestValues2['flutter.double'] as double),
+        rxPrefs.setStringList(
+            'List', kTestValues2['flutter.List'] as List<String>)
       ]);
       expect(
         store.log,
@@ -145,7 +148,8 @@ void main() {
     });
 
     test('reloading', () async {
-      await rxPrefs.setString('String', kTestValues['flutter.String']);
+      await rxPrefs.setString(
+          'String', kTestValues['flutter.String'] as String);
       expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
 
       SharedPreferences.setMockInitialValues(kTestValues2);
@@ -163,7 +167,7 @@ void main() {
       final cachedList = await rxPrefs.getStringList('myList');
       expect(cachedList, <String>[]);
 
-      cachedList.add('foobar2');
+      cachedList!.add('foobar2');
 
       expect(await rxPrefs.getStringList('myList'), <String>[]);
     });

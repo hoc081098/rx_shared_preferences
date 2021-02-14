@@ -19,11 +19,11 @@ extension DialogExtensions on BuildContext {
             onSubmitted: (val) => Navigator.of(context).pop(val),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(null),
             ),
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () => Navigator.of(context).pop(text),
             ),
@@ -41,11 +41,12 @@ extension DialogExtensions on BuildContext {
     }
 
     final newList = [...?currentList, string];
-    final result = await rxPrefs.setStringList(key, newList);
-
-    showSnackBar(result
-        ? "Add '$string' successfully"
-        : "Add '$string' not successfully");
+    try {
+      await rxPrefs.setStringList(key, newList);
+      showSnackBar("Add '$string' successfully");
+    } catch (_) {
+      showSnackBar("Add '$string' not successfully");
+    }
   }
 
   void showDialogRemove(String needRemove) async {
@@ -55,13 +56,13 @@ extension DialogExtensions on BuildContext {
         return AlertDialog(
           title: Text('Remove this string'),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(true);
@@ -80,12 +81,11 @@ extension DialogExtensions on BuildContext {
       for (final s in currentList)
         if (s != needRemove) s
     ];
-    final result = await rxPrefs.setStringList(key, newList);
-
-    showSnackBar(
-      result
-          ? "Remove '$needRemove' successfully"
-          : "Remove '$needRemove' not successfully",
-    );
+    try {
+      await rxPrefs.setStringList(key, newList);
+      showSnackBar("Remove '$needRemove' successfully");
+    } catch (_) {
+      showSnackBar("Remove '$needRemove' not successfully");
+    }
   }
 }

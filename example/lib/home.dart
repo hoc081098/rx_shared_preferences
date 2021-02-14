@@ -81,7 +81,7 @@ extension BuildContextX on BuildContext {
   RxSharedPreferences get rxPrefs => RxPrefsProvider.of(this);
 
   void showSnackBar(String message) {
-    Scaffold.of(this).showSnackBar(
+    ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 2),
