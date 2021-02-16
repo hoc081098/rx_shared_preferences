@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.3"
+  disposebag:
+    dependency: transitive
+    description:
+      name: disposebag
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.0-nullsafety.1"
   fake_async:
     dependency: transitive
     description:
@@ -173,17 +180,26 @@ packages:
   rx_storage:
     dependency: transitive
     description:
-      name: rx_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
+      path: "."
+      ref: "4d58dfc3fc2590db08ed0ee64230aa18bc835f0b"
+      resolved-ref: "4d58dfc3fc2590db08ed0ee64230aa18bc835f0b"
+      url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
+    source: git
+    version: "1.0.0-nullsafety.0"
   rxdart:
     dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.25.0"
+    version: "0.26.0-nullsafety.1"
+  rxdart_ext:
+    dependency: transitive
+    description:
+      name: rxdart_ext
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-nullsafety.7"
   shared_preferences:
     dependency: transitive
     description:

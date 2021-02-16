@@ -4,7 +4,7 @@ import 'package:rx_storage/rx_storage.dart';
 
 import '../../rx_shared_preferences.dart';
 import '../interface/rx_shared_preferences.dart';
-import '../logger.dart';
+import '../logger/logger.dart';
 
 /// Default [RxSharedPreferences] implementation
 class RealRxSharedPreferences
@@ -28,7 +28,7 @@ class RealRxSharedPreferences
       (s) => s.reload(),
       (value, s) {
         sendChange(_computeMap(before, value));
-        log(ReloadSuccessEvent(value));
+        log(ReloadSuccessEvent(value.toListOfKeyAndValues()));
       },
       (error, _) => log(ReloadFailureEvent(error)),
     );
