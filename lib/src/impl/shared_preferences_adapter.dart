@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,13 +16,8 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   static Future<T> _wrap<T>(T value) => SynchronousFuture<T>(value);
 
   @override
-  Future<void> clear([void _]) {
-    return _prefs.clear().then((success) {
-      if (!success) {
-        throw Exception('Cannot clear');
-      }
-    });
-  }
+  Future<void> clear([void _]) =>
+      _prefs.clear().throwsIfNotSuccess('Cannot clear');
 
   @override
   Future<bool> containsKey(String key, [void _]) =>
@@ -37,13 +33,8 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   @override
-  Future<void> remove(String key, [void _]) {
-    return _prefs.remove(key).then((success) {
-      if (!success) {
-        throw Exception('Cannot remove key=$key');
-      }
-    });
-  }
+  Future<void> remove(String key, [void _]) =>
+      _prefs.remove(key).throwsIfNotSuccess('Cannot remove key=$key');
 
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
@@ -81,25 +72,45 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     final val = encoder(value);
 
     if (val == null) {
-      return _prefs.remove(key);
+      return remove(key);
     }
     if (val is double) {
-      return _prefs.setDouble(key, val);
+      return _prefs.setDouble(key, val).throwsIfNotSuccess(
+          'Cannot set double value: key=$key, value=$value');
     }
     if (val is int) {
-      return _prefs.setInt(key, val);
+      return _prefs
+          .setInt(key, val)
+          .throwsIfNotSuccess('Cannot set int value: key=$key, value=$value');
     }
     if (val is bool) {
-      return _prefs.setBool(key, val);
+      return _prefs
+          .setBool(key, val)
+          .throwsIfNotSuccess('Cannot set bool value: key=$key, value=$value');
     }
     if (val is String) {
-      return _prefs.setString(key, val);
+      return _prefs.setString(key, val).throwsIfNotSuccess(
+          'Cannot set String value: key=$key, value=$value');
     }
     if (val is List<String>) {
-      return _prefs.setStringList(key, val);
+      return _prefs.setStringList(key, val).throwsIfNotSuccess(
+          'Cannot set List<String> value: key=$key, value=$value');
     }
 
     throw StateError('Value $val of type ${val.runtimeType} is not supported. '
         'Encoder must return the value of a supported type, eg. double, int, bool, String or List<String>');
+  }
+}
+
+extension _ThrowsIfNotSuccess on Future<bool> {
+  Future<void> throwsIfNotSuccess(String message) {
+    return then((success) {
+      if (!success) {
+        throw PlatformException(
+          code: SharedPreferencesLike.errorCode,
+          message: message,
+        );
+      }
+    });
   }
 }

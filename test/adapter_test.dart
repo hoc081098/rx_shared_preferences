@@ -13,6 +13,8 @@ import 'fake_shared_prefs_store.dart';
 import 'model/user.dart';
 
 void main() {
+  final throwsPlatformException = throwsA(isA<PlatformException>());
+
   group('SharedPreferencesAdapter', () {
     const user1 = User('1', 'Name 1', 20);
     const user2 = User('2', 'Name 2', 30);
@@ -175,6 +177,9 @@ void main() {
             ),
             growable: true,
           ));
+
+      store.failedMethod = MethodCall('remove');
+      expect(adapter.remove(key), throwsPlatformException);
     });
 
     test('containsKey', () async {
@@ -194,6 +199,9 @@ void main() {
       expect(await adapter.getDouble('double'), null);
       expect(await adapter.getStringList('List'), null);
       expect(store.log, <Matcher>[isMethodCall('clear', arguments: null)]);
+
+      store.failedMethod = MethodCall('clear');
+      expect(adapter.clear(), throwsPlatformException);
     });
 
     test('reloading', () async {
