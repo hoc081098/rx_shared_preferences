@@ -18,23 +18,25 @@ class RealRxSharedPreferences
   ]) : super(prefsLikeOrFuture, logger, onDispose);
 
   @override
-  Future<Map<String, Object?>> reload() async {
-    final handler = (Object? _, Object? __) => null;
+  Future<Map<String, Object?>> reload() {
+    return enqueueWritingTask(() async {
+      final handler = (Object? _, Object? __) => null;
 
-    final before =
-        await useStorageWithHandlers((s) => s.readAll(), handler, handler);
+      final before =
+          await useStorageWithHandlers((s) => s.readAll(), handler, handler);
 
-    return useStorageWithHandlers(
-      (s) => s.reload(),
-      (value, s) {
-        sendChange(_computeMap(before, value));
-        log(ReloadSuccessEvent(value.toListOfKeyAndValues()));
-      },
-      (error, _) => log(ReloadFailureEvent(error)),
-    );
+      return useStorageWithHandlers(
+        (s) => s.reload(),
+        (value, _) {
+          sendChange(_computeMap(before, value));
+          logIfEnabled(ReloadSuccessEvent(value.toListOfKeyAndValues()));
+        },
+        (error, _) => logIfEnabled(ReloadFailureEvent(error)),
+      );
+    });
   }
 
-  static Map<String, Object?> _computeMap(
+  static Map<String, KeyAndValue<String, Object?>> _computeMap(
     Map<String, Object?> before,
     Map<String, Object?> after,
   ) {
@@ -42,6 +44,6 @@ class RealRxSharedPreferences
     return <String, Object?>{
       ...after,
       for (final k in deletedKeys) k: null,
-    };
+    }.map((key, value) => MapEntry(key, KeyAndValue(key, value, dynamic)));
   }
 }
