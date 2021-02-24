@@ -16,6 +16,7 @@ class RxSharedPreferencesDefaultLogger extends DefaultLogger<String, void>
   @override
   void logOther(LoggerEvent<String, void> event) {
     const rightArrow = DefaultLogger.rightArrow;
+    const leftArrow = DefaultLogger.leftArrow;
     const downArrow = DefaultLogger.downArrow;
 
     if (event is ReloadSuccessEvent) {
@@ -27,7 +28,7 @@ class RxSharedPreferencesDefaultLogger extends DefaultLogger<String, void>
     }
 
     if (event is ReloadFailureEvent) {
-      print('$tag $rightArrow Reload $rightArrow ${event.error}');
+      print('$tag $leftArrow Reload $rightArrow ${event.error}');
       return;
     }
 
