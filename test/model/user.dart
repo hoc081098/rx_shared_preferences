@@ -31,3 +31,6 @@ class User {
   @override
   int get hashCode => id.hashCode ^ name.hashCode ^ age.hashCode;
 }
+
+const user1 = User('1', 'Name 1', 20);
+const user2 = User('2', 'Name 2', 30);

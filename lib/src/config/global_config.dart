@@ -1,7 +1,11 @@
-import 'package:rx_storage/rx_storage.dart';
+import '../logger/default_logger.dart';
+import '../logger/logger.dart';
 
 /// Global configs for default singleton or extension.
 class RxSharedPreferencesConfigs {
   /// Config for logger.
-  static Logger logger = const DefaultLogger();
+  /// Default value is a [RxSharedPreferencesDefaultLogger].
+  /// Can be set to `null` to disable logging.
+  static RxSharedPreferencesLogger? logger =
+      const RxSharedPreferencesDefaultLogger();
 }

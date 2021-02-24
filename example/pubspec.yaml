@@ -3,12 +3,13 @@ description: Rx Shared Preferences example.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.2
+  flutter_provider: ^2.0.0-nullsafety.0
   rx_shared_preferences:
 
 dependency_overrides:
@@ -16,7 +17,7 @@ dependency_overrides:
     path: ../
 
 dev_dependencies:
-  pedantic: ^1.9.0
+  pedantic: ^1.10.0
   flutter_test:
     sdk: flutter
 

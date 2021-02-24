@@ -14,31 +14,10 @@ import 'model/user.dart';
 
 void main() {
   group('SharedPreferencesAdapter', () {
-    const user1 = User('1', 'Name 1', 20);
-    const user2 = User('2', 'Name 2', 30);
-
     const _prefix = 'flutter.';
 
-    final kTestValues = <String, dynamic>{
-      'flutter.String': 'hello world',
-      'flutter.bool': true,
-      'flutter.int': 42,
-      'flutter.double': 3.14159,
-      'flutter.List': <String>['foo', 'bar'],
-      'flutter.User': jsonEncode(user1),
-    };
-
-    final kTestValues2 = <String, dynamic>{
-      'flutter.String': 'goodbye world',
-      'flutter.bool': false,
-      'flutter.int': 1337,
-      'flutter.double': 2.71828,
-      'flutter.List': <String>['baz', 'quox'],
-      'flutter.User': jsonEncode(user2),
-    };
-
-    FakeSharedPreferencesStore store;
-    SharedPreferencesAdapter adapter;
+    late FakeSharedPreferencesStore store;
+    late SharedPreferencesAdapter adapter;
 
     setUp(() async {
       store = FakeSharedPreferencesStore(kTestValues);
@@ -46,7 +25,8 @@ void main() {
 
       final preferences = await SharedPreferences.getInstance();
       await preferences.reload();
-      adapter = SharedPreferencesAdapter.from(preferences);
+      adapter = SharedPreferencesAdapter.from(preferences)
+          as SharedPreferencesAdapter;
 
       store.log.clear();
     });
@@ -75,7 +55,10 @@ void main() {
       expect(await adapter.getDouble('double'), kTestValues['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues['flutter.List']);
       expect(
-        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        await adapter.read<User>(
+          'User',
+          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+        ),
         user1,
       );
 
@@ -83,12 +66,13 @@ void main() {
     });
 
     test('writing', () async {
-      await Future.wait(<Future<bool>>[
-        adapter.setString('String', kTestValues2['flutter.String']),
-        adapter.setBool('bool', kTestValues2['flutter.bool']),
-        adapter.setInt('int', kTestValues2['flutter.int']),
-        adapter.setDouble('double', kTestValues2['flutter.double']),
-        adapter.setStringList('List', kTestValues2['flutter.List']),
+      await Future.wait([
+        adapter.setString('String', kTestValues2['flutter.String'] as String),
+        adapter.setBool('bool', kTestValues2['flutter.bool'] as bool),
+        adapter.setInt('int', kTestValues2['flutter.int'] as int),
+        adapter.setDouble('double', kTestValues2['flutter.double'] as double),
+        adapter.setStringList(
+            'List', kTestValues2['flutter.List'] as List<String>),
         adapter.write<User>(
           'User',
           user2,
@@ -138,7 +122,10 @@ void main() {
       expect(await adapter.getDouble('double'), kTestValues2['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues2['flutter.List']);
       expect(
-        await adapter.read<User>('User', (s) => User.fromJson(jsonDecode(s))),
+        await adapter.read<User>(
+          'User',
+          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+        ),
         user2,
       );
       expect(store.log, equals(<MethodCall>[]));
@@ -147,6 +134,21 @@ void main() {
         () => adapter.write('unsupported_type', 1, (v) => <String>{}),
         (e, s) => expect(e, isA<StateError>()),
       );
+
+      store.failedMethod = MethodCall('setValue');
+      [
+        adapter.setString('String', kTestValues2['flutter.String'] as String),
+        adapter.setBool('bool', kTestValues2['flutter.bool'] as bool),
+        adapter.setInt('int', kTestValues2['flutter.int'] as int),
+        adapter.setDouble('double', kTestValues2['flutter.double'] as double),
+        adapter.setStringList(
+            'List', kTestValues2['flutter.List'] as List<String>),
+        adapter.write<User>(
+          'User',
+          user2,
+          (u) => jsonEncode(u),
+        ),
+      ].forEach((f) => expect(f, throwsPlatformException));
     });
 
     test('removing', () async {
@@ -167,6 +169,9 @@ void main() {
             ),
             growable: true,
           ));
+
+      store.failedMethod = MethodCall('remove');
+      expect(adapter.remove(key), throwsPlatformException);
     });
 
     test('containsKey', () async {
@@ -186,10 +191,14 @@ void main() {
       expect(await adapter.getDouble('double'), null);
       expect(await adapter.getStringList('List'), null);
       expect(store.log, <Matcher>[isMethodCall('clear', arguments: null)]);
+
+      store.failedMethod = MethodCall('clear');
+      expect(adapter.clear(), throwsPlatformException);
     });
 
     test('reloading', () async {
-      await adapter.setString('String', kTestValues['flutter.String']);
+      await adapter.setString(
+          'String', kTestValues['flutter.String'] as String);
       expect(await adapter.getString('String'), kTestValues['flutter.String']);
 
       SharedPreferences.setMockInitialValues(kTestValues2);
@@ -197,6 +206,11 @@ void main() {
 
       await adapter.reload();
       expect(await adapter.getString('String'), kTestValues2['flutter.String']);
+
+      SharedPreferencesStorePlatform.instance =
+          store = FakeSharedPreferencesStore(kTestValues2)
+            ..failedMethod = MethodCall('getAll');
+      expect(adapter.reload(), throwsPlatformException);
     });
 
     test('writing copy of strings list', () async {
@@ -207,7 +221,7 @@ void main() {
       final cachedList = await adapter.getStringList('myList');
       expect(cachedList, <String>[]);
 
-      cachedList.add('foobar2');
+      cachedList!.add('foobar2');
 
       expect(await adapter.getStringList('myList'), <String>[]);
     });

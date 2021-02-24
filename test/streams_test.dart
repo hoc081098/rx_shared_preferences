@@ -5,7 +5,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 
 void main() {
   group('RxSharedPreferences stream tests', () {
-    const kTestValues = <String, dynamic>{
+    const kTestValues = <String, Object>{
       'flutter.String': 'hello world',
       'flutter.bool': true,
       'flutter.int': 42,
@@ -13,14 +13,14 @@ void main() {
       'flutter.List': <String>['foo', 'bar'],
     };
 
-    RxSharedPreferences rxPrefs;
+    late RxSharedPreferences rxPrefs;
 
     setUp(() async {
       SharedPreferences.setMockInitialValues(kTestValues);
 
       rxPrefs = RxSharedPreferences(
         await SharedPreferences.getInstance(),
-        const DefaultLogger(),
+        const RxSharedPreferencesDefaultLogger(),
       );
     });
 
@@ -218,7 +218,7 @@ void main() {
       for (final v in expected.skip(1)) {
         await rxPrefs.setStringList(
           'List',
-          v,
+          v as List<String>,
         );
         await Future.delayed(Duration.zero);
       }
@@ -347,6 +347,7 @@ void main() {
         ),
         isTrue,
       );
+      // ignore: unnecessary_null_comparison
       expect(identical(rxPrefs1, rxPrefs2) && rxPrefs1 != null, isTrue);
 
       // dispose default singleton
@@ -360,6 +361,7 @@ void main() {
         ),
         isTrue,
       );
+      // ignore: unnecessary_null_comparison
       expect(identical(rxPrefs3, rxPrefs1) && rxPrefs3 != null, isFalse);
     });
 
