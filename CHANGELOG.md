@@ -1,3 +1,11 @@
+## 2.0.0-nullsafety.0 - Feb 24, 2021
+
+*   **Breaking**
+    -   Opt into _nullsafety_.
+    -   Set Dart SDK constraints to `>=2.12.0-0 <3.0.0`.
+    -   Using [shared_preferences: ^2.0.0](https://pub.dev/packages/shared_preferences/versions/2.0.0).
+    -   Refactor `Logger` and implementation based on [rx_storage: ^1.0.0-nullsafety.0](https://pub.dev/packages/rx_storage/versions/1.0.0-nullsafety.0) package.
+
 ## 1.3.5 - Jan 4, 2021
 
 *   Refactor based on [rx_storage: ^0.0.2](https://pub.dev/packages/rx_storage/versions/0.0.2) package.
