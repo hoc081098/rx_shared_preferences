@@ -4,6 +4,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/394a0db269db40bda248dd63ec84a292)](https://app.codacy.com/app/hoc081098/rx_shared_preferences?utm_source=github.com&utm_medium=referral&utm_content=hoc081098/rx_shared_preferences&utm_campaign=Badge_Grade_Dashboard)
 [![Pub](https://img.shields.io/pub/v/rx_shared_preferences.svg)](https://pub.dartlang.org/packages/rx_shared_preferences)
+[![Pub](https://img.shields.io/pub/v/rx_shared_preferences.svg?include_prereleases)](https://pub.dartlang.org/packages/rx_shared_preferences)
 [![codecov](https://codecov.io/gh/hoc081098/rx_shared_preferences/branch/master/graph/badge.svg)](https://codecov.io/gh/hoc081098/rx_shared_preferences)
 [![Build Status](https://travis-ci.com/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.com/hoc081098/rx_shared_preferences)
 ![Flutter CI](https://github.com/hoc081098/rx_shared_preferences/workflows/Flutter%20CI/badge.svg)
