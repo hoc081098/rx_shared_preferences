@@ -157,6 +157,21 @@ void main() {
         () => adapter.write('unsupported_type', 1, (v) => <String>{}),
         (e, s) => expect(e, isA<StateError>()),
       );
+
+      store.failedMethod = MethodCall('setValue');
+      [
+        adapter.setString('String', kTestValues2['flutter.String'] as String),
+        adapter.setBool('bool', kTestValues2['flutter.bool'] as bool),
+        adapter.setInt('int', kTestValues2['flutter.int'] as int),
+        adapter.setDouble('double', kTestValues2['flutter.double'] as double),
+        adapter.setStringList(
+            'List', kTestValues2['flutter.List'] as List<String>),
+        adapter.write<User>(
+          'User',
+          user2,
+          (u) => jsonEncode(u),
+        ),
+      ].forEach((f) => expect(f, throwsPlatformException));
     });
 
     test('removing', () async {
@@ -214,6 +229,11 @@ void main() {
 
       await adapter.reload();
       expect(await adapter.getString('String'), kTestValues2['flutter.String']);
+
+      SharedPreferencesStorePlatform.instance =
+          store = FakeSharedPreferencesStore(kTestValues2)
+            ..failedMethod = MethodCall('getAll');
+      expect(adapter.reload(), throwsPlatformException);
     });
 
     test('writing copy of strings list', () async {
