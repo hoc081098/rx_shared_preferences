@@ -67,6 +67,16 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }
 
+          if (list.isEmpty) {
+            return Center(
+              child: Text(
+                'Empty',
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
           return ListView.builder(
             itemCount: list.length,
             physics: const BouncingScrollPhysics(),
@@ -87,11 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-            onPressed: () {
-              // context.rxPrefs.setString(key, '1');
-              // return;
-              context.showDialogAdd();
-            },
+            onPressed: () => context.showDialogAdd(),
             child: Icon(Icons.add),
             tooltip: 'Add a string',
           );
