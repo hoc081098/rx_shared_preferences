@@ -49,6 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
         stream: list$,
         initialData: list$.value,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error!.toString(),
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
           final list = snapshot.data;
 
           if (list == null) {
@@ -77,7 +87,11 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-            onPressed: () => context.showDialogAdd(),
+            onPressed: () {
+              // context.rxPrefs.setString(key, '1');
+              // return;
+              context.showDialogAdd();
+            },
             child: Icon(Icons.add),
             tooltip: 'Add a string',
           );
