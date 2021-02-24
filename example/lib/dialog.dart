@@ -7,7 +7,7 @@ extension DialogExtensions on BuildContext {
     final string = await showDialog<String>(
       context: this,
       builder: (context) {
-        String text;
+        String? text;
 
         return AlertDialog(
           title: Text('Add a string'),

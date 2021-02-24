@@ -1,7 +1,7 @@
 import 'package:example/home.dart';
-import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,20 +15,20 @@ void main() {
   );
 
   runApp(
-    RxPrefsProvider(
-      rxPrefs: rxPrefs,
+    Provider.value(
+      rxPrefs,
       child: MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rx Shared Preferences example',
+      title: 'RxSharedPreferences example',
       theme: ThemeData.dark(),
       home: const MyHomePage(),
     );

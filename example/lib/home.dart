@@ -1,36 +1,41 @@
 import 'dart:async';
 
 import 'package:example/dialog.dart';
-import 'package:example/rx_prefs_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:rxdart_ext/rxdart_ext.dart';
 
 const key = 'com.hoc.list';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ValueStream<List<String>> list$;
-  StreamSubscription<List<String>> subscription;
+  late final NotReplayValueStream<List<String>?> list$ = () {
+    final stream = context.rxPrefs
+        .getStringListStream(key)
+        .map<List<String>?>((list) => list ?? const <String>[])
+        .publishValueNotReplay(null);
+    subscription = stream.connect();
+    return stream;
+  }();
+  StreamSubscription<List<String>?>? subscription;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    subscription ??= (list$ =
-            context.rxPrefs.getStringListStream(key).shareValue())
-        .listen(null);
+  void initState() {
+    super.initState();
+    final _ = list$; // evaluation lazy property.
   }
 
   @override
   void dispose() {
-    subscription.cancel();
+    subscription?.cancel();
+    subscription = null;
     super.dispose();
   }
 
@@ -38,13 +43,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('RxSharedPreferences example'),
       ),
-      body: StreamBuilder<List<String>>(
+      body: StreamBuilder<List<String>?>(
         stream: list$,
         initialData: list$.value,
         builder: (context, snapshot) {
-          final list = snapshot.data ?? <String>[];
+          final list = snapshot.data;
+
+          if (list == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
           return ListView.builder(
             itemCount: list.length,
@@ -78,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 extension BuildContextX on BuildContext {
-  RxSharedPreferences get rxPrefs => RxPrefsProvider.of(this);
+  RxSharedPreferences get rxPrefs => get();
 
   void showSnackBar(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
