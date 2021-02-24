@@ -13,31 +13,8 @@ import 'fake_shared_prefs_store.dart';
 import 'model/user.dart';
 
 void main() {
-  final throwsPlatformException = throwsA(isA<PlatformException>());
-
   group('SharedPreferencesAdapter', () {
-    const user1 = User('1', 'Name 1', 20);
-    const user2 = User('2', 'Name 2', 30);
-
     const _prefix = 'flutter.';
-
-    final kTestValues = <String, Object>{
-      'flutter.String': 'hello world',
-      'flutter.bool': true,
-      'flutter.int': 42,
-      'flutter.double': 3.14159,
-      'flutter.List': <String>['foo', 'bar'],
-      'flutter.User': jsonEncode(user1),
-    };
-
-    final kTestValues2 = <String, Object>{
-      'flutter.String': 'goodbye world',
-      'flutter.bool': false,
-      'flutter.int': 1337,
-      'flutter.double': 2.71828,
-      'flutter.List': <String>['baz', 'quox'],
-      'flutter.User': jsonEncode(user2),
-    };
 
     late FakeSharedPreferencesStore store;
     late SharedPreferencesAdapter adapter;

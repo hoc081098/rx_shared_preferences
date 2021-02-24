@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,25 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'fake_shared_prefs_store.dart';
+import 'model/user.dart';
 
 void main() {
   group('RxSharedPreferences is like to SharedPreferences', () {
-    const kTestValues = <String, Object>{
-      'flutter.String': 'hello world',
-      'flutter.bool': true,
-      'flutter.int': 42,
-      'flutter.double': 3.14159,
-      'flutter.List': <String>['foo', 'bar'],
-    };
-
-    const kTestValues2 = <String, Object>{
-      'flutter.String': 'goodbye world',
-      'flutter.bool': false,
-      'flutter.int': 1337,
-      'flutter.double': 2.71828,
-      'flutter.List': <String>['baz', 'quox'],
-    };
-
     late FakeSharedPreferencesStore store;
     late RxSharedPreferences rxPrefs;
 
@@ -42,6 +30,7 @@ void main() {
     });
 
     tearDown(() async {
+      store.failedMethod = null;
       await rxPrefs.clear();
     });
 
@@ -56,6 +45,14 @@ void main() {
       expect(await rxPrefs.getInt('int'), kTestValues['flutter.int']);
       expect(await rxPrefs.getDouble('double'), kTestValues['flutter.double']);
       expect(await rxPrefs.getStringList('List'), kTestValues['flutter.List']);
+      expect(
+        await rxPrefs.read<User>(
+          'User',
+          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+        ),
+        user1,
+      );
+
       expect(store.log, <Matcher>[]);
     });
 
@@ -66,7 +63,12 @@ void main() {
         rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
         rxPrefs.setDouble('double', kTestValues2['flutter.double'] as double),
         rxPrefs.setStringList(
-            'List', kTestValues2['flutter.List'] as List<String>)
+            'List', kTestValues2['flutter.List'] as List<String>),
+        rxPrefs.write<User>(
+          'User',
+          user2,
+          (u) => jsonEncode(u),
+        ),
       ]);
       expect(
         store.log,
@@ -96,6 +98,11 @@ void main() {
             'flutter.List',
             kTestValues2['flutter.List'],
           ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'String',
+            'flutter.User',
+            kTestValues2['flutter.User'],
+          ]),
         ],
       );
       store.log.clear();
@@ -105,7 +112,34 @@ void main() {
       expect(await rxPrefs.getInt('int'), kTestValues2['flutter.int']);
       expect(await rxPrefs.getDouble('double'), kTestValues2['flutter.double']);
       expect(await rxPrefs.getStringList('List'), kTestValues2['flutter.List']);
+      expect(
+        await rxPrefs.read<User>(
+          'User',
+          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+        ),
+        user2,
+      );
       expect(store.log, equals(<MethodCall>[]));
+
+      await expectLater(
+        rxPrefs.write('unsupported_type', 1, (v) => <String>{}),
+        throwsA(isA<StateError>()),
+      );
+
+      store.failedMethod = MethodCall('setValue');
+      [
+        rxPrefs.setString('String', kTestValues2['flutter.String'] as String),
+        rxPrefs.setBool('bool', kTestValues2['flutter.bool'] as bool),
+        rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
+        rxPrefs.setDouble('double', kTestValues2['flutter.double'] as double),
+        rxPrefs.setStringList(
+            'List', kTestValues2['flutter.List'] as List<String>),
+        rxPrefs.write<User>(
+          'User',
+          user2,
+          (u) => jsonEncode(u),
+        ),
+      ].forEach((f) => expect(f, throwsPlatformException));
     });
 
     test('removing', () async {
@@ -126,6 +160,9 @@ void main() {
             ),
             growable: true,
           ));
+
+      store.failedMethod = MethodCall('remove');
+      expect(rxPrefs.remove(key), throwsPlatformException);
     });
 
     test('containsKey', () async {
@@ -145,6 +182,9 @@ void main() {
       expect(await rxPrefs.getDouble('double'), null);
       expect(await rxPrefs.getStringList('List'), null);
       expect(store.log, <Matcher>[isMethodCall('clear', arguments: null)]);
+
+      store.failedMethod = MethodCall('clear');
+      expect(rxPrefs.clear(), throwsPlatformException);
     });
 
     test('reloading', () async {
@@ -157,6 +197,11 @@ void main() {
 
       await rxPrefs.reload();
       expect(await rxPrefs.getString('String'), kTestValues2['flutter.String']);
+
+      SharedPreferencesStorePlatform.instance =
+          store = FakeSharedPreferencesStore(kTestValues2)
+            ..failedMethod = MethodCall('getAll');
+      expect(rxPrefs.reload(), throwsPlatformException);
     });
 
     test('writing copy of strings list', () async {
@@ -184,6 +229,33 @@ void main() {
       expect(
         SetEquality<String>().equals(keys, expected),
         isTrue,
+      );
+    });
+
+    test('readAll', () async {
+      const _prefix = 'flutter.';
+
+      expect(
+        await rxPrefs.readAll(),
+        kTestValues.map(
+          (key, value) => MapEntry(
+            key.substring(_prefix.length),
+            value,
+          ),
+        ),
+      );
+
+      SharedPreferences.setMockInitialValues(kTestValues2);
+      await rxPrefs.reload();
+
+      expect(
+        await rxPrefs.readAll(),
+        kTestValues2.map(
+          (key, value) => MapEntry(
+            key.substring(_prefix.length),
+            value,
+          ),
+        ),
       );
     });
   });
