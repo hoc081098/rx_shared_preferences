@@ -26,18 +26,29 @@
 Since version `1.3.4`, this package is an extension of [rx_storage](https://github.com/Flutter-Dart-Open-Source/rx_storage) package.
 
 ## More detail about returned `Stream`
--   It's a single-subscription stream (ie. it can only be listened once).
+-   It's a **single-subscription `Stream`** (ie. it can only be listened once).
 
--   `Stream` will emit the **value** or **error** as its first event when it is listen to (**emit `null`** when value is not set).
+-   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listen to.
 
--   It will automatic emits value when value associated with key was changed successfully (**emit `null`** when value associated with key was `removed` or set to `null`).
+-   It will automatic emits value when value associated with key was changed successfully
+    (**emit `null`** when value associated with key was `removed` or set to `null`).
 
--   When read value is invalid type (ie. wrong type):
-    -   If value is present (ie. not `null`), the stream will **emit `TypeError` error** .
-    -   Otherwise, the stream will **emit `null`** (this occurred because `null` can be cast to any type).
+-   When value read from Storage has a type other than expected type:
+    -   If value is `null`, the `Stream` will **emit `null`** (this occurred because `null` can be cast to any nullable type).
+    -   Otherwise, the `Stream` will **emit a `TypeError`**.
 
 -   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
+```
+Key changed:  |----------K1---K2------K1----K1-----K2---------
+              |                                                
+Value stream: |-----@----@------------@-----@-----------------
+              |    ^                                      
+              |    |
+              |  Listen(key=K1)
+              |
+              |  @: nullable value or TypeError
+```
 <p align="center">
     <img src="https://github.com/hoc081098/rx_shared_preferences/raw/master/rx_prefs.png" width="700">
 </p>
