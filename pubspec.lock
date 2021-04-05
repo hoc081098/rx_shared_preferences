@@ -49,7 +49,7 @@ packages:
       name: disposebag
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0-nullsafety.1"
+    version: "1.5.0"
   fake_async:
     dependency: transitive
     description:
@@ -141,7 +141,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.0"
+    version: "1.11.0"
   platform:
     dependency: transitive
     description:
@@ -166,9 +166,11 @@ packages:
   rx_storage:
     dependency: "direct main"
     description:
-      name: rx_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: fd32d20bbf6c6b4d068d05b361a6061b56e94695
+      url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
+    source: git
     version: "1.0.0-nullsafety.0"
   rxdart:
     dependency: transitive
@@ -176,21 +178,21 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0-nullsafety.1"
+    version: "0.26.0"
   rxdart_ext:
     dependency: transitive
     description:
       name: rxdart_ext
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1-nullsafety.7"
+    version: "0.0.1"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.5"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -302,5 +304,5 @@ packages:
     source: hosted
     version: "0.2.0"
 sdks:
-  dart: ">=2.12.0-259.9.beta <3.0.0"
+  dart: ">=2.12.0 <3.0.0"
   flutter: ">=1.20.0"

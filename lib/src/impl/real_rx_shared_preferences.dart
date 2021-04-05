@@ -19,19 +19,17 @@ class RealRxSharedPreferences
 
   @override
   Future<Map<String, Object?>> reload() {
-    return enqueueWritingTask(() async {
-      final handler = (Object? _, Object? __) => null;
-
+    return enqueueWritingTask(null, () async {
       final before =
-          await useStorageWithHandlers((s) => s.readAll(), handler, handler);
+          await useStorageWithHandlers((s) => s.readAll(), null, null);
 
       return useStorageWithHandlers(
         (s) => s.reload(),
         (value, _) {
           sendChange(_computeMap(before, value));
-          logIfEnabled(ReloadSuccessEvent(value.toListOfKeyAndValues()));
+          logIfEnabled(() => ReloadSuccessEvent(value.toListOfKeyAndValues()));
         },
-        (error, _) => logIfEnabled(ReloadFailureEvent(error)),
+        (error, _) => logIfEnabled(() => ReloadFailureEvent(error)),
       );
     });
   }

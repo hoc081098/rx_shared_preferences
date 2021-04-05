@@ -6,17 +6,22 @@ repository: https://github.com/hoc081098/rx_shared_preferences.git
 issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
 
 environment:
-  sdk: '>=2.12.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.0
+  shared_preferences: ^2.0.5
   rx_storage: ^1.0.0-nullsafety.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.10.0
+  pedantic: ^1.11.0
   shared_preferences_platform_interface: ^2.0.0
   collection: ^1.15.0
+
+dependency_overrides:
+  rx_storage:
+    git:
+      url: https://github.com/Flutter-Dart-Open-Source/rx_storage.git
