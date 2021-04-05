@@ -35,17 +35,20 @@ extension DialogExtensions on BuildContext {
       return;
     }
 
-    final currentList = await rxPrefs.getStringList(key);
-    if (currentList?.contains(string) ?? false) {
-      return showSnackBar('Duplicated!');
-    }
-
-    final newList = [...?currentList, string];
+    print('>> Add $string');
     try {
-      await rxPrefs.setStringList(key, newList);
+      await rxPrefs.executeUpdateStringList(key, (currentList) {
+        print('>> Read $currentList');
+
+        final list = currentList ?? const <String>[];
+        if (list.contains(string)) {
+          throw Exception('Duplicated $string!');
+        }
+        return [...list, string];
+      });
       showSnackBar("Add '$string' successfully");
-    } catch (_) {
-      showSnackBar("Add '$string' not successfully");
+    } catch (e) {
+      showSnackBar("Add '$string' not successfully: $e");
     }
   }
 
@@ -77,16 +80,21 @@ extension DialogExtensions on BuildContext {
     }
 
     try {
+      print('>> Remove $needRemove');
       await rxPrefs.executeUpdateStringList(
         key,
-        (currentList) => [
-          for (final s in currentList ?? const <String>[])
-            if (s != needRemove) s
-        ],
+        (currentList) {
+          print('>> Read $currentList');
+
+          return [
+            for (final s in (currentList ?? const <String>[]))
+              if (s != needRemove) s
+          ];
+        },
       );
       showSnackBar("Remove '$needRemove' successfully");
-    } catch (_) {
-      showSnackBar("Remove '$needRemove' not successfully");
+    } catch (e) {
+      showSnackBar("Remove '$needRemove' not successfully: $e");
     }
   }
 }

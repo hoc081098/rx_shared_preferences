@@ -188,8 +188,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: b2d7ff4877177a3552777710e9e69e4e98ee2461
-      resolved-ref: b2d7ff4877177a3552777710e9e69e4e98ee2461
+      ref: "6b443b544852f57fecb7b2d878f8a171fe3fb665"
+      resolved-ref: "6b443b544852f57fecb7b2d878f8a171fe3fb665"
       url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
     source: git
     version: "1.0.0-nullsafety.0"
