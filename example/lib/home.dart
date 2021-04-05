@@ -98,8 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) {
           return FloatingActionButton(
             onPressed: () => context.showDialogAdd(),
-            child: Icon(Icons.add),
             tooltip: 'Add a string',
+            child: Icon(Icons.add),
           );
         },
       ),

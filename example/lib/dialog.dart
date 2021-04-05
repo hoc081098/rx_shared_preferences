@@ -20,12 +20,12 @@ extension DialogExtensions on BuildContext {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(null),
+              child: Text('Cancel'),
             ),
             TextButton(
-              child: Text('OK'),
               onPressed: () => Navigator.of(context).pop(text),
+              child: Text('OK'),
             ),
           ],
         );
@@ -57,16 +57,16 @@ extension DialogExtensions on BuildContext {
           title: Text('Remove this string'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
+              child: Text('Cancel'),
             ),
             TextButton(
-              child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
+              child: Text('OK'),
             ),
           ],
         );
@@ -76,13 +76,14 @@ extension DialogExtensions on BuildContext {
       return;
     }
 
-    final currentList = await rxPrefs.getStringList(key) ?? <String>[];
-    final newList = [
-      for (final s in currentList)
-        if (s != needRemove) s
-    ];
     try {
-      await rxPrefs.setStringList(key, newList);
+      await rxPrefs.executeUpdateStringList(
+        key,
+        (currentList) => [
+          for (final s in currentList ?? const <String>[])
+            if (s != needRemove) s
+        ],
+      );
       showSnackBar("Remove '$needRemove' successfully");
     } catch (_) {
       showSnackBar("Remove '$needRemove' not successfully");
