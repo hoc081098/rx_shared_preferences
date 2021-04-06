@@ -35,14 +35,11 @@ extension DialogExtensions on BuildContext {
       return;
     }
 
-    print('>> Add $string');
     try {
       await rxPrefs.executeUpdateStringList(key, (currentList) {
-        print('>> Read $currentList');
-
         final list = currentList ?? const <String>[];
         if (list.contains(string)) {
-          throw Exception('Duplicated $string!');
+          throw StateError('Duplicated $string!');
         }
         return [...list, string];
       });
@@ -80,17 +77,12 @@ extension DialogExtensions on BuildContext {
     }
 
     try {
-      print('>> Remove $needRemove');
       await rxPrefs.executeUpdateStringList(
         key,
-        (currentList) {
-          print('>> Read $currentList');
-
-          return [
-            for (final s in (currentList ?? const <String>[]))
-              if (s != needRemove) s
-          ];
-        },
+        (currentList) => [
+          for (final s in (currentList ?? const <String>[]))
+            if (s != needRemove) s
+        ],
       );
       showSnackBar("Remove '$needRemove' successfully");
     } catch (e) {

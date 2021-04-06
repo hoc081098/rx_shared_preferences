@@ -167,8 +167,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "6b443b544852f57fecb7b2d878f8a171fe3fb665"
-      resolved-ref: "6b443b544852f57fecb7b2d878f8a171fe3fb665"
+      ref: "5e37909d8ef10330019fa19c115f98e066d14f2c"
+      resolved-ref: "5e37909d8ef10330019fa19c115f98e066d14f2c"
       url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
     source: git
     version: "1.0.0-nullsafety.0"
