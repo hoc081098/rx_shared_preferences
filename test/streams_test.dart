@@ -385,5 +385,18 @@ void main() {
       await old.dispose();
       expect(identical(old, prefs.rx), false);
     });
+
+    test('executeUpdateBool', () async {
+      final initial = kTestValues['flutter.bool'] as bool;
+      final expected = !initial;
+
+      expect(
+        rxPrefs.getBoolStream('bool'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getBool('bool'), initial);
+      await rxPrefs.executeUpdateBool('bool', (s) => !s!);
+      expect(await rxPrefs.getBool('bool'), expected);
+    });
   });
 }
