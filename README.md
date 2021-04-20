@@ -156,19 +156,20 @@ TODO
 -   `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions.
 
 ```dart
-  Future<bool?> getBool(String key);
-  Future<double?> getDouble(String key);
-  Future<int?> getInt(String key);
-  Future<Set<String>> getKeys();
-  Future<String?> getString(String key);
-  Future<List<String>?> getStringList(String key);
+  Future<Object?>              getObject(String key, [Decoder<Object?>? decoder]);
+  Future<bool?>                getBool(String key);
+  Future<double?>              getDouble(String key);
+  Future<int?>                 getInt(String key);
+  Future<Set<String>>          getKeys();
+  Future<String?>              getString(String key);
+  Future<List<String>?>        getStringList(String key);
 
   Future<Map<String, Object?>> reload();
-  Future<void> setBool(String key, bool? value);
-  Future<void> setDouble(String key, double? value);
-  Future<void> setInt(String key, int? value);
-  Future<void> setString(String key, String? value);
-  Future<void> setStringList(String key, List<String>? value);
+  Future<void>                 setBool(String key, bool? value);
+  Future<void>                 setDouble(String key, double? value);
+  Future<void>                 setInt(String key, int? value);
+  Future<void>                 setString(String key, String? value);
+  Future<void>                 setStringList(String key, List<String>? value);
 ```
 
 - All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
