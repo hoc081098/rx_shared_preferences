@@ -60,23 +60,23 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
   ...
-  rx_shared_preferences: ^1.3.2
+  rx_shared_preferences: <latest_version>
 ```
 
 ## Usage
 
 ### 1. Import and instance
 
-Import `rx_shared_preferences` and `shared_preferences`
+Import `rx_shared_preferences`.
 
 ```dart
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 ```
 
 Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 
 ```dart
+// via constructor.
 final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
 final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance()); // await is optional
 final rxPrefs = RxSharedPreferences.getInstance(); // default singleton instance
@@ -85,34 +85,27 @@ final rxPrefs = RxSharedPreferences.getInstance(); // default singleton instance
 final rxPrefs = (await SharedPreferences.getInstance()).rx;
 ```
 
+> NOTE: When using `RxSharedPreferences.getInstance()` and extension `(await SharedPreferences.getInstance()).rx`, 
+> to config the logger, you can use `RxSharedPreferencesConfigs.logger` setter.
+
 ### 2. Can add a logger
 
 You can add logger optional parameter to `RxSharedPreferences` constructor.
-Logger will log messages about operations (such as read, write) and stream events
+The logger will log messages about operations (such as read, write) and stream events.
+This package provides two `RxSharedPreferencesLogger`s: 
+   -   `RxSharedPreferencesDefaultLogger`. 
+   -   `RxSharedPreferencesEmptyLogger`.
 
 ```dart
 final rxPrefs = RxSharedPreferences(
   SharedPreferences.getInstance(),
-  const DefaultLogger(),
+  kReleaseMode ? null : RxSharedPreferencesDefaultLogger(),
+  // disable logging when running in release mode.
 );
 ```
 
-You can custom `Logger` by implements `Logger`, or extends class `LoggerAdapter` (with empty implementations)
-```dart
-class MyLogger extends LoggerAdapter {
-  const MyLogger();
-
-  @override
-  void readValue(Type type, String key, value) {
-    // do something
-  }
-}
-
-final rxPrefs = RxSharedPreferences(
-  SharedPreferences.getInstance(),
-  const MyLogger(),
-);
-```
+> NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
+> to `RxSharedPreferences` constructor or use `RxSharedPreferencesConfigs.logger` setter.
 
 ### 3. Select stream and use
 
@@ -135,47 +128,58 @@ rxPrefs.getIntStream('KEY_INT')
   ...
 
 // must **use same rxPrefs** instance when set value and select stream
-rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
-
+await rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
 ```
 
--   In the previous example we re-used the RxSharedPreferences object `rxPrefs` for set operations. All set operations must go through this object in order to correctly notify subscribers.
+-   In the previous example we re-used the RxSharedPreferences object `rxPrefs` for all writing operations. All writing operations must go through this object in order to correctly notify subscribers.
 
--   In flutter, you:
+-   In Flutter, you:
     -   Can create global `RxSharedPreferences` instance.
-    -   Using singleton instance `RxSharedPreferences.getInstance()`
-    -   Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/main.dart#L10), [example/provider](https://github.com/hoc081098/rx_shared_preferences/blob/1f33fd817ce7d6d686e1271a5d420cce67efd7aa/example/lib/rx_prefs_provider.dart#L5).
+    -   Can use default singleton instance `RxSharedPreferences.getInstance()`
+    -   Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
+        See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/86ae13abf0bcff995d0d99c54b11b103142a257e/example/lib/main.dart#L18).
 
 ```dart
+// An example for wrong usage.
 rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
 
-The previous example is wrong usage.
+- All APIs:
+```dart
+TODO
+```
 
 ### 4. Get and set methods like to `SharedPreferences`
-`RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions:
+
+-   `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions.
 
 ```dart
--   Future<bool> containsKey(String key);
--   Future<dynamic> get(String key);
--   Future<bool> getBool(String key);
--   Future<double> getDouble(String key);
--   Future<int> getInt(String key);
--   Future<Set<String>> getKeys();
--   Future<String> getString(String key);
--   Future<List<String>> getStringList(String key);
+  Future<bool?> getBool(String key);
+  Future<double?> getDouble(String key);
+  Future<int?> getInt(String key);
+  Future<Set<String>> getKeys();
+  Future<String?> getString(String key);
+  Future<List<String>?> getStringList(String key);
 
--   Future<bool> clear();
--   Future<void> reload();
--   Future<bool> commit();
--   Future<bool> remove(String key);
--   Future<bool> setBool(String key, bool value);
--   Future<bool> setDouble(String key, double value);
--   Future<bool> setInt(String key, int value);
--   Future<bool> setString(String key, String value);
--   Future<bool> setStringList(String key, List<String> value);
+  Future<Map<String, Object?>> reload();
+  Future<void> setBool(String key, bool? value);
+  Future<void> setDouble(String key, double? value);
+  Future<void> setInt(String key, int? value);
+  Future<void> setString(String key, String? value);
+  Future<void> setStringList(String key, List<String>? value);
+```
+
+- All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` extends `RxStorage`).
+
+```dart
+  Future<bool> containsKey(String key);
+  Future<T?> read<T extends Object>(String key, Decoder<T?> decoder);
+  Future<Map<Key, Object?>> readAll();
+  Future<void> clear();
+  Future<void> remove(String key);
+  Future<void> write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
 ### 5. Dispose `RxSharedPreferences`
@@ -189,7 +193,7 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
 | <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480"> |<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
 
 ## License
-    Copyright (c) 2019 Petrus Nguyễn Thái Học
+    Copyright (c) 2019-2021 Petrus Nguyễn Thái Học
 
 ## Contributors ✨
 

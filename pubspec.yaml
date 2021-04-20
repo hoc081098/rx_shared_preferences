@@ -1,6 +1,7 @@
 name: rx_shared_preferences
 description: Rxdart streaming shared preferences. Reactive stream rxdart wrapper around SharedPreferences. A stream based wrapper over shared_preferences, allowing reactive key-value storage.
 version: 2.0.0
+author: Petrus Nguyen Thai Hoc <hoc081098@gmail.com>
 homepage: https://github.com/hoc081098/rx_shared_preferences.git
 repository: https://github.com/hoc081098/rx_shared_preferences.git
 issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
