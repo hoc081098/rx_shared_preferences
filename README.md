@@ -171,7 +171,7 @@ TODO
   Future<void> setStringList(String key, List<String>? value);
 ```
 
-- All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` extends `RxStorage`).
+- All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
 
 ```dart
   Future<bool> containsKey(String key);
