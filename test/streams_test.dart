@@ -385,5 +385,70 @@ void main() {
       await old.dispose();
       expect(identical(old, prefs.rx), false);
     });
+
+    test('executeUpdateBool', () async {
+      final initial = kTestValues['flutter.bool'] as bool;
+      final expected = !initial;
+
+      expect(
+        rxPrefs.getBoolStream('bool'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getBool('bool'), initial);
+      await rxPrefs.executeUpdateBool('bool', (s) => !s!);
+      expect(await rxPrefs.getBool('bool'), expected);
+    });
+
+    test('executeUpdateDouble', () async {
+      final initial = kTestValues['flutter.double'] as double;
+      final expected = initial + 1;
+
+      expect(
+        rxPrefs.getDoubleStream('double'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getDouble('double'), initial);
+      await rxPrefs.executeUpdateDouble('double', (s) => s! + 1);
+      expect(await rxPrefs.getDouble('double'), expected);
+    });
+
+    test('executeUpdateInt', () async {
+      final initial = kTestValues['flutter.int'] as int;
+      final expected = initial + 1;
+
+      expect(
+        rxPrefs.getIntStream('int'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getInt('int'), initial);
+      await rxPrefs.executeUpdateInt('int', (s) => s! + 1);
+      expect(await rxPrefs.getInt('int'), expected);
+    });
+
+    test('executeUpdateString', () async {
+      final initial = kTestValues['flutter.String'] as String;
+      final expected = initial + '1';
+
+      expect(
+        rxPrefs.getStringStream('String'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getString('String'), initial);
+      await rxPrefs.executeUpdateString('String', (s) => s! + '1');
+      expect(await rxPrefs.getString('String'), expected);
+    });
+
+    test('executeUpdateStringList', () async {
+      final initial = kTestValues['flutter.List'] as List<String>;
+      final expected = [...initial, '1'];
+
+      expect(
+        rxPrefs.getStringListStream('List'),
+        emitsInOrder(<Object>[anything, expected]),
+      );
+      expect(await rxPrefs.getStringList('List'), initial);
+      await rxPrefs.executeUpdateStringList('List', (s) => [...s!, '1']);
+      expect(await rxPrefs.getStringList('List'), expected);
+    });
   });
 }

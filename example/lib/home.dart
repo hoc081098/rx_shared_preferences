@@ -98,8 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) {
           return FloatingActionButton(
             onPressed: () => context.showDialogAdd(),
-            child: Icon(Icons.add),
             tooltip: 'Add a string',
+            child: Icon(Icons.add),
           );
         },
       ),
@@ -115,7 +115,7 @@ extension BuildContextX on BuildContext {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
       ),
     );
   }

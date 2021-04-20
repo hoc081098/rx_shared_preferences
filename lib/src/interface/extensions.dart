@@ -100,4 +100,42 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// It will automatic emit all keys when any value was changed.
   Stream<Set<String>> getKeysStream() =>
       observeAll().map((map) => map.keys.toSet());
+
+  /// `Read–modify–write`.
+  ///
+  /// Read bool value by [key], than transform value by [transformer]
+  /// and finally save computed value to persistent storage.
+  Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
+      executeUpdate<bool>(key, _cast, transformer, _identity);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read double value by [key], than transform value by [transformer]
+  /// and finally save computed value to persistent storage.
+  Future<void> executeUpdateDouble(
+          String key, Transformer<double?> transformer) =>
+      executeUpdate<double>(key, _cast, transformer, _identity);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read int value by [key], than transform value by [transformer]
+  /// and finally save computed value to persistent storage.
+  Future<void> executeUpdateInt(String key, Transformer<int?> transformer) =>
+      executeUpdate<int>(key, _cast, transformer, _identity);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read String value by [key], than transform value by [transformer]
+  /// and finally save computed value to persistent storage.
+  Future<void> executeUpdateString(
+          String key, Transformer<String?> transformer) =>
+      executeUpdate<String>(key, _cast, transformer, _identity);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read List<String> value by [key], than transform value by [transformer]
+  /// and finally save computed value to persistent storage.
+  Future<void> executeUpdateStringList(
+          String key, Transformer<List<String>?> transformer) =>
+      executeUpdate<List<String>>(key, _cast, transformer, _identity);
 }
