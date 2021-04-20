@@ -175,12 +175,12 @@ TODO
 - All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
 
 ```dart
-  Future<bool>              containsKey(String key);
-  Future<T?>                read<T extends Object>(String key, Decoder<T?> decoder);
-  Future<Map<Key, Object?>> readAll();
-  Future<void>              clear();
-  Future<void>              remove(String key);
-  Future<void>              write<T extends Object>(String key, T? value, Encoder<T?> encoder);
+  Future<bool>                 containsKey(String key);
+  Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder);
+  Future<Map<Key, Object?>>    readAll();
+  Future<void>                 clear();
+  Future<void>                 remove(String key);
+  Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
 ### 5. Dispose `RxSharedPreferences`
