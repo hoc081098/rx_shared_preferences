@@ -65,15 +65,15 @@ dependencies:
 
 ## Usage
 
-### 1. Import and instance
+### 1. Import and instatiance
 
-Import `rx_shared_preferences`.
+- Import `rx_shared_preferences`.
 
 ```dart
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
-Wrap your `SharedPreferences` in a `RxSharedPreferences`.
+- Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 
 ```dart
 // via constructor.
@@ -88,7 +88,7 @@ final rxPrefs = (await SharedPreferences.getInstance()).rx;
 > NOTE: When using `RxSharedPreferences.getInstance()` and extension `(await SharedPreferences.getInstance()).rx`, 
 > to config the logger, you can use `RxSharedPreferencesConfigs.logger` setter.
 
-### 2. Can add a logger
+### 2. Add a logger (optional)
 
 You can add logger optional parameter to `RxSharedPreferences` constructor.
 The logger will log messages about operations (such as read, write) and stream events.
@@ -107,7 +107,7 @@ final rxPrefs = RxSharedPreferences(
 > NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
 > to `RxSharedPreferences` constructor or use `RxSharedPreferencesConfigs.logger` setter.
 
-### 3. Select stream and use
+### 3. Select stream and observe
 
 -   And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
 -   If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
@@ -205,7 +205,7 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
-### 5. Dispose `RxSharedPreferences`
+### 5. Dispose
 
 You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPrefs.dispose()`. Usually you call this method on `dispose` of a `State`
 
