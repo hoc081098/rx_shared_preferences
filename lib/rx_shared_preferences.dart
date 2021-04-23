@@ -6,6 +6,7 @@
 library rx_shared_preferences;
 
 export 'package:rx_storage/rx_storage.dart';
+export 'package:shared_preferences/shared_preferences.dart';
 
 export 'src/config/global_config.dart';
 export 'src/extensions/preferences_extension.dart';

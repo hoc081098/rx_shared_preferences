@@ -87,7 +87,11 @@ void main() {
             emits(anything),
           ),
           expectLater(
-            rxPrefs.getStream('No such key'),
+            rxPrefs.getObjectStream('No such key'),
+            emits(isNull),
+          ),
+          expectLater(
+            rxPrefs.getObjectStream('No such key', (o) => null),
             emits(isNull),
           ),
         ]);

@@ -6,6 +6,10 @@ T _cast<T>(Object? value) => value as T;
 
 /// Extensions for primitive type
 extension SharedPreferencesExtensions on SharedPreferencesLike {
+  /// Reads a value of any type from persistent storage.
+  Future<Object?> getObject(String key, [Decoder<Object?>? decoder]) =>
+      read<Object>(key, decoder ?? _identity);
+
   /// Reads a value from persistent storage, return a future that completes
   /// with an error if it's not a bool.
   Future<bool?> getBool(String key) => read<bool>(key, _cast);
@@ -67,8 +71,8 @@ extension SharedPreferencesExtensions on SharedPreferencesLike {
 extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with key was changed.
-  Stream<T?> getStream<T extends Object>(String key, [Decoder<T>? decoder]) =>
-      observe<T>(key, decoder ?? _cast);
+  Stream<Object?> getObjectStream(String key, [Decoder<Object?>? decoder]) =>
+      observe<Object>(key, decoder ?? _identity);
 
   /// Return [Stream] that will emit value read from persistent storage.
   /// It will automatic emit value when value associated with [key] was changed.

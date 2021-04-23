@@ -52,6 +52,14 @@ void main() {
         ),
         user1,
       );
+      expect(
+        await rxPrefs.getObject('Some key'),
+        isNull,
+      );
+      expect(
+        await rxPrefs.getObject('Some key', (o) => 'fallback'),
+        'fallback',
+      );
 
       expect(store.log, <Matcher>[]);
     });
