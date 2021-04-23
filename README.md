@@ -107,6 +107,13 @@ final rxPrefs = RxSharedPreferences(
 > NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
 > to `RxSharedPreferences` constructor or use `RxSharedPreferencesConfigs.logger` setter.
 
+> NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`.
+> ```dart
+> import 'package:disposebag/disposebag.dart' show DisposeBagConfigs;
+> void main() {
+>   DisposeBagConfigs.logger = null;
+> }
+> ```
 ### 3. Select stream and observe
 
 -   And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
