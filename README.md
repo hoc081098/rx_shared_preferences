@@ -146,7 +146,7 @@ rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
 
-- `Stream`s APIs.
+- `Stream`s APIs (via extension methods).
 
 ```dart
   Stream<Object?>              getObjectStream(String key, [Decoder<Object?>? decoder]);
@@ -175,7 +175,7 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 
 ### 4. Get and set methods like to `SharedPreferences`
 
--   `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions.
+-   `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions (via extension methods).
 
 ```dart
   Future<Object?>              getObject(String key, [Decoder<Object?>? decoder]);
