@@ -146,9 +146,31 @@ rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
 
-- All APIs:
+- `Stream`s APIs.
+
 ```dart
-TODO
+  Stream<Object?>              getObjectStream(String key, [Decoder<Object?>? decoder]);
+  Stream<bool?>                getBoolStream(String key);
+  Stream<double?>              getDoubleStream(String key);
+  Stream<int?>                 getIntStream(String key);
+  Stream<String?>              getStringStream(String key);
+  Stream<List<String>?>        getStringListStream(String key);
+  Stream<Set<String>>          getKeysStream();
+  
+  Future<void>                 executeUpdateBool(String key, Transformer<bool?> transformer);
+  Future<void>                 executeUpdateDouble(String key, Transformer<double?> transformer);
+  Future<void>                 executeUpdateInt(String key, Transformer<int?> transformer);
+  Future<void>                 executeUpdateString(String key, Transformer<String?> transformer);
+  Future<void>                 executeUpdateStringList(String key, Transformer<List<String>?> transformer);
+```
+
+- All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` implements `RxStorage`).
+
+```dart
+  Future<void>                 executeUpdate<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
+  Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder);
+  Stream<Map<String, Object?>> observeAll();
+  Future<void>                 dispose();
 ```
 
 ### 4. Get and set methods like to `SharedPreferences`
@@ -177,7 +199,7 @@ TODO
 ```dart
   Future<bool>                 containsKey(String key);
   Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder);
-  Future<Map<Key, Object?>>    readAll();
+  Future<Map<String, Object?>> readAll();
   Future<void>                 clear();
   Future<void>                 remove(String key);
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
