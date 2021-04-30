@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../rx_shared_preferences.dart';
 
 T _identity<T>(T t) => t;
@@ -109,6 +111,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read bool value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  @experimental
   Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
       executeUpdate<bool>(key, _cast, transformer, _identity);
 
@@ -116,6 +119,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read double value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  @experimental
   Future<void> executeUpdateDouble(
           String key, Transformer<double?> transformer) =>
       executeUpdate<double>(key, _cast, transformer, _identity);
@@ -124,6 +128,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read int value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  @experimental
   Future<void> executeUpdateInt(String key, Transformer<int?> transformer) =>
       executeUpdate<int>(key, _cast, transformer, _identity);
 
@@ -131,6 +136,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read String value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  @experimental
   Future<void> executeUpdateString(
           String key, Transformer<String?> transformer) =>
       executeUpdate<String>(key, _cast, transformer, _identity);
@@ -139,6 +145,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read List<String> value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  @experimental
   Future<void> executeUpdateStringList(
           String key, Transformer<List<String>?> transformer) =>
       executeUpdate<List<String>>(key, _cast, transformer, _identity);
