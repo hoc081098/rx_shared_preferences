@@ -30,7 +30,7 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listen to.
 
--   It will automatic emits value when value associated with key was changed successfully
+-   It will automatically emit value when value associated with key was changed successfully
     (**emit `null`** when value associated with key was `removed` or set to `null`).
 
 -   When value read from Storage has a type other than expected type:
@@ -39,10 +39,10 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
 
-```
-Key changed:  |----------K1---K2------K1----K1-----K2---------
+```text
+Key changed:  |----------K1---K2------K1----K1-----K2---------> time
               |                                                
-Value stream: |-----@----@------------@-----@-----------------
+Value stream: |-----@----@------------@-----@-----------------> time
               |    ^                                      
               |    |
               |  Listen(key=K1)
@@ -67,13 +67,13 @@ dependencies:
 
 ### 1. Import and instatiance
 
-- Import `rx_shared_preferences`.
+-   Import `rx_shared_preferences`.
 
 ```dart
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
-- Wrap your `SharedPreferences` in a `RxSharedPreferences`.
+-   Wrap your `SharedPreferences` in a `RxSharedPreferences`.
 
 ```dart
 // via constructor.
@@ -93,8 +93,8 @@ final rxPrefs = (await SharedPreferences.getInstance()).rx;
 You can add logger optional parameter to `RxSharedPreferences` constructor.
 The logger will log messages about operations (such as read, write) and stream events.
 This package provides two `RxSharedPreferencesLogger`s: 
-   -   `RxSharedPreferencesDefaultLogger`. 
-   -   `RxSharedPreferencesEmptyLogger`.
+-   `RxSharedPreferencesDefaultLogger`. 
+-   `RxSharedPreferencesEmptyLogger`.
 
 ```dart
 final rxPrefs = RxSharedPreferences(
@@ -116,7 +116,7 @@ final rxPrefs = RxSharedPreferences(
 > ```
 ### 3. Select stream and observe
 
--   And then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
+-   Then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
 -   If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
 
 ```dart
@@ -142,7 +142,9 @@ await rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
 
 -   In Flutter, you:
     -   Can create global `RxSharedPreferences` instance.
+        
     -   Can use default singleton instance `RxSharedPreferences.getInstance()`
+        
     -   Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
         See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/86ae13abf0bcff995d0d99c54b11b103142a257e/example/lib/main.dart#L18).
 
@@ -153,7 +155,7 @@ rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 ```
 
-- `Stream`s APIs (via extension methods).
+-   `Stream`s APIs (via extension methods).
 
 ```dart
   Stream<Object?>              getObjectStream(String key, [Decoder<Object?>? decoder]);
@@ -171,7 +173,7 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
   Future<void>                 executeUpdateStringList(String key, Transformer<List<String>?> transformer);
 ```
 
-- All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` implements `RxStorage`).
+-   All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` implements `RxStorage`).
 
 ```dart
   Future<void>                 executeUpdate<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
@@ -201,7 +203,7 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
   Future<void>                 setStringList(String key, List<String>? value);
 ```
 
-- All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
+-   All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
 
 ```dart
   Future<bool>                 containsKey(String key);
@@ -223,7 +225,9 @@ You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPre
 | <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480"> |<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
 
 ## License
+```text
     Copyright (c) 2019-2021 Petrus Nguyễn Thái Học
+```
 
 ## Contributors ✨
 
