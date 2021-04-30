@@ -39,15 +39,11 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
     FutureOr<SharedPreferences> prefsOrFuture,
-  ) {
-    // ignore: unnecessary_null_comparison
-    assert(prefsOrFuture != null);
-
-    return prefsOrFuture is Future<SharedPreferences>
-        ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
-        : SharedPreferencesAdapter._(prefsOrFuture)
-            as FutureOr<SharedPreferencesAdapter>;
-  }
+  ) =>
+      prefsOrFuture is Future<SharedPreferences>
+          ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
+          : SharedPreferencesAdapter._(prefsOrFuture)
+              as FutureOr<SharedPreferencesAdapter>;
 
   @override
   Future<T?> read<T extends Object>(String key, Decoder<T?> decoder, [void _]) {
