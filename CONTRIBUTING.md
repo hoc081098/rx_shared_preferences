@@ -11,6 +11,7 @@ If you'd like to add a feature or fix a bug, we're more than happy to accept pul
 -   Ensure your code contains no analyzer errors, e.g.
     -   Code is strong-mode compliant
     -   Code is free of lint errors
+
 -   Format your code with `dartfmt`
     
 -   Write tests for all new code paths, consider using the [Stream Matchers](https://pub.dartlang.org/packages/test#stream-matchers) available from the test package.
