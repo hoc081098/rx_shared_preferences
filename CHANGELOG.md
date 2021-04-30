@@ -1,3 +1,24 @@
+## 2.0.0 - Apr 30, 2021
+
+-   Stable release for null safety.
+
+-   Refactor based on [rx_storage: 1.0.0](https://pub.dev/packages/rx_storage/versions/1.0.0) package:
+    -   Stable release for null safety.
+    -   Add [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html): Read–modify–write style.
+    -   Synchronize writing task by key.
+    -   Internal refactoring, optimize performance.
+
+-   Add more extensions:
+    -   `getObject`: reads a value of any type from persistent storage.
+    -   `getObjectStream`: observe a Stream of any type from persistent storage.
+    -   `executeUpdateBool`: based on [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html).
+    -   `executeUpdateDouble`: based on [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html).
+    -   `executeUpdateInt`: based on [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html).
+    -   `executeUpdateString`: based on [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html).
+    -   `executeUpdateStringList`: based on [RxStorage.executeUpdate`](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage/executeUpdate.html).
+
+-   Update docs.
+
 ## 2.0.0-nullsafety.0 - Feb 24, 2021
 
 *   **Breaking**
