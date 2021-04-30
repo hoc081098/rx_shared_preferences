@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.5
-  rx_storage: ^1.0.0-nullsafety.0
+  rx_storage: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -21,9 +21,3 @@ dev_dependencies:
   pedantic: ^1.11.0
   shared_preferences_platform_interface: ^2.0.0
   collection: ^1.15.0
-
-dependency_overrides:
-  rx_storage:
-    git:
-      url: https://github.com/Flutter-Dart-Open-Source/rx_storage.git
-      ref: 9f3332334fff4aebcdf4fd4526eba391f6d4d8be
