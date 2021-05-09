@@ -183,28 +183,28 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.0.0"
+    version: "2.1.0"
   rx_storage:
     dependency: transitive
     description:
       name: rx_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   rxdart:
     dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.27.0"
   rxdart_ext:
     dependency: transitive
     description:
       name: rxdart_ext
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1"
+    version: "0.1.0"
   shared_preferences:
     dependency: transitive
     description:
