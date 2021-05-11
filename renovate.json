@@ -1,0 +1,5 @@
+{
+  "extends": ["config:base"],
+  "ignorePaths": ["android/", "example/ios/", "example/android/"],
+  "labels": ["dependencies"]
+}
