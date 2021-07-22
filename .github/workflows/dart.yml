@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.0.1
+      - uses: actions/checkout@v2
 
       - uses: subosito/flutter-action@v1.5.3
         with:
@@ -34,4 +34,4 @@ jobs:
       - name: Run tests
         run: flutter test --coverage --coverage-path=lcov.info
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v2.0.1
