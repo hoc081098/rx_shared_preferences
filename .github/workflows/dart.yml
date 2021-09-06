@@ -34,4 +34,4 @@ jobs:
       - name: Run tests
         run: flutter test --coverage --coverage-path=lcov.info
 
-      - uses: codecov/codecov-action@v2.0.2
+      - uses: codecov/codecov-action@v2.0.3
