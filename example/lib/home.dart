@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
       .map<List<String>?>((list) => list ?? const <String>[])
       .publishState(
         null,
-        equals: const ListEquality().equals,
+        equals: const ListEquality<String>().equals,
       )..connect().addTo(compositeSubscription);
 
   @override
