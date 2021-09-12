@@ -136,7 +136,7 @@ void main() {
       );
 
       store.failedMethod = const MethodCall('setValue');
-      for (var f in [
+      for (final f in [
         adapter.setString('String', kTestValues2['flutter.String'] as String),
         adapter.setBool('bool', kTestValues2['flutter.bool'] as bool),
         adapter.setInt('int', kTestValues2['flutter.int'] as int),
