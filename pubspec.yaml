@@ -7,6 +7,7 @@ issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
+  flutter: '>=2.0.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -18,6 +19,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.11.0
+  flutter_lints: ^1.0.4
   shared_preferences_platform_interface: ^2.0.0
   collection: ^1.15.0

@@ -134,8 +134,8 @@ void main() {
         throwsA(isA<StateError>()),
       );
 
-      store.failedMethod = MethodCall('setValue');
-      [
+      store.failedMethod = const MethodCall('setValue');
+      for (final f in [
         rxPrefs.setString('String', kTestValues2['flutter.String'] as String),
         rxPrefs.setBool('bool', kTestValues2['flutter.bool'] as bool),
         rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
@@ -147,7 +147,9 @@ void main() {
           user2,
           (u) => jsonEncode(u),
         ),
-      ].forEach((f) => expect(f, throwsPlatformException));
+      ]) {
+        expect(f, throwsPlatformException);
+      }
     });
 
     test('removing', () async {
@@ -169,7 +171,7 @@ void main() {
             growable: true,
           ));
 
-      store.failedMethod = MethodCall('remove');
+      store.failedMethod = const MethodCall('remove');
       expect(rxPrefs.remove(key), throwsPlatformException);
     });
 
@@ -191,7 +193,7 @@ void main() {
       expect(await rxPrefs.getStringList('List'), null);
       expect(store.log, <Matcher>[isMethodCall('clear', arguments: null)]);
 
-      store.failedMethod = MethodCall('clear');
+      store.failedMethod = const MethodCall('clear');
       expect(rxPrefs.clear(), throwsPlatformException);
     });
 
@@ -208,7 +210,7 @@ void main() {
 
       SharedPreferencesStorePlatform.instance =
           store = FakeSharedPreferencesStore(kTestValues2)
-            ..failedMethod = MethodCall('getAll');
+            ..failedMethod = const MethodCall('getAll');
       expect(rxPrefs.reload(), throwsPlatformException);
     });
 
@@ -235,7 +237,7 @@ void main() {
       );
 
       expect(
-        SetEquality<String>().equals(keys, expected),
+        const SetEquality<String>().equals(keys, expected),
         isTrue,
       );
     });
