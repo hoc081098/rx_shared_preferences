@@ -44,7 +44,7 @@ class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
     if (failedMethod?.method == 'clear') {
       return Future.value(false);
     }
-    log.add(MethodCall('clear'));
+    log.add(const MethodCall('clear'));
     return backend.clear();
   }
 
@@ -55,7 +55,7 @@ class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
         PlatformException(code: 'error', message: 'Cannot getAll'),
       );
     }
-    log.add(MethodCall('getAll'));
+    log.add(const MethodCall('getAll'));
     return backend.getAll();
   }
 

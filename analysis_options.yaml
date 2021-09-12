@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.1.11.0.yaml
+include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     # Ignore generated files
@@ -10,3 +10,8 @@ linter:
     - public_member_api_docs
     - prefer_final_locals
     - prefer_relative_imports
+    # https://github.com/dart-lang/lints#migrating-from-packagepedantic
+    - always_declare_return_types
+    - prefer_single_quotes
+    - unawaited_futures
+    - unsafe_html

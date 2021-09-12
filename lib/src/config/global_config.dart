@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../logger/default_logger.dart';
 import '../logger/logger.dart';
 
@@ -7,5 +9,5 @@ class RxSharedPreferencesConfigs {
   /// Default value is a [RxSharedPreferencesDefaultLogger].
   /// Can be set to `null` to disable logging.
   static RxSharedPreferencesLogger? logger =
-      const RxSharedPreferencesDefaultLogger();
+      kReleaseMode ? null : const RxSharedPreferencesDefaultLogger();
 }

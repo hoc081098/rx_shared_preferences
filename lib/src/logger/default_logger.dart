@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:rx_storage/rx_storage.dart';
 
 import '../../rx_shared_preferences.dart';
