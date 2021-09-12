@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:collection/collection.dart';
 import 'package:example/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/flutter_provider.dart';
@@ -16,15 +15,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final NotReplayValueStream<List<String>?> list$ = () {
-    final stream = context.rxPrefs
-        .getStringListStream(key)
-        .map<List<String>?>((list) => list ?? const <String>[])
-        .publishValueNotReplay(null);
-    subscription = stream.connect();
-    return stream;
-  }();
-  StreamSubscription<List<String>?>? subscription;
+  final compositeSubscription = CompositeSubscription();
+
+  late final StateStream<List<String>?> list$ = context.rxPrefs
+      .getStringListStream(key)
+      .map<List<String>?>((list) => list ?? const <String>[])
+      .publishState(
+        null,
+        equals: const ListEquality().equals,
+      )..connect().addTo(compositeSubscription);
 
   @override
   void initState() {
@@ -34,8 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    subscription?.cancel();
-    subscription = null;
+    compositeSubscription.dispose();
     super.dispose();
   }
 
