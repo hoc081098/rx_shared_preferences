@@ -1,3 +1,12 @@
+## 2.2.0 - TODO
+
+-   Update dependencies
+    -   `shared_preferences` to `2.0.7`
+    -   `rx_storage` to `1.2.0`
+    -   `meta` to `1.7.0`
+    -   `rxdart` to `0.27.2`
+    -   `rxdart_ext` to `0.1.2`
+
 ## 2.1.0 - May 9, 2021
 
 -   Update `rxdart` to `0.27.0`.
