@@ -10,7 +10,7 @@ extension DialogExtensions on BuildContext {
         String? text;
 
         return AlertDialog(
-          title: Text('Add a string'),
+          title: const Text('Add a string'),
           content: TextField(
             autofocus: true,
             keyboardType: TextInputType.text,
@@ -21,11 +21,11 @@ extension DialogExtensions on BuildContext {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(text),
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -54,19 +54,19 @@ extension DialogExtensions on BuildContext {
       context: this,
       builder: (context) {
         return AlertDialog(
-          title: Text('Remove this string'),
+          title: const Text('Remove this string'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );

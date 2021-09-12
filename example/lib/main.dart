@@ -10,13 +10,13 @@ void main() {
   /// Singleton instance for app
   final rxPrefs = RxSharedPreferences(
     SharedPreferences.getInstance(),
-    kReleaseMode ? null : RxSharedPreferencesDefaultLogger(),
+    kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
   );
 
   runApp(
     Provider.value(
       rxPrefs,
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

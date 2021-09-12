@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RxSharedPreferences example'),
+        title: const Text('RxSharedPreferences example'),
       ),
       body: StreamBuilder<List<String>?>(
         stream: list$,
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               return ListTile(
                 title: Text(item),
                 trailing: IconButton(
-                  icon: Icon(Icons.remove_circle),
+                  icon: const Icon(Icons.remove_circle),
                   onPressed: () => context.showDialogRemove(item),
                 ),
               );
@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return FloatingActionButton(
             onPressed: () => context.showDialogAdd(),
             tooltip: 'Add a string',
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           );
         },
       ),

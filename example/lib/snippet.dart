@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, prefer_function_declarations_over_variables
+
 import 'dart:convert';
 
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
