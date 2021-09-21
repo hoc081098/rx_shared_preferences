@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:example/dialog.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +19,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final compositeSubscription = CompositeSubscription();
 
-  late final StateStream<List<String>?> list$ = context.rxPrefs
-      .getStringListStream(key)
-      .map<List<String>?>((list) => list ?? const <String>[])
-      .publishState(
-        null,
-        equals: const ListEquality<String>().equals,
-      )..connect().addTo(compositeSubscription);
+  final controller = StreamController<void>();
+  late final StateStream<ViewState> list$ = controller.stream
+      .startWith(null)
+      .switchMap((_) => context.rxPrefs
+          .getStringListStream(key)
+          .map((list) => ViewState.success(list ?? const []))
+          .onErrorReturnWith((e, s) => ViewState.failure(e, s)))
+      .debug(identifier: '<<STATE>>', log: debugPrint)
+      .publishState(ViewState.loading)
+    ..connect().addTo(compositeSubscription);
 
   @override
   void initState() {
@@ -34,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     compositeSubscription.dispose();
+    controller.close();
     super.dispose();
   }
 
@@ -43,28 +49,34 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('RxSharedPreferences example'),
       ),
-      body: StreamBuilder<List<String>?>(
+      body: StreamBuilder<ViewState>(
         stream: list$,
         initialData: list$.value,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
+          final state = snapshot.requireData;
+
+          final asyncError = state.error;
+          if (asyncError != null) {
+            final error = asyncError.error;
+            debugPrint('Error: $error');
+            debugPrint('StackTrace: ${asyncError.stackTrace}');
+
             return Center(
               child: Text(
-                snapshot.error!.toString(),
+                'Error: $error',
                 style: Theme.of(context).textTheme.headline6,
                 textAlign: TextAlign.center,
               ),
             );
           }
 
-          final list = snapshot.data;
-
-          if (list == null) {
+          if (state.isLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
+          final list = state.items;
           if (list.isEmpty) {
             return Center(
               child: Text(
@@ -92,14 +104,29 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
       ),
-      floatingActionButton: Builder(
-        builder: (context) {
-          return FloatingActionButton(
-            onPressed: () => context.showDialogAdd(),
-            tooltip: 'Add a string',
-            child: const Icon(Icons.add),
-          );
-        },
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Builder(
+            builder: (context) {
+              return FloatingActionButton(
+                onPressed: () => context.showDialogAdd(),
+                tooltip: 'Add a string',
+                child: const Icon(Icons.add),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+          FloatingActionButton(
+            onPressed: () async {
+              await context.rxPrefs.reload();
+              controller.add(null);
+            },
+            tooltip: 'Reload',
+            child: const Icon(Icons.refresh),
+          )
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -117,4 +144,35 @@ extension BuildContextX on BuildContext {
       ),
     );
   }
+}
+
+class ViewState {
+  final List<String> items;
+  final bool isLoading;
+  final AsyncError? error;
+
+  static const loading = ViewState._([], true, null);
+
+  const ViewState._(this.items, this.isLoading, this.error);
+
+  ViewState.success(List<String> items) : this._(items, false, null);
+
+  ViewState.failure(Object e, StackTrace s)
+      : this._([], false, AsyncError(e, s));
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ViewState &&
+          runtimeType == other.runtimeType &&
+          const ListEquality<String>().equals(items, other.items) &&
+          isLoading == other.isLoading &&
+          error == other.error;
+
+  @override
+  int get hashCode => items.hashCode ^ isLoading.hashCode ^ error.hashCode;
+
+  @override
+  String toString() =>
+      'ViewState{items.length: ${items.length}, isLoading: $isLoading, error: $error}';
 }
