@@ -7,6 +7,7 @@
 [![Pub](https://img.shields.io/pub/v/rx_shared_preferences.svg?include_prereleases)](https://pub.dartlang.org/packages/rx_shared_preferences)
 [![codecov](https://codecov.io/gh/hoc081098/rx_shared_preferences/branch/master/graph/badge.svg)](https://codecov.io/gh/hoc081098/rx_shared_preferences)
 [![Build Status](https://travis-ci.com/hoc081098/rx_shared_preferences.svg?branch=master)](https://travis-ci.com/hoc081098/rx_shared_preferences)
+[![Build example](https://github.com/hoc081098/rx_shared_preferences/actions/workflows/build-example.yml/badge.svg)](https://github.com/hoc081098/rx_shared_preferences/actions/workflows/build-example.yml)
 ![Flutter CI](https://github.com/hoc081098/rx_shared_preferences/workflows/Flutter%20CI/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Style](https://img.shields.io/badge/style-pedantic-40c4ff.svg)](https://github.com/dart-lang/pedantic)
