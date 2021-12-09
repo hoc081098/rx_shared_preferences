@@ -1,4 +1,4 @@
-## 2.3.0 - Dec 10, 2021
+## 2.3.0 - Dec 9, 2021
 
 -   Change Dart SDK constraint to `'>=2.14.0 <3.0.0'` and Flutter constraint to `'>=2.5.0'`.
 -   Update `shared_preferences` to `2.0.10`
