@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:rx_storage/rx_storage.dart';
 
-import '../../rx_shared_preferences.dart';
 import '../interface/rx_shared_preferences.dart';
+import '../interface/shared_preferences_like.dart';
 import '../logger/logger.dart';
 
 /// Default [RxSharedPreferences] implementation

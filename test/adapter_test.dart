@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rx_shared_preferences/src/impl/shared_preferences_adapter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'fake_shared_prefs_store.dart';

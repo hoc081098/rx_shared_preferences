@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../rx_shared_preferences.dart';
+import '../config/global_config.dart';
 import '../impl/real_rx_shared_preferences.dart';
 import '../impl/shared_preferences_adapter.dart';
 import '../logger/logger.dart';

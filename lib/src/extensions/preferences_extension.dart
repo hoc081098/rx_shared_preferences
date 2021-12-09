@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../rx_shared_preferences.dart';
 import '../config/global_config.dart';
+import '../interface/rx_shared_preferences.dart';
 
 final _instances = <SharedPreferences, RxSharedPreferences>{};
 

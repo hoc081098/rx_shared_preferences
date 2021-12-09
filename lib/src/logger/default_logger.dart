@@ -2,7 +2,7 @@
 
 import 'package:rx_storage/rx_storage.dart';
 
-import '../../rx_shared_preferences.dart';
+import 'logger.dart';
 
 /// Default [RxSharedPreferencesLogger]'s implementation, simply print to the console.
 class RxSharedPreferencesDefaultLogger extends DefaultLogger<String, void>
