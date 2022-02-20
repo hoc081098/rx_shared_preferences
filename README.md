@@ -12,9 +12,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Style](https://img.shields.io/badge/style-lints-40c4ff.svg)](https://pub.dev/packages/lints)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhoc081098%2Frx_shared_preferences&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-[![Latest compatibility result for Stable channel](https://img.shields.io/endpoint?url=https://pub.green/packages/shared_preferences/badge?channel=stable)](https://pub.green/packages/shared_preferences)
-[![Latest compatibility result for Beta channel](https://img.shields.io/endpoint?url=https://pub.green/packages/shared_preferences/badge?channel=beta)](https://pub.green/packages/shared_preferences)
-[![Latest compatibility result for Dev channel](https://img.shields.io/endpoint?url=https://pub.green/packages/shared_preferences/badge?channel=dev)](https://pub.green/packages/shared_preferences)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
