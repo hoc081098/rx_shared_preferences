@@ -5,7 +5,8 @@ import 'package:rx_storage/rx_storage.dart';
 import 'logger.dart';
 
 /// Default [RxSharedPreferencesLogger]'s implementation, simply print to the console.
-class RxSharedPreferencesDefaultLogger extends DefaultLogger<String, void>
+class RxSharedPreferencesDefaultLogger
+    extends RxStorageDefaultLogger<String, void>
     implements RxSharedPreferencesLogger {
   /// Default logger tag.
   static const defaultTag = '⚡ RxSharedPreferences';
@@ -16,24 +17,24 @@ class RxSharedPreferencesDefaultLogger extends DefaultLogger<String, void>
       : super(tag: tag, trimValueOutput: trimValueOutput);
 
   @override
-  void logOther(LoggerEvent<String, void> event) {
-    const rightArrow = DefaultLogger.rightArrow;
-    const leftArrow = DefaultLogger.leftArrow;
-    const downArrow = DefaultLogger.downArrow;
+  bool handleLogEvent(RxStorageLoggerEvent<String, void> event) {
+    const rightArrow = RxStorageDefaultLogger.rightArrow;
+    const leftArrow = RxStorageDefaultLogger.leftArrow;
+    const downArrow = RxStorageDefaultLogger.downArrow;
 
     if (event is ReloadSuccessEvent) {
       print('$tag $downArrow Reload success');
       print(event.keyAndValues
           .map((p) => '    $rightArrow ${keyAndValueToString(p)}')
           .join('\n'));
-      return;
+      return true;
     }
 
     if (event is ReloadFailureEvent) {
       print('$tag $leftArrow Reload $rightArrow ${event.error}');
-      return;
+      return true;
     }
 
-    super.logOther(event);
+    return false;
   }
 }

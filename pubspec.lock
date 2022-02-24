@@ -180,9 +180,11 @@ packages:
   rx_storage:
     dependency: "direct main"
     description:
-      name: rx_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: ef0da1677adb10a85a155297f2e037358abcecbb
+      resolved-ref: ef0da1677adb10a85a155297f2e037358abcecbb
+      url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
+    source: git
     version: "1.2.0"
   rxdart:
     dependency: transitive
