@@ -46,7 +46,14 @@ void main() {
       expect(
         await rxPrefs.read<User>(
           'User',
-          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+          userFromString,
+        ),
+        user1,
+      );
+      expect(
+        await rxPrefs.read<User>(
+          'User',
+          userFromStringFuture,
         ),
         user1,
       );
@@ -73,7 +80,12 @@ void main() {
         rxPrefs.write<User>(
           'User',
           user2,
-          (u) => jsonEncode(u),
+          userToString,
+        ),
+        rxPrefs.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
         ),
       ]);
       expect(
@@ -109,6 +121,11 @@ void main() {
             'flutter.User',
             kTestValues2['flutter.User'],
           ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'String',
+            'flutter.User',
+            kTestValues2['flutter.User'],
+          ]),
         ],
       );
       store.log.clear();
@@ -121,7 +138,14 @@ void main() {
       expect(
         await rxPrefs.read<User>(
           'User',
-          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+          userFromString,
+        ),
+        user2,
+      );
+      expect(
+        await rxPrefs.read<User>(
+          'User',
+          userFromStringFuture,
         ),
         user2,
       );
@@ -129,7 +153,7 @@ void main() {
 
       await expectLater(
         rxPrefs.write('unsupported_type', 1, (v) => <String>{}),
-        throwsA(isA<StateError>()),
+        throwsA(isA<PlatformException>()),
       );
 
       store.failedMethod = const MethodCall('setValue');
@@ -143,7 +167,12 @@ void main() {
         rxPrefs.write<User>(
           'User',
           user2,
-          (u) => jsonEncode(u),
+          userToString,
+        ),
+        rxPrefs.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
         ),
       ]) {
         expect(f, throwsPlatformException);

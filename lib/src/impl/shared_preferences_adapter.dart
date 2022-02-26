@@ -15,6 +15,9 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 
   static Future<T> _wrap<T>(T value) => SynchronousFuture<T>(value);
 
+  static Future<T> _wrapFutureOr<T>(FutureOr<T> value) =>
+      value is Future<T> ? value : SynchronousFuture<T>(value);
+
   @override
   Future<void> clear([void _]) =>
       _prefs.clear().throwsIfNotSuccess('Cannot clear');
@@ -51,7 +54,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     if (val is List) {
       val = _prefs.getStringList(key);
     }
-    return _wrap(decoder(val));
+    return _wrapFutureOr(decoder(val));
   }
 
   @override
@@ -65,43 +68,56 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   Future<void> write<T extends Object>(
       String key, T? value, Encoder<T?> encoder,
       [void _]) {
-    final val = encoder(value);
+    final encodedOrFuture = encoder(value);
+    return encodedOrFuture is Future<Object?>
+        ? encodedOrFuture.then((encoded) => _write(encoded, key, value))
+        : _write(encodedOrFuture, key, value);
+  }
 
-    if (val == null) {
+  Future<void> _write(Object? encoded, String key, Object? value) {
+    assert(encoded is! Future<dynamic>,
+        'The actual type of encoded value is ${encoded.runtimeType}');
+
+    if (encoded == null) {
       return remove(key);
     }
-    if (val is double) {
-      return _prefs.setDouble(key, val).throwsIfNotSuccess(
+    if (encoded is double) {
+      return _prefs.setDouble(key, encoded).throwsIfNotSuccess(
           'Cannot set double value: key=$key, value=$value');
     }
-    if (val is int) {
+    if (encoded is int) {
       return _prefs
-          .setInt(key, val)
+          .setInt(key, encoded)
           .throwsIfNotSuccess('Cannot set int value: key=$key, value=$value');
     }
-    if (val is bool) {
+    if (encoded is bool) {
       return _prefs
-          .setBool(key, val)
+          .setBool(key, encoded)
           .throwsIfNotSuccess('Cannot set bool value: key=$key, value=$value');
     }
-    if (val is String) {
-      return _prefs.setString(key, val).throwsIfNotSuccess(
+    if (encoded is String) {
+      return _prefs.setString(key, encoded).throwsIfNotSuccess(
           'Cannot set String value: key=$key, value=$value');
     }
-    if (val is List<String>) {
-      return _prefs.setStringList(key, val).throwsIfNotSuccess(
+    if (encoded is List<String>) {
+      return _prefs.setStringList(key, encoded).throwsIfNotSuccess(
           'Cannot set List<String> value: key=$key, value=$value');
     }
 
-    throw StateError('Value $val of type ${val.runtimeType} is not supported. '
-        'Encoder must return the value of a supported type, eg. double, int, bool, String or List<String>');
+    throw PlatformException(
+      code: SharedPreferencesLike.errorCode,
+      message:
+          'The encoded value of $value has the unsupported type (${encoded.runtimeType}). '
+          'Encoder must return a value of type FutureOr<T> '
+          '(where T is a supported type (double, int, bool, String or List<String>))',
+    );
   }
 }
 
 extension _ThrowsIfNotSuccess on Future<bool> {
   Future<void> throwsIfNotSuccess(String message) {
-    return then((success) {
-      if (!success) {
+    return then((isSuccessful) {
+      if (!isSuccessful) {
         throw PlatformException(
           code: SharedPreferencesLike.errorCode,
           message: message,

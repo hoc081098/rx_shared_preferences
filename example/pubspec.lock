@@ -197,13 +197,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.3.0"
+    version: "3.0.0-dev.0"
   rx_storage:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: rx_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "50c711605b6aa9a185e7f3ca9b2c87f0d2b35187"
+      resolved-ref: "50c711605b6aa9a185e7f3ca9b2c87f0d2b35187"
+      url: "https://github.com/Flutter-Dart-Open-Source/rx_storage.git"
+    source: git
     version: "1.2.0"
   rxdart:
     dependency: transitive

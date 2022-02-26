@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class User {
   final String id;
   final String name;
@@ -34,3 +36,14 @@ class User {
 
 const user1 = User('1', 'Name 1', 20);
 const user2 = User('2', 'Name 2', 30);
+
+User? userFromString(Object? s) =>
+    s == null ? null : User.fromJson(jsonDecode(s as String));
+
+Future<User?> userFromStringFuture(Object? s) async =>
+    s == null ? null : User.fromJson(jsonDecode(s as String));
+
+String? userToString(User? u) => u == null ? null : jsonEncode(u);
+
+Future<String?> userToStringFuture(User? u) async =>
+    u == null ? null : jsonEncode(u);

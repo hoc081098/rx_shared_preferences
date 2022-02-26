@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +55,14 @@ void main() {
       expect(
         await adapter.read<User>(
           'User',
-          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+          userFromString,
+        ),
+        user1,
+      );
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromStringFuture,
         ),
         user1,
       );
@@ -75,7 +81,12 @@ void main() {
         adapter.write<User>(
           'User',
           user2,
-          (u) => jsonEncode(u),
+          userToString,
+        ),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
         ),
       ]);
       expect(
@@ -111,6 +122,11 @@ void main() {
             'flutter.User',
             kTestValues2['flutter.User'],
           ]),
+          isMethodCall('setValue', arguments: <dynamic>[
+            'String',
+            'flutter.User',
+            kTestValues2['flutter.User'],
+          ]),
         ],
       );
       store.log.clear();
@@ -123,7 +139,14 @@ void main() {
       expect(
         await adapter.read<User>(
           'User',
-          (s) => s == null ? null : User.fromJson(jsonDecode(s as String)),
+          userFromString,
+        ),
+        user2,
+      );
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromStringFuture,
         ),
         user2,
       );
@@ -131,7 +154,7 @@ void main() {
 
       await runZonedGuarded(
         () => adapter.write('unsupported_type', 1, (v) => <String>{}),
-        (e, s) => expect(e, isA<StateError>()),
+        (e, s) => expect(e, isA<PlatformException>()),
       );
 
       store.failedMethod = const MethodCall('setValue');
@@ -145,7 +168,12 @@ void main() {
         adapter.write<User>(
           'User',
           user2,
-          (u) => jsonEncode(u),
+          userToString,
+        ),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
         ),
       ]) {
         expect(f, throwsPlatformException);
