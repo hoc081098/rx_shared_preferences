@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2.3.0
+      - uses: subosito/flutter-action@v2.4.0
         with:
           channel: 'stable'
 
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2.3.0
+      - uses: subosito/flutter-action@v2.4.0
         with:
           flutter-version: ${{ matrix.version }}
 
