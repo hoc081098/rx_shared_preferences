@@ -18,27 +18,6 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   static Future<T> _wrapFutureOr<T>(FutureOr<T> value) =>
       value is Future<T> ? value : SynchronousFuture<T>(value);
 
-  @override
-  Future<void> clear([void _]) =>
-      _prefs.clear().throwsIfNotSuccess('Cannot clear');
-
-  @override
-  Future<bool> containsKey(String key, [void _]) =>
-      _wrap(_prefs.containsKey(key));
-
-  @override
-  Future<Map<String, Object?>> reload() {
-    return _prefs.reload().then((_) {
-      return {
-        for (final k in _prefs.getKeys()) k: _prefs.get(k),
-      };
-    });
-  }
-
-  @override
-  Future<void> remove(String key, [void _]) =>
-      _prefs.remove(key).throwsIfNotSuccess('Cannot remove key=$key');
-
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
     FutureOr<SharedPreferences> prefsOrFuture,
@@ -49,20 +28,28 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
               as FutureOr<SharedPreferencesAdapter>;
 
   @override
-  Future<T?> read<T extends Object>(String key, Decoder<T?> decoder, [void _]) {
-    var val = _prefs.get(key);
-    if (val is List) {
-      val = _prefs.getStringList(key);
-    }
-    return _wrapFutureOr(decoder(val));
-  }
+  Future<void> clear([void _]) =>
+      _prefs.clear().throwsIfNotSuccess('Cannot clear');
 
   @override
-  Future<Map<String, Object?>> readAll([void _]) {
-    return _wrap({
-      for (final k in _prefs.getKeys()) k: _prefs.get(k),
-    });
-  }
+  Future<bool> containsKey(String key, [void _]) =>
+      _wrap(_prefs.containsKey(key));
+
+  @override
+  Future<Map<String, Object?>> reload() =>
+      _prefs.reload().then((_) => _getAllFromPrefs());
+
+  @override
+  Future<void> remove(String key, [void _]) =>
+      _prefs.remove(key).throwsIfNotSuccess('Cannot remove key=$key');
+
+  @override
+  Future<T?> read<T extends Object>(String key, Decoder<T?> decoder,
+          [void _]) =>
+      _wrapFutureOr(decoder(_getFromPrefs(key)));
+
+  @override
+  Future<Map<String, Object?>> readAll([void _]) => _wrap(_getAllFromPrefs());
 
   @override
   Future<void> write<T extends Object>(
@@ -72,6 +59,17 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
     return encodedOrFuture is Future<Object?>
         ? encodedOrFuture.then((encoded) => _write(encoded, key, value))
         : _write(encodedOrFuture, key, value);
+  }
+
+  Object? _getFromPrefs(String key) {
+    final val = _prefs.get(key);
+    return val is List ? _prefs.getStringList(key) : val;
+  }
+
+  Map<String, Object?> _getAllFromPrefs() {
+    return {
+      for (final k in _prefs.getKeys()) k: _getFromPrefs(k),
+    };
   }
 
   Future<void> _write(Object? encoded, String key, Object? value) {
