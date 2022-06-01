@@ -293,7 +293,7 @@ void main() {
       SharedPreferencesStorePlatform.instance =
           InMemorySharedPreferencesStore.withData(
         {
-          'flutter.List': ['AFTER RELOAD']
+          'flutter.List': <Object?>['AFTER RELOAD']
         },
       );
       await rxPrefs.reload(); // emits ['AFTER RELOAD']
@@ -302,7 +302,7 @@ void main() {
 
       SharedPreferencesStorePlatform.instance =
           InMemorySharedPreferencesStore.withData({
-        'flutter.List': ['WORKING 2'],
+        'flutter.List': <Object?>['WORKING 2'],
       });
       await rxPrefs.reload(); // emits ['WORKING']
 
