@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ 'stable', 'beta' ]
+        channel: [ 'stable', 'beta' ]
     steps:
       - uses: actions/checkout@v3
 
       - uses: subosito/flutter-action@v2.4.0
         with:
-          channel: ${{ matrix.version }}
+          channel: ${{ matrix.channel }}
 
       - name: Doctor
         run: flutter doctor
@@ -41,7 +41,7 @@ jobs:
 
       - uses: codecov/codecov-action@v3.1.0
 
-  test-old-version:
+  test-old-versions:
     runs-on: ubuntu-latest
     strategy:
       matrix:
