@@ -17,10 +17,6 @@ dependencies:
 dependency_overrides:
   rx_shared_preferences:
     path: ../
-  rx_storage:
-    git:
-      url: https://github.com/Flutter-Dart-Open-Source/rx_storage.git
-      ref: 50c711605b6aa9a185e7f3ca9b2c87f0d2b35187
 
 dev_dependencies:
   flutter_lints: ^1.0.4
