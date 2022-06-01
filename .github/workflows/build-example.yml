@@ -3,12 +3,17 @@ name: Build example
 on:
   push:
     branches: [ master ]
+    paths-ignore: [ '**.md' ]
   pull_request:
     branches: [ master ]
+    paths-ignore: [ '**.md' ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ '2.5.0', '2.8.1', '2.10.5', 'stable', 'beta' ]
     defaults:
       run:
         working-directory: ./example
@@ -22,7 +27,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2.4.0
         with:
-          channel: 'stable'
+          channel: ${{ matrix.version }}
 
       - name: Print Dart SDK version
         run: dart --version

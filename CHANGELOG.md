@@ -1,3 +1,11 @@
+## 3.0.0 - Jun 1, 2022
+
+-   Update dependencies
+    -   `shared_preferences` to `2.0.15`
+    -   `rx_storage` to `2.0.0`
+    -   `rxdart` to `0.27.4`
+    -   `rxdart_ext` to `0.2.2`
+
 ## 2.3.0 - Dec 9, 2021
 
 -   Change Dart SDK constraint to `'>=2.14.0 <3.0.0'` and Flutter constraint to `'>=2.5.0'`.
