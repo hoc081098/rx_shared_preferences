@@ -9,17 +9,15 @@ final _instances = <SharedPreferences, RxSharedPreferences>{};
 extension SharedPreferencesRxExtension on SharedPreferences {
   /// Returns singleton instance associated with this [SharedPreferences].
   RxSharedPreferences get rx {
-    final instances = _instances;
-
-    final cached = instances[this];
+    final cached = _instances[this];
     if (cached != null) {
       return cached;
     }
 
-    return instances[this] = RxSharedPreferences(
+    return _instances[this] = RxSharedPreferences(
       this,
       RxSharedPreferencesConfigs.logger,
-      () => instances.remove(this),
+      () => _instances.remove(this),
     );
   }
 }
