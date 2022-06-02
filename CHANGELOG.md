@@ -6,6 +6,8 @@
     -   `rxdart` to `0.27.4`
     -   `rxdart_ext` to `0.2.2`
 
+-   Update `Flutter` constraint to `'>=2.8.0'`.
+
 ## 2.3.0 - Dec 9, 2021
 
 -   Change Dart SDK constraint to `'>=2.14.0 <3.0.0'` and Flutter constraint to `'>=2.5.0'`.
