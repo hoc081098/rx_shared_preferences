@@ -1,4 +1,4 @@
-## 3.0.0 - Jun 1, 2022
+## 3.0.0 - Jun 3, 2022
 
 -   Update dependencies
     -   `shared_preferences` to `2.0.15`
