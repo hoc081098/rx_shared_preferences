@@ -22,6 +22,11 @@
 -   Reactive stream wrapper around SharedPreferences.
 -   This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
+## Buy me a coffee
+Liked some of my work? Buy me a coffee (or more likely a beer)
+
+[!["Buy Me A Coffee"](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/hoc081098)
+
 ## Note
 
 Since version `1.3.4`, this package is an extension of [rx_storage](https://github.com/Flutter-Dart-Open-Source/rx_storage) package.
