@@ -40,9 +40,11 @@ jobs:
 
       - name: Format code
         run: flutter format lib --set-exit-if-changed
+        if: ${{ matrix.channel == 'stable' }}
 
       - name: Analyze
         run: flutter analyze lib
+        if: ${{ matrix.channel == 'stable' }}
 
       - name: Build APK
         run: flutter build apk --no-shrink
