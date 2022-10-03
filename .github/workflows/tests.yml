@@ -32,14 +32,17 @@ jobs:
 
       - name: Format
         run: flutter format lib test example --set-exit-if-changed
+        if: ${{ matrix.channel == 'stable' }}
 
       - name: Analyze
         run: flutter analyze lib test example
+        if: ${{ matrix.channel == 'stable' }}
 
       - name: Run tests
         run: flutter test --coverage --coverage-path=lcov.info
 
       - uses: codecov/codecov-action@v3.1.0
+        if: ${{ matrix.channel == 'stable' }}
 
   test-old-versions:
     runs-on: ubuntu-latest
