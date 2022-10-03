@@ -66,7 +66,7 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
   ...
-  rx_shared_preferences: ^2.2.0
+  rx_shared_preferences: ^3.0.0
 ```
 
 ## Usage
