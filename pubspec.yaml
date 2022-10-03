@@ -4,6 +4,8 @@ version: 3.0.0
 homepage: https://github.com/hoc081098/rx_shared_preferences.git
 repository: https://github.com/hoc081098/rx_shared_preferences.git
 issue_tracker: https://github.com/hoc081098/rx_shared_preferences/issues
+funding:
+  - https://www.buymeacoffee.com/hoc081098
 
 environment:
   sdk: '>=2.14.0 <3.0.0'
