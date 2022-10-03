@@ -38,6 +38,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Pub upgrade (if beta)
+        run: flutter pub upgrade
+        if: ${{ matrix.channel == 'beta' }}
+
       - name: Format code
         run: flutter format lib --set-exit-if-changed
         if: ${{ matrix.channel == 'stable' }}
