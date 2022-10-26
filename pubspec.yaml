@@ -16,7 +16,6 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.0.15
   rx_storage: ^2.0.0
-  rxdart_ext: ^0.2.2
   meta: ^1.7.0
 
 dev_dependencies:
