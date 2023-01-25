@@ -111,9 +111,17 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// Read bool value by [key], than transform value by [transformer]
   /// and finally save computed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
-  Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
-      executeUpdate<bool>(key, _cast, transformer, _identity);
+  Future<void> updateBool(String key, Transformer<bool?> transformer) =>
+      update<bool>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 
   /// `Read–modify–write`.
   ///

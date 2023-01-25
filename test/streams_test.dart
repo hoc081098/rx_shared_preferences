@@ -389,7 +389,7 @@ void main() {
       expect(identical(old, prefs.rx), false);
     });
 
-    test('executeUpdateBool', () async {
+    test('updateBool', () async {
       final initial = kTestValues['flutter.bool'] as bool;
       final expected = !initial;
 
@@ -398,7 +398,7 @@ void main() {
         emitsInOrder(<Object>[anything, expected]),
       );
       expect(await rxPrefs.getBool('bool'), initial);
-      await rxPrefs.executeUpdateBool('bool', (s) => !s!);
+      await rxPrefs.updateBool('bool', (s) => !s!);
       expect(await rxPrefs.getBool('bool'), expected);
     });
 
