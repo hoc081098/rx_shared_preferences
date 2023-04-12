@@ -41,7 +41,7 @@ jobs:
       - name: Run tests
         run: flutter test --coverage --coverage-path=lcov.info
 
-      - uses: codecov/codecov-action@v3.1.1
+      - uses: codecov/codecov-action@v3.1.2
         if: ${{ matrix.channel == 'stable' }}
 
   test-old-versions:
