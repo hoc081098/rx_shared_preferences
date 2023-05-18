@@ -31,7 +31,7 @@ jobs:
         run: flutter packages get
 
       - name: Format
-        run: flutter format lib test example --set-exit-if-changed
+        run: dart format lib test example --set-exit-if-changed
         if: ${{ matrix.channel == 'stable' }}
 
       - name: Analyze

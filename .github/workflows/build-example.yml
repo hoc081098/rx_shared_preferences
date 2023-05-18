@@ -43,7 +43,7 @@ jobs:
         if: ${{ matrix.channel == 'beta' }}
 
       - name: Format code
-        run: flutter format lib --set-exit-if-changed
+        run: dart format lib --set-exit-if-changed
         if: ${{ matrix.channel == 'stable' }}
 
       - name: Analyze
