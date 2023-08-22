@@ -8,7 +8,7 @@ funding:
   - https://www.buymeacoffee.com/hoc081098
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '<4.0.0'
   flutter: '>=2.8.0'
 
 dependencies:
