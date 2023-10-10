@@ -108,12 +108,28 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
       observeAll().map((map) => map.keys.toSet());
 
   /// `Read–modify–write`.
-  ///
-  /// Read bool value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Use [updateBool] instead. It will be removed in v4.0.0.
   @experimental
+  @Deprecated('Use updateBool instead. It will be removed in v4.0.0')
   Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
-      executeUpdate<bool>(key, _cast, transformer, _identity);
+      updateBool(key, transformer);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read bool value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  @experimental
+  Future<void> updateBool(String key, Transformer<bool?> transformer) =>
+      update<bool>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 
   /// `Read–modify–write`.
   ///
@@ -122,7 +138,12 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   @experimental
   Future<void> executeUpdateDouble(
           String key, Transformer<double?> transformer) =>
-      executeUpdate<double>(key, _cast, transformer, _identity);
+      update<double>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 
   /// `Read–modify–write`.
   ///
@@ -130,7 +151,12 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// and finally save computed value to persistent storage.
   @experimental
   Future<void> executeUpdateInt(String key, Transformer<int?> transformer) =>
-      executeUpdate<int>(key, _cast, transformer, _identity);
+      update<int>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 
   /// `Read–modify–write`.
   ///
@@ -138,8 +164,15 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// and finally save computed value to persistent storage.
   @experimental
   Future<void> executeUpdateString(
-          String key, Transformer<String?> transformer) =>
-      executeUpdate<String>(key, _cast, transformer, _identity);
+    String key,
+    Transformer<String?> transformer,
+  ) =>
+      update<String>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 
   /// `Read–modify–write`.
   ///
@@ -147,6 +180,13 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// and finally save computed value to persistent storage.
   @experimental
   Future<void> executeUpdateStringList(
-          String key, Transformer<List<String>?> transformer) =>
-      executeUpdate<List<String>>(key, _cast, transformer, _identity);
+    String key,
+    Transformer<List<String>?> transformer,
+  ) =>
+      update<List<String>>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 }
