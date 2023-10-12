@@ -14,7 +14,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.18
+  shared_preferences: ^2.0.15
   rx_storage: ^2.1.0
   meta: ^1.7.0
 
