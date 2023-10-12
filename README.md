@@ -234,14 +234,14 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
-### 5. Dispose
+### 6. Dispose
 
-You can dispose `RxSharedPreferences` when is no longer needed.
+You can dispose the `RxSharedPreferences` when it is no longer needed.
 Just call `rxPrefs.dispose()`.
-Usually you call this method on `dispose` of a `State`
+Usually, you call this method on `dispose` method of a Flutter `State`.
 
 > NOTE: If you use the default singleton instance (via `RxSharedPreferences.getInstance()`,
-> you should **not** call `dispose` method,
+> you should **not** call the `dispose` method,
 > must keep the instance alive for the entire lifetime of the application.
 
 
