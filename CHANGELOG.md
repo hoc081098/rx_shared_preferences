@@ -8,8 +8,7 @@
 
 -   Change `Dart SDK` constraint to `'>=2.17.0 <4.0.0'`.
 
--   Deprecate all `SharedPreferencesExtensions.executeUpdate...` methods,
-    use `update...` instead.
+-   Deprecate all `executeUpdate...` extension methods, use `update...` instead.
 
 ## 3.0.0 - Jun 3, 2022
 
