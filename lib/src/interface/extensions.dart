@@ -245,10 +245,33 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
 
   /// `Read–modify–write`.
   ///
-  /// Read List<String> value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read List<String> value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateStringList] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateStringList].
   @experimental
+  @Deprecated('Use updateStringList instead. It will be removed in v4.0.0')
   Future<void> executeUpdateStringList(
+    String key,
+    Transformer<List<String>?> transformer,
+  ) =>
+      updateStringList(key, transformer);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read List<String> value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  @experimental
+  Future<void> updateStringList(
     String key,
     Transformer<List<String>?> transformer,
   ) =>
