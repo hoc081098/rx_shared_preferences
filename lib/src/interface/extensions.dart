@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../rx_shared_preferences.dart';
 
-T _identity<T>(T t) => t;
+Object? _identity<T>(Object? t) => t;
 
 T _cast<T>(Object? value) => value as T;
 
