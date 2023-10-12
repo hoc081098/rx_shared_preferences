@@ -209,13 +209,33 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
 
   /// `Read–modify–write`.
   ///
-  /// Read String value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read String value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateString] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateString].
   @experimental
+  @Deprecated('Use updateString instead. It will be removed in v4.0.0')
   Future<void> executeUpdateString(
     String key,
     Transformer<String?> transformer,
   ) =>
+      updateString(key, transformer);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read String value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  @experimental
+  Future<void> updateString(String key, Transformer<String?> transformer) =>
       update<String>(
         key: key,
         decoder: _cast,
