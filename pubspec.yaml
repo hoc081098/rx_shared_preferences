@@ -11,6 +11,13 @@ environment:
   sdk: '>=2.17.0 <4.0.0'
   flutter: '>=3.0.0'
 
+topics:
+  - rxdart
+  - hoc081098
+  - rx-shared-preferences
+  - reactive-shared-preferences
+  - reactive-programming
+
 dependencies:
   flutter:
     sdk: flutter
