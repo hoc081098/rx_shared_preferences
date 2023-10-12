@@ -8,20 +8,20 @@ funding:
   - https://www.buymeacoffee.com/hoc081098
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
-  flutter: '>=2.8.0'
+  sdk: '>=2.17.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.15
+  shared_preferences: ^2.0.18
   rx_storage: ^2.1.0
   meta: ^1.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.0
   shared_preferences_platform_interface: ^2.1.0
-  plugin_platform_interface: ^2.1.3
-  collection: ^1.15.0
+  plugin_platform_interface: ^2.1.4
+  collection: ^1.17.0
