@@ -472,7 +472,7 @@ void main() {
 
     test('executeUpdateString', () async {
       final initial = kTestValues['flutter.String'] as String;
-      final expected = initial + '1';
+      final expected = '${initial}1';
 
       expect(
         rxPrefs.getStringStream('String'),
@@ -480,20 +480,20 @@ void main() {
       );
       expect(await rxPrefs.getString('String'), initial);
       // ignore: deprecated_member_use_from_same_package
-      await rxPrefs.executeUpdateString('String', (s) => s! + '1');
+      await rxPrefs.executeUpdateString('String', (s) => '${s!}1');
       expect(await rxPrefs.getString('String'), expected);
     });
 
     test('updateString', () async {
       final initial = kTestValues['flutter.String'] as String;
-      final expected = initial + '1';
+      final expected = '${initial}1';
 
       expect(
         rxPrefs.getStringStream('String'),
         emitsInOrder(<Object>[anything, expected]),
       );
       expect(await rxPrefs.getString('String'), initial);
-      await rxPrefs.updateString('String', (s) => s! + '1');
+      await rxPrefs.updateString('String', (s) => '${s!}1');
       expect(await rxPrefs.getString('String'), expected);
     });
 

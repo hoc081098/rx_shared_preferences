@@ -12,7 +12,7 @@ import 'model/user.dart';
 
 void main() {
   group('SharedPreferencesAdapter', () {
-    const _prefix = 'flutter.';
+    const prefix = 'flutter.';
 
     late FakeSharedPreferencesStore store;
     late SharedPreferencesAdapter adapter;
@@ -259,7 +259,7 @@ void main() {
       final keys = await adapter.getKeys();
       final expected = Set.of(
         kTestValues.keys.map(
-          (s) => s.substring(_prefix.length),
+          (s) => s.substring(prefix.length),
         ),
       );
 
@@ -274,7 +274,7 @@ void main() {
         await adapter.readAll(),
         kTestValues.map(
           (key, value) => MapEntry(
-            key.substring(_prefix.length),
+            key.substring(prefix.length),
             value,
           ),
         ),
@@ -287,7 +287,7 @@ void main() {
         await adapter.readAll(),
         kTestValues2.map(
           (key, value) => MapEntry(
-            key.substring(_prefix.length),
+            key.substring(prefix.length),
             value,
           ),
         ),
