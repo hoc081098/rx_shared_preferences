@@ -108,7 +108,15 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
       observeAll().map((map) => map.keys.toSet());
 
   /// `Read–modify–write`.
+  ///
+  /// Read bool value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
   /// Use [updateBool] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
   @Deprecated('Use updateBool instead. It will be removed in v4.0.0')
   Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
