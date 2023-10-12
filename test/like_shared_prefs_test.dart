@@ -253,11 +253,11 @@ void main() {
     });
 
     test('getKeys', () async {
-      const _prefix = 'flutter.';
+      const prefix = 'flutter.';
       final keys = await rxPrefs.getKeys();
       final expected = Set.of(
         kTestValues.keys.map(
-          (s) => s.substring(_prefix.length),
+          (s) => s.substring(prefix.length),
         ),
       );
 
@@ -268,13 +268,13 @@ void main() {
     });
 
     test('readAll', () async {
-      const _prefix = 'flutter.';
+      const prefix = 'flutter.';
 
       expect(
         await rxPrefs.readAll(),
         kTestValues.map(
           (key, value) => MapEntry(
-            key.substring(_prefix.length),
+            key.substring(prefix.length),
             value,
           ),
         ),
@@ -287,7 +287,7 @@ void main() {
         await rxPrefs.readAll(),
         kTestValues2.map(
           (key, value) => MapEntry(
-            key.substring(_prefix.length),
+            key.substring(prefix.length),
             value,
           ),
         ),

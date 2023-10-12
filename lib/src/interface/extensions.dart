@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../rx_shared_preferences.dart';
 
-T _identity<T>(T t) => t;
+Object? _identity(Object? t) => t;
 
 T _cast<T>(Object? value) => value as T;
 
@@ -109,44 +109,176 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
 
   /// `Read–modify–write`.
   ///
-  /// Read bool value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read bool value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateBool] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateBool].
   @experimental
+  @Deprecated('Use updateBool instead. It will be removed in v4.0.0')
   Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
-      executeUpdate<bool>(key, _cast, transformer, _identity);
+      updateBool(key, transformer);
 
   /// `Read–modify–write`.
   ///
-  /// Read double value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read bool value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
+  Future<void> updateBool(String key, Transformer<bool?> transformer) =>
+      update<bool>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
+
+  /// `Read–modify–write`.
+  ///
+  /// Read double value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateDouble] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateDouble].
+  @experimental
+  @Deprecated('Use updateDouble instead. It will be removed in v4.0.0')
   Future<void> executeUpdateDouble(
           String key, Transformer<double?> transformer) =>
-      executeUpdate<double>(key, _cast, transformer, _identity);
+      updateDouble(key, transformer);
 
   /// `Read–modify–write`.
   ///
-  /// Read int value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read double value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
+  Future<void> updateDouble(String key, Transformer<double?> transformer) =>
+      update<double>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
+
+  /// `Read–modify–write`.
+  ///
+  /// Read int value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateInt] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateInt].
+  @experimental
+  @Deprecated('Use updateInt instead. It will be removed in v4.0.0')
   Future<void> executeUpdateInt(String key, Transformer<int?> transformer) =>
-      executeUpdate<int>(key, _cast, transformer, _identity);
+      updateInt(key, transformer);
 
   /// `Read–modify–write`.
   ///
-  /// Read String value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read int value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
+  Future<void> updateInt(String key, Transformer<int?> transformer) =>
+      update<int>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
+
+  /// `Read–modify–write`.
+  ///
+  /// Read String value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateString] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateString].
+  @experimental
+  @Deprecated('Use updateString instead. It will be removed in v4.0.0')
   Future<void> executeUpdateString(
-          String key, Transformer<String?> transformer) =>
-      executeUpdate<String>(key, _cast, transformer, _identity);
+    String key,
+    Transformer<String?> transformer,
+  ) =>
+      updateString(key, transformer);
 
   /// `Read–modify–write`.
   ///
-  /// Read List<String> value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read String value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
   @experimental
+  Future<void> updateString(String key, Transformer<String?> transformer) =>
+      update<String>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
+
+  /// `Read–modify–write`.
+  ///
+  /// Read List<String> value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateStringList] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateStringList].
+  @experimental
+  @Deprecated('Use updateStringList instead. It will be removed in v4.0.0')
   Future<void> executeUpdateStringList(
-          String key, Transformer<List<String>?> transformer) =>
-      executeUpdate<List<String>>(key, _cast, transformer, _identity);
+    String key,
+    Transformer<List<String>?> transformer,
+  ) =>
+      updateStringList(key, transformer);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read List<String> value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  @experimental
+  Future<void> updateStringList(
+    String key,
+    Transformer<List<String>?> transformer,
+  ) =>
+      update<List<String>>(
+        key: key,
+        decoder: _cast,
+        transformer: transformer,
+        encoder: _identity,
+      );
 }

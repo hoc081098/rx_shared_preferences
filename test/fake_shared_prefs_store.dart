@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'model/user.dart';
@@ -27,7 +28,8 @@ final kTestValues2 = <String, Object>{
 };
 
 /// Fake Shared Preferences Store
-class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
+class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
+    implements MockPlatformInterfaceMixin {
   final InMemorySharedPreferencesStore backend;
   final log = <MethodCall>[];
 
@@ -35,9 +37,6 @@ class FakeSharedPreferencesStore implements SharedPreferencesStorePlatform {
 
   FakeSharedPreferencesStore(Map<String, Object> data)
       : backend = InMemorySharedPreferencesStore.withData(data);
-
-  @override
-  bool get isMock => true;
 
   @override
   Future<bool> clear() {

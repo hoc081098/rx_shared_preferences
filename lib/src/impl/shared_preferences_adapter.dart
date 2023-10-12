@@ -29,7 +29,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 
   @override
   Future<void> clear([void _]) =>
-      _prefs.clear().throwsIfNotSuccess('Cannot clear');
+      _prefs.clear().throwsIfUnsuccessful('Cannot clear');
 
   @override
   Future<bool> containsKey(String key, [void _]) =>
@@ -41,7 +41,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 
   @override
   Future<void> remove(String key, [void _]) =>
-      _prefs.remove(key).throwsIfNotSuccess('Cannot remove key=$key');
+      _prefs.remove(key).throwsIfUnsuccessful('Cannot remove key=$key');
 
   @override
   Future<T?> read<T extends Object>(String key, Decoder<T?> decoder,
@@ -80,25 +80,24 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
       return remove(key);
     }
     if (encoded is double) {
-      return _prefs.setDouble(key, encoded).throwsIfNotSuccess(
+      return _prefs.setDouble(key, encoded).throwsIfUnsuccessful(
           'Cannot set double value: key=$key, value=$value');
     }
     if (encoded is int) {
       return _prefs
           .setInt(key, encoded)
-          .throwsIfNotSuccess('Cannot set int value: key=$key, value=$value');
+          .throwsIfUnsuccessful('Cannot set int value: key=$key, value=$value');
     }
     if (encoded is bool) {
-      return _prefs
-          .setBool(key, encoded)
-          .throwsIfNotSuccess('Cannot set bool value: key=$key, value=$value');
+      return _prefs.setBool(key, encoded).throwsIfUnsuccessful(
+          'Cannot set bool value: key=$key, value=$value');
     }
     if (encoded is String) {
-      return _prefs.setString(key, encoded).throwsIfNotSuccess(
+      return _prefs.setString(key, encoded).throwsIfUnsuccessful(
           'Cannot set String value: key=$key, value=$value');
     }
     if (encoded is List<String>) {
-      return _prefs.setStringList(key, encoded).throwsIfNotSuccess(
+      return _prefs.setStringList(key, encoded).throwsIfUnsuccessful(
           'Cannot set List<String> value: key=$key, value=$value');
     }
 
@@ -113,7 +112,7 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
 }
 
 extension _ThrowsIfNotSuccess on Future<bool> {
-  Future<void> throwsIfNotSuccess(String message) {
+  Future<void> throwsIfUnsuccessful(String message) {
     return then((isSuccessful) {
       if (!isSuccessful) {
         throw PlatformException(

@@ -49,6 +49,6 @@ void main() async {
   );
 
   // Or read-modify-write style.
-  await rxPrefs.executeUpdateStringList(
+  await rxPrefs.updateStringList(
       idsKey, (currentIds) => [...?currentIds, 'new id']);
 }
