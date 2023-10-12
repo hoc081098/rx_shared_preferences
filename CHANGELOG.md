@@ -1,3 +1,16 @@
+## 3.1.0 - TODO
+
+-   Update dependencies
+    -   `shared_preferences` to `^2.0.18`.
+    -   `rx_storage` to `^2.1.0`
+
+-   Change `Flutter` constraint to `'3.0.0'`.
+
+-   Change `Dart SDK` constraint to `'>=2.17.0 <4.0.0'`.
+
+-   Deprecate all `SharedPreferencesExtensions.executeUpdateXXX` methods,
+    use `updateXXX` instead.
+
 ## 3.0.0 - Jun 3, 2022
 
 -   Update dependencies

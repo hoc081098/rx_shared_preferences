@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
-import 'package:shared_preferences_platform_interface/types.dart';
 
 import 'model/user.dart';
 
@@ -49,15 +48,6 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
   }
 
   @override
-  Future<bool> clearWithParameters(ClearParameters parameters) {
-    if (failedMethod?.method == 'clearWithParameters') {
-      return Future.value(false);
-    }
-    log.add(const MethodCall('clearWithParameters'));
-    return backend.clearWithParameters(parameters);
-  }
-
-  @override
   Future<Map<String, Object>> getAll() {
     if (failedMethod?.method == 'getAll') {
       return Future.error(
@@ -66,19 +56,6 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
     }
     log.add(const MethodCall('getAll'));
     return backend.getAll();
-  }
-
-  @override
-  Future<Map<String, Object>> getAllWithParameters(
-      GetAllParameters parameters) {
-    if (failedMethod?.method == 'getAllWithParameters') {
-      return Future.error(
-        PlatformException(
-            code: 'error', message: 'Cannot getAllWithParameters'),
-      );
-    }
-    log.add(const MethodCall('getAllWithParameters'));
-    return backend.getAllWithParameters(parameters);
   }
 
   @override
