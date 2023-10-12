@@ -23,32 +23,37 @@
 -   This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
 
 ## Buy me a coffee
+
 Liked some of my work? Buy me a coffee (or more likely a beer)
 
-[!["Buy Me A Coffee"](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/hoc081098)
+<a href="https://www.buymeacoffee.com/hoc081098" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height=64></a>
 
 ## Note
 
 Since version `1.3.4`, this package is an extension of [rx_storage](https://github.com/Flutter-Dart-Open-Source/rx_storage) package.
 
-## More detail about returned `Stream`
--   It's a **single-subscription `Stream`** (ie. it can only be listened once).
+## More details about the returned `Stream`
 
--   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listen to.
+-   It's a **single-subscription `Stream`** (i.e. it can only be listened once).
 
--   It will automatically emit value when value associated with key was changed successfully
-    (**emit `null`** when value associated with key was `removed` or set to `null`).
+-   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listened to.
+
+-   It will **automatically** emit the new value when the value associated with key was changed successfully
+    (it will also **emit `null`** when value associated with key was `removed` or set to `null`).
 
 -   When value read from Storage has a type other than expected type:
     -   If value is `null`, the `Stream` will **emit `null`** (this occurred because `null` can be cast to any nullable type).
     -   Otherwise, the `Stream` will **emit a `TypeError`**.
 
--   **Can emit** two consecutive data events that are equal. You should use Rx operator like `distinct` (More commonly known as `distinctUntilChanged` in other Rx implementations) to create an `Stream` where data events are skipped if they are equal to the previous data event.
+-   **Can emit** two consecutive data events that are equal.
+    You should use Rx operator like `distinct`
+    (more commonly known as `distinctUntilChanged` in other Rx implementations)
+    to create a `Stream` where data events are skipped if they are equal to the previous data event.
 
 ```text
-Key changed:  |----------K1---K2------K1----K1-----K2---------> time
+Key changed   |----------K1---K2------K1----K1-----K2---------> time
               |                                                
-Value stream: |-----@----@------------@-----@-----------------> time
+Value stream  |-----@----@------------@-----@-----------------> time
               |    ^                                      
               |    |
               |  Listen(key=K1)
@@ -65,13 +70,13 @@ In your flutter project, add the dependency to your `pubspec.yaml`
 
 ```yaml
 dependencies:
-  ...
-  rx_shared_preferences: ^3.0.0
+  [...]
+  rx_shared_preferences: <latest_version>
 ```
 
 ## Usage
 
-### 1. Import and instatiance
+### 1. Import and instantiate
 
 -   Import `rx_shared_preferences`.
 
@@ -83,12 +88,12 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 ```dart
 // via constructor.
-final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
-final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance()); // await is optional
-final rxPrefs = RxSharedPreferences.getInstance(); // default singleton instance
+final rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance()); // use await
+final rxPrefs = RxSharedPreferences(SharedPreferences.getInstance());       // await is optional
+final rxPrefs = RxSharedPreferences.getInstance();                          // default singleton instance
 
 // via extension.
-final rxPrefs = (await SharedPreferences.getInstance()).rx;
+final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
 > NOTE: When using `RxSharedPreferences.getInstance()` and extension `(await SharedPreferences.getInstance()).rx`, 
@@ -96,8 +101,8 @@ final rxPrefs = (await SharedPreferences.getInstance()).rx;
 
 ### 2. Add a logger (optional)
 
-You can add logger optional parameter to `RxSharedPreferences` constructor.
-The logger will log messages about operations (such as read, write) and stream events.
+You can pass a logger to the optional parameter of `RxSharedPreferences` constructor.
+The logger will log messages about operations (such as read, write, ...) and stream events.
 This package provides two `RxSharedPreferencesLogger`s: 
 -   `RxSharedPreferencesDefaultLogger`. 
 -   `RxSharedPreferencesEmptyLogger`.
@@ -111,7 +116,7 @@ final rxPrefs = RxSharedPreferences(
 ```
 
 > NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
-> to `RxSharedPreferences` constructor or use `RxSharedPreferencesConfigs.logger` setter.
+> to `RxSharedPreferences` constructor, or use `RxSharedPreferencesConfigs.logger` setter.
 
 > NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`.
 > ```dart
@@ -120,14 +125,15 @@ final rxPrefs = RxSharedPreferences(
 >   DisposeBagConfigs.logger = null;
 > }
 > ```
+
 ### 3. Select stream and observe
 
--   Then, just listen `Stream`, transform `Stream` through operators such as (`map`, `flatMap`, etc...).
--   If you need listen to this `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
+-   Then, just listen `Stream`s, transform `Stream`s through operators such as `map`, `flatMap`, etc...
+-   If you need to listen to the `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
 
 ```dart
 // Listen
-rxPrefs.getStringListStream('KEY_LIST').listen(print); // [*]
+rxPrefs.getStringListStream('KEY_LIST').listen(print);                  // [*]
 
 // Broadcast stream
 rxPrefs.getStringListStream('KEY_LIST').share();
@@ -141,27 +147,33 @@ rxPrefs.getIntStream('KEY_INT')
   ...
 
 // must **use same rxPrefs** instance when set value and select stream
-await rxPrefs.setStringList('KEY_LIST', ['Cool']); // [*] will print ['Cool']
+await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] will print ['Cool']
 ```
 
--   In the previous example we re-used the RxSharedPreferences object `rxPrefs` for all writing operations. All writing operations must go through this object in order to correctly notify subscribers.
+-   In the previous example, we re-used the `RxSharedPreferences` object `rxPrefs` for all operations.
+    All operations must go through this object in order to correctly notify subscribers.
+    Basically, you must use the same `RxSharedPreferences` instance when set value and select stream.
 
--   In Flutter, you:
-    -   Can create global `RxSharedPreferences` instance.
+-   In a Flutter app, you can:
+    -   Create a global `RxSharedPreferences` instance.
         
-    -   Can use default singleton instance `RxSharedPreferences.getInstance()`
+    -   Use the default singleton instance via `RxSharedPreferences.getInstance()`.
         
-    -   Can use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
-        See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/86ae13abf0bcff995d0d99c54b11b103142a257e/example/lib/main.dart#L18).
+    -   Use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
+        See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/95642a7fe8e8e0ad4579d7ae084aec9a10fe6dff/example/lib/main.dart#L17).
 
 ```dart
 // An example for wrong usage.
+
 rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 
-rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
+rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print anything,
+                                                        // because rxPrefs1 and rxPrefs2 are different instances.
 ```
 
--   `Stream`s APIs (via extension methods).
+### 4. Stream APIs and RxStorage APIs
+
+-   All `Stream`s APIs (via extension methods).
 
 ```dart
   Stream<Object?>              getObjectStream(String key, [Decoder<Object?>? decoder]);
@@ -171,26 +183,27 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
   Stream<String?>              getStringStream(String key);
   Stream<List<String>?>        getStringListStream(String key);
   Stream<Set<String>>          getKeysStream();
-  
-  Future<void>                 executeUpdateBool(String key, Transformer<bool?> transformer);
-  Future<void>                 executeUpdateDouble(String key, Transformer<double?> transformer);
-  Future<void>                 executeUpdateInt(String key, Transformer<int?> transformer);
-  Future<void>                 executeUpdateString(String key, Transformer<String?> transformer);
-  Future<void>                 executeUpdateStringList(String key, Transformer<List<String>?> transformer);
+
+  Future<void>                 updateBool(String key, Transformer<bool?> transformer);
+  Future<void>                 updateDouble(String key, Transformer<double?> transformer);
+  Future<void>                 updateInt(String key, Transformer<int?> transformer);
+  Future<void>                 updateString(String key, Transformer<String?> transformer);
+  Future<void>                 updateStringList(String key, Transformer<List<String>?> transformer);
 ```
 
--   All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) (`RxSharedPreferences` implements `RxStorage`).
+-   All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) 
+    (because `RxSharedPreferences` implements `RxStorage`).
 
 ```dart
-  Future<void>                 executeUpdate<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
+  Future<void>                 update<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
   Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder);
   Stream<Map<String, Object?>> observeAll();
   Future<void>                 dispose();
 ```
 
-### 4. Get and set methods like to `SharedPreferences`
+### 5. Get and set methods likes `SharedPreferences`
 
--   `RxSharedPreferences` is like to `SharedPreferences`, it provides read, write functions (via extension methods).
+-   `RxSharedPreferences` is like to `SharedPreferences`, it provides `read`, `write` functions (via extension methods).
 
 ```dart
   Future<Object?>              getObject(String key, [Decoder<Object?>? decoder]);
@@ -209,7 +222,8 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
   Future<void>                 setStringList(String key, List<String>? value);
 ```
 
--   All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html) (`RxSharedPreferences` implements `Storage`).
+-   All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html)
+   (because `RxSharedPreferences` implements `Storage`).
 
 ```dart
   Future<bool>                 containsKey(String key);
@@ -222,17 +236,33 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']); // [*] will not print anything
 
 ### 5. Dispose
 
-You can dispose `RxSharedPreferences` when is no longer needed. Just call `rxPrefs.dispose()`. Usually you call this method on `dispose` of a `State`
+You can dispose `RxSharedPreferences` when is no longer needed.
+Just call `rxPrefs.dispose()`.
+Usually you call this method on `dispose` of a `State`
+
+> NOTE: If you use the default singleton instance (via `RxSharedPreferences.getInstance()`,
+> you should **not** call `dispose` method,
+> must keep the instance alive for the entire lifetime of the application.
+
 
 ## Example demo
 
-| [Simple authentication app with `BLoC rxdart pattern`](https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart.git)          | [Build ListView from Stream using `RxSharedPreferences`](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)          |  [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme) |
-| ------------- | ------------- | ------- |
-| <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480"> |<img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
+| [Simple authentication app with `BLoC rxdart pattern`](https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart.git)               | [Build ListView from Stream using `RxSharedPreferences`](https://github.com/hoc081098/rx_shared_preferences/tree/master/example) | [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)    |
+|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart/blob/master/screenshots/Screenshot3.png?raw=true" height="480"> | <img src="https://github.com/hoc081098/rx_shared_preferences/blob/master/example/example.gif?raw=true" height="480">             | <img src="https://github.com/hoc081098/bloc_rxdart_playground/blob/master/flutter_change_theme/Screenshot.gif?raw=true" height="480"> |
+
+## Features and bugs
+
+Please file feature requests and bugs at the [issue tracker][tracker].
+
+[tracker]: https://github.com/hoc081098/rx_shared_preferences/issues
 
 ## License
+
 ```text
-    Copyright (c) 2019-2021 Petrus Nguyễn Thái Học
+MIT License
+
+Copyright (c) 2019-2023 Petrus Nguyễn Thái Học
 ```
 
 ## Contributors ✨
