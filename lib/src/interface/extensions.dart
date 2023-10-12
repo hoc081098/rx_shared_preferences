@@ -117,6 +117,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   ///
   /// See also:
   ///   * [update] for more details.
+  ///   * [updateBool].
   @experimental
   @Deprecated('Use updateBool instead. It will be removed in v4.0.0')
   Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
@@ -141,11 +142,31 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
 
   /// `Read–modify–write`.
   ///
-  /// Read double value by [key], than transform value by [transformer]
-  /// and finally save computed value to persistent storage.
+  /// Read double value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// Use [updateDouble] instead. It will be removed in v4.0.0.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  ///   * [updateDouble].
   @experimental
+  @Deprecated('Use updateDouble instead. It will be removed in v4.0.0')
   Future<void> executeUpdateDouble(
           String key, Transformer<double?> transformer) =>
+      updateDouble(key, transformer);
+
+  /// `Read–modify–write`.
+  ///
+  /// Read double value by [key],
+  /// then transforming the value by [transformer],
+  /// and finally save transformed value to persistent storage.
+  ///
+  /// See also:
+  ///   * [update] for more details.
+  @experimental
+  Future<void> updateDouble(String key, Transformer<double?> transformer) =>
       update<double>(
         key: key,
         decoder: _cast,
