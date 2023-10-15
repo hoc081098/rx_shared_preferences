@@ -1,4 +1,4 @@
-## 3.1.0 - TODO
+## 3.1.0 - Oct 15, 2023
 
 -   Update dependencies
     -   `shared_preferences` to `^2.0.18`.
@@ -8,7 +8,7 @@
 
 -   Change `Dart SDK` constraint to `'>=2.17.0 <4.0.0'`.
 
--   Deprecate all `executeUpdate...` extension methods, use `update...` instead.
+-   Deprecate all `executeUpdate...` extension methods, use `update...`s instead.
 
 ## 3.0.0 - Jun 3, 2022
 

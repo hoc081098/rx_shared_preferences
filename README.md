@@ -240,11 +240,6 @@ You can dispose the `RxSharedPreferences` when it is no longer needed.
 Just call `rxPrefs.dispose()`.
 Usually, you call this method on `dispose` method of a Flutter `State`.
 
-> NOTE: If you use the default singleton instance (via `RxSharedPreferences.getInstance()`,
-> you should **not** call the `dispose` method,
-> must keep the instance alive for the entire lifetime of the application.
-
-
 ## Example demo
 
 | [Simple authentication app with `BLoC rxdart pattern`](https://github.com/hoc081098/node-auth-flutter-BLoC-pattern-RxDart.git)               | [Build ListView from Stream using `RxSharedPreferences`](https://github.com/hoc081098/rx_shared_preferences/tree/master/example) | [Change theme and locale (language) runtime](https://github.com/hoc081098/bloc_rxdart_playground/tree/master/flutter_change_theme)    |
