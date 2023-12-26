@@ -54,7 +54,7 @@ jobs:
         run: flutter build apk --no-shrink
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ matrix.channel == 'stable' }}
         with:
           name: app
