@@ -64,8 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return Center(
               child: Text(
                 'Error: $error',
-                // ignore: deprecated_member_use
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
             );
@@ -82,8 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return Center(
               child: Text(
                 'Empty',
-                // ignore: deprecated_member_use
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
             );
