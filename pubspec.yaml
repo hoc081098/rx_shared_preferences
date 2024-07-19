@@ -22,7 +22,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.18
-  rx_storage: ^2.1.0
+  rx_storage: ^3.0.0
   meta: ^1.7.0
 
 dev_dependencies:
