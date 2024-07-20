@@ -1,3 +1,11 @@
+## 4.0.0 - Jul 20, 2024
+
+-   Update dependencies:
+    -   `shared_preferences` to `^2.1.2`.
+    -   `rx_storage` to `^3.0.0` (supports `rxdart: ^0.28.0` and `rxdart_ext: ^0.3.0`).
+-   Change `Flutter` constraint to `'>=3.3.0'`.
+-   Change `Dart SDK` constraint to `'>=2.18.0 <4.0.0'`.
+
 ## 3.1.0 - Oct 15, 2023
 
 -   Update dependencies

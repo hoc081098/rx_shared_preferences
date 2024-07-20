@@ -246,7 +246,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.1.0"
+    version: "4.0.0"
   rx_storage:
     dependency: transitive
     description:
