@@ -257,7 +257,7 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 ```text
 MIT License
 
-Copyright (c) 2019-2023 Petrus Nguyễn Thái Học
+Copyright (c) 2019-2024 Petrus Nguyễn Thái Học
 ```
 
 ## Contributors ✨
