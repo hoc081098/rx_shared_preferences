@@ -8,8 +8,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Singleton instance for app
-  final rxPrefs = RxSharedPreferences(
-    SharedPreferences.getInstance(),
+  final rxPrefs = RxSharedPreferences.async(
+    SharedPreferencesAsync(),
     kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
   );
 

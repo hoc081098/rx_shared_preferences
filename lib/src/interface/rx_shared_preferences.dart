@@ -28,7 +28,8 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
   /// Return default singleton instance.
   /// Custom logger via [RxSharedPreferencesConfigs.logger].
   ///
-  /// This is a legacy API. For new code, consider [RxSharedPreferences.async] or [RxSharedPreferences.asyncWithCache].
+  /// This is a legacy API. For new code, consider [RxSharedPreferences.getAsyncInstance]
+  /// or [RxSharedPreferences.getWithCacheInstance].
   @legacyRxSharedPreferencesApi
   factory RxSharedPreferences.getInstance() =>
       _defaultInstance ??= RxSharedPreferences(
@@ -39,7 +40,8 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
 
   /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional [Logger].
   ///
-  /// This is a legacy API. For new code, consider [RxSharedPreferences.async] or [RxSharedPreferences.asyncWithCache].
+  /// This is a legacy API. For new code, consider [RxSharedPreferences.async]
+  /// or [RxSharedPreferences.withCache].
   @legacyRxSharedPreferencesApi
   factory RxSharedPreferences(
     FutureOr<SharedPreferences> prefsOrFuture, [
