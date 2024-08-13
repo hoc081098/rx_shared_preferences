@@ -4,16 +4,17 @@ version: 3.0.0+1
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
-  flutter: '>=3.3.0'
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.5'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.4
+  cupertino_icons: ^1.0.8
   flutter_provider: ^2.1.0
   rxdart_ext: ^0.3.0
   rx_shared_preferences:
+  shared_preferences: ^2.3.1
 
 dependency_overrides:
   rx_shared_preferences:
