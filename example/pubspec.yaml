@@ -14,7 +14,7 @@ dependencies:
   flutter_provider: ^2.1.0
   rxdart_ext: ^0.3.0
   rx_shared_preferences:
-  shared_preferences: ^2.3.1
+  shared_preferences: ^2.3.0
 
 dependency_overrides:
   rx_shared_preferences:
