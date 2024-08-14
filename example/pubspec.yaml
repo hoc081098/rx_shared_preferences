@@ -15,7 +15,7 @@ dependencies:
   rxdart_ext: ^0.3.0
   rx_shared_preferences:
   shared_preferences: ^2.3.0
-
+  collection: ^1.17.0
 dependency_overrides:
   rx_shared_preferences:
     path: ../
