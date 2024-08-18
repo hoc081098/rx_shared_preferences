@@ -31,7 +31,7 @@ class SharedPreferencesAsyncAdapter implements SharedPreferencesLike {
   @override
   Future<T?> read<T extends Object>(String key, Decoder<T?> decoder,
           [void _]) =>
-      _prefsAsync.getAll().then((map) => decoder(map[key]));
+      _prefsAsync.getAll(allowList: {key}).then((map) => decoder(map[key]));
 
   @override
   Future<Map<String, Object?>> readAll([void _]) => _prefsAsync.getAll();
