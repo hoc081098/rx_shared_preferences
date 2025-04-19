@@ -41,14 +41,16 @@ jobs:
       - name: Run tests
         run: flutter test --coverage --coverage-path=lcov.info
 
-      - uses: codecov/codecov-action@v3.1.2
+      - uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: ${{ matrix.channel == 'stable' }}
 
   test-old-versions:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '3.3.0', '3.7.0' ]
+        version: [ '3.22.0' ]
     steps:
       - uses: actions/checkout@v4
 

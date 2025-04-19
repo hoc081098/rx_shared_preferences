@@ -5,9 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../interface/shared_preferences_like.dart';
+import '../../interface/shared_preferences_like.dart';
+import '../async/shared_preferences_async_adapter.dart';
+import '../async/shared_preferences_with_cache_adapter.dart';
 
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
+///
+/// This is a legacy API. For new code,
+/// consider [SharedPreferencesAsyncAdapter] or [SharedPreferencesWithCacheAdapter].
 class SharedPreferencesAdapter implements SharedPreferencesLike {
   final SharedPreferences _prefs;
 

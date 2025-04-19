@@ -8,8 +8,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Singleton instance for app
-  final rxPrefs = RxSharedPreferences(
-    SharedPreferences.getInstance(),
+  final rxPrefs = RxSharedPreferences.async(
+    SharedPreferencesAsync(),
     kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
   );
 
@@ -22,7 +22,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -36,7 +36,7 @@ extension DialogExtensions on BuildContext {
     }
 
     try {
-      await rxPrefs.updateStringList(key, (currentList) {
+      await rxPrefs.updateStringList(listKey, (currentList) {
         final list = currentList ?? const <String>[];
         if (list.contains(string)) {
           throw StateError('Duplicated $string!');
@@ -78,7 +78,7 @@ extension DialogExtensions on BuildContext {
 
     try {
       await rxPrefs.updateStringList(
-        key,
+        listKey,
         (currentList) => [
           for (final s in (currentList ?? const <String>[]))
             if (s != needRemove) s

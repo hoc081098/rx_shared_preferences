@@ -25,7 +25,7 @@ const userKey = 'user';
 
 void main() async {
   // Get RxSharedPreferences instance.
-  final rxPrefs = RxSharedPreferences.getInstance();
+  final rxPrefs = RxSharedPreferences.getAsyncInstance();
 
   // Select stream by key and observe
   rxPrefs

@@ -7,13 +7,13 @@ import 'package:flutter_provider/flutter_provider.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart_ext/rxdart_ext.dart';
 
-const key = 'com.hoc.list';
+const listKey = 'com.hoc.list';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StateStream<ViewState> list$ = controller.stream
       .startWith(null)
       .switchMap((_) => context.rxPrefs
-          .getStringListStream(key)
+          .getStringListStream(listKey)
           .map((list) => ViewState.success(list ?? const []))
           .onErrorReturnWith((e, s) => ViewState.failure(e, s)))
       .debug(identifier: '<<STATE>>', log: debugPrint)
@@ -146,6 +146,7 @@ extension BuildContextX on BuildContext {
   }
 }
 
+@immutable
 class ViewState {
   final List<String> items;
   final bool isLoading;
@@ -155,7 +156,7 @@ class ViewState {
 
   const ViewState._(this.items, this.isLoading, this.error);
 
-  ViewState.success(List<String> items) : this._(items, false, null);
+  const ViewState.success(List<String> items) : this._(items, false, null);
 
   ViewState.failure(Object e, StackTrace s)
       : this._([], false, AsyncError(e, s));
