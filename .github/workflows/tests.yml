@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.20.0
         with:
           channel: ${{ matrix.channel }}
 
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.20.0
         with:
           flutter-version: ${{ matrix.version }}
 
