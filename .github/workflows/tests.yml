@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '3.22.0' ]
+        version: [ '3.24.0' ]
     steps:
       - uses: actions/checkout@v5
 
