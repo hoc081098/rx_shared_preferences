@@ -1,5 +1,13 @@
 {
-  "extends": ["config:base"],
-  "ignorePaths": ["android/", "example/ios/", "example/android/"],
-  "labels": ["dependencies"]
+  "extends": [
+    "config:recommended"
+  ],
+  "ignorePaths": [
+    "android/",
+    "example/ios/",
+    "example/android/"
+  ],
+  "labels": [
+    "dependencies"
+  ]
 }
