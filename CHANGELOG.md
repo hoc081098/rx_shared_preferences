@@ -1,3 +1,17 @@
+## [Unreleased]
+
+-   Update dependencies:
+    -   `shared_preferences` to `^2.5.3`.
+    -   `meta` to `^1.17.0`.
+    -   `flutter_lints` to `^6.0.0`.
+    -   `collection` to `^1.19.1`.
+    -   `shared_preferences_platform_interface` to `2.4.1`.
+    -   `plugin_platform_interface` to `2.1.8`.
+-   Change `Dart SDK` constraint to `'>=3.8.0 <4.0.0'`.
+-   Change `Flutter` constraint to `'>=3.24.0'`.
+-   Update Android `compileSdkVersion` and `targetSdkVersion` to `35`.
+-   Replace deprecated `jcenter()` with `mavenCentral()` in Android build.gradle.
+
 ## 4.0.0 - Jul 20, 2024
 
 -   Update dependencies:
