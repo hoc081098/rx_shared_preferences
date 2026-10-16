@@ -44,8 +44,9 @@ void main() {
           ]),
         );
 
-        final listStringStream =
-            rxPrefs.getStringListStream('String'); // Actual: Stream<String>
+        final listStringStream = rxPrefs.getStringListStream(
+          'String',
+        ); // Actual: Stream<String>
         await expectLater(
           listStringStream,
           emitsAnyOf([
@@ -54,8 +55,9 @@ void main() {
           ]),
         );
 
-        final noSuchStream =
-            rxPrefs.getIntStream('###String'); // Actual: Stream<String>
+        final noSuchStream = rxPrefs.getIntStream(
+          '###String',
+        ); // Actual: Stream<String>
 
         await expectLater(
           noSuchStream,

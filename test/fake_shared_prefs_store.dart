@@ -36,7 +36,7 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
   MethodCall? failedMethod;
 
   FakeSharedPreferencesStore(Map<String, Object> data)
-      : backend = InMemorySharedPreferencesStore.withData(data);
+    : backend = InMemorySharedPreferencesStore.withData(data);
 
   @override
   Future<bool> clear() {

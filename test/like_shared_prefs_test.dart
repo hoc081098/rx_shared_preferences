@@ -74,7 +74,9 @@ void main() {
         rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
         rxPrefs.setDouble('double', kTestValues2['flutter.double'] as double),
         rxPrefs.setStringList(
-            'List', kTestValues2['flutter.List'] as List<String>),
+          'List',
+          kTestValues2['flutter.List'] as List<String>,
+        ),
         rxPrefs.write<User>(
           'User',
           user2,
@@ -89,41 +91,62 @@ void main() {
       expect(
         store.log,
         <Matcher>[
-          isMethodCall('setValue', arguments: <dynamic>[
-            'String',
-            'flutter.String',
-            kTestValues2['flutter.String'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'Bool',
-            'flutter.bool',
-            kTestValues2['flutter.bool'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'Int',
-            'flutter.int',
-            kTestValues2['flutter.int'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'Double',
-            'flutter.double',
-            kTestValues2['flutter.double'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'StringList',
-            'flutter.List',
-            kTestValues2['flutter.List'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'String',
-            'flutter.User',
-            kTestValues2['flutter.User'],
-          ]),
-          isMethodCall('setValue', arguments: <dynamic>[
-            'String',
-            'flutter.User',
-            kTestValues2['flutter.User'],
-          ]),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'String',
+              'flutter.String',
+              kTestValues2['flutter.String'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'Bool',
+              'flutter.bool',
+              kTestValues2['flutter.bool'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'Int',
+              'flutter.int',
+              kTestValues2['flutter.int'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'Double',
+              'flutter.double',
+              kTestValues2['flutter.double'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'StringList',
+              'flutter.List',
+              kTestValues2['flutter.List'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'String',
+              'flutter.User',
+              kTestValues2['flutter.User'],
+            ],
+          ),
+          isMethodCall(
+            'setValue',
+            arguments: <dynamic>[
+              'String',
+              'flutter.User',
+              kTestValues2['flutter.User'],
+            ],
+          ),
         ],
       );
       store.log.clear();
@@ -161,7 +184,9 @@ void main() {
         rxPrefs.setInt('int', kTestValues2['flutter.int'] as int),
         rxPrefs.setDouble('double', kTestValues2['flutter.double'] as double),
         rxPrefs.setStringList(
-            'List', kTestValues2['flutter.List'] as List<String>),
+          'List',
+          kTestValues2['flutter.List'] as List<String>,
+        ),
         rxPrefs.write<User>(
           'User',
           user2,
@@ -186,15 +211,16 @@ void main() {
       await rxPrefs.setStringList(key, null);
       await rxPrefs.remove(key);
       expect(
-          store.log,
-          List<Matcher>.filled(
-            6,
-            isMethodCall(
-              'remove',
-              arguments: 'flutter.$key',
-            ),
-            growable: true,
-          ));
+        store.log,
+        List<Matcher>.filled(
+          6,
+          isMethodCall(
+            'remove',
+            arguments: 'flutter.$key',
+          ),
+          growable: true,
+        ),
+      );
 
       store.failedMethod = const MethodCall('remove');
       expect(rxPrefs.remove(key), throwsPlatformException);
@@ -224,7 +250,9 @@ void main() {
 
     test('reloading', () async {
       await rxPrefs.setString(
-          'String', kTestValues['flutter.String'] as String);
+        'String',
+        kTestValues['flutter.String'] as String,
+      );
       expect(await rxPrefs.getString('String'), kTestValues['flutter.String']);
 
       SharedPreferences.setMockInitialValues(kTestValues2);
@@ -233,8 +261,8 @@ void main() {
       await rxPrefs.reload();
       expect(await rxPrefs.getString('String'), kTestValues2['flutter.String']);
 
-      SharedPreferencesStorePlatform.instance =
-          store = FakeSharedPreferencesStore(kTestValues2)
+      SharedPreferencesStorePlatform.instance = store =
+          FakeSharedPreferencesStore(kTestValues2)
             ..failedMethod = const MethodCall('getAll');
       expect(rxPrefs.reload(), throwsPlatformException);
     });

@@ -41,8 +41,9 @@ void main() {
           ]),
         );
 
-        final listStringStream =
-            rxPrefs.getStringListStream('String'); // Actual: Stream<String>
+        final listStringStream = rxPrefs.getStringListStream(
+          'String',
+        ); // Actual: Stream<String>
         await expectLater(
           listStringStream,
           emitsAnyOf([
@@ -51,8 +52,9 @@ void main() {
           ]),
         );
 
-        final noSuchStream =
-            rxPrefs.getIntStream('###String'); // Actual: Stream<String>
+        final noSuchStream = rxPrefs.getIntStream(
+          '###String',
+        ); // Actual: Stream<String>
 
         await expectLater(
           noSuchStream,
@@ -292,18 +294,18 @@ void main() {
 
       SharedPreferencesStorePlatform.instance =
           InMemorySharedPreferencesStore.withData(
-        {
-          'flutter.List': <Object?>['AFTER RELOAD']
-        },
-      );
+            {
+              'flutter.List': <Object?>['AFTER RELOAD'],
+            },
+          );
       await rxPrefs.reload(); // emits ['AFTER RELOAD']
 
       await rxPrefs.setStringList('List', ['WORKING 1']); // emits ['WORKING']
 
       SharedPreferencesStorePlatform.instance =
           InMemorySharedPreferencesStore.withData({
-        'flutter.List': <Object?>['WORKING 2'],
-      });
+            'flutter.List': <Object?>['WORKING 2'],
+          });
       await rxPrefs.reload(); // emits ['WORKING']
 
       await later;

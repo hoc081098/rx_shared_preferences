@@ -47,12 +47,11 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
     FutureOr<SharedPreferences> prefsOrFuture, [
     RxSharedPreferencesLogger? logger,
     void Function()? onDispose,
-  ]) =>
-      RealRxSharedPreferences(
-        SharedPreferencesAdapter.from(prefsOrFuture),
-        logger,
-        onDispose,
-      );
+  ]) => RealRxSharedPreferences(
+    SharedPreferencesAdapter.from(prefsOrFuture),
+    logger,
+    onDispose,
+  );
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -74,12 +73,11 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
   factory RxSharedPreferences.getWithCacheInstance({
     SharedPreferencesWithCacheOptions cacheOptions =
         const SharedPreferencesWithCacheOptions(),
-  }) =>
-      _defaultWithCacheInstance ??= RxSharedPreferences.withCache(
-        SharedPreferencesWithCache.create(cacheOptions: cacheOptions),
-        RxSharedPreferencesConfigs.logger,
-        () => _defaultWithCacheInstance = null,
-      );
+  }) => _defaultWithCacheInstance ??= RxSharedPreferences.withCache(
+    SharedPreferencesWithCache.create(cacheOptions: cacheOptions),
+    RxSharedPreferencesConfigs.logger,
+    () => _defaultWithCacheInstance = null,
+  );
 
   /// Construct a [RxSharedPreferences] with [SharedPreferencesAsync] and optional [Logger].
   @experimental
@@ -87,12 +85,11 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
     SharedPreferencesAsync prefsAsync, [
     RxSharedPreferencesLogger? logger,
     void Function()? onDispose,
-  ]) =>
-      RealRxSharedPreferences(
-        SharedPreferencesAsyncAdapter(prefsAsync),
-        logger,
-        onDispose,
-      );
+  ]) => RealRxSharedPreferences(
+    SharedPreferencesAsyncAdapter(prefsAsync),
+    logger,
+    onDispose,
+  );
 
   /// Construct a [RxSharedPreferences] with [SharedPreferencesWithCache] and optional [Logger].
   @experimental
@@ -100,10 +97,9 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
     FutureOr<SharedPreferencesWithCache> prefsWithCache, [
     RxSharedPreferencesLogger? logger,
     void Function()? onDispose,
-  ]) =>
-      RealRxSharedPreferences(
-        SharedPreferencesWithCacheAdapter.from(prefsWithCache),
-        logger,
-        onDispose,
-      );
+  ]) => RealRxSharedPreferences(
+    SharedPreferencesWithCacheAdapter.from(prefsWithCache),
+    logger,
+    onDispose,
+  );
 }

@@ -14,3 +14,5 @@ linter:
     - always_declare_return_types
     - prefer_single_quotes
     - unawaited_futures
+formatter:
+  trailing_commas: preserve
