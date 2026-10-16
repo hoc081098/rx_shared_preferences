@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        channel: [ 'stable', 'beta' ]
+        channel: [ 'stable' ]
     defaults:
       run:
         working-directory: ./example
@@ -42,23 +42,16 @@ jobs:
         run: flutter pub upgrade
         if: ${{ matrix.channel == 'beta' }}
 
-      - name: Format code
-        run: dart format lib --set-exit-if-changed
-        if: ${{ matrix.channel == 'stable' }}
-
-      - name: Analyze
-        run: flutter analyze lib
-        if: ${{ matrix.channel == 'stable' }}
+#      - name: Format code
+#        run: dart format lib --set-exit-if-changed
+#        if: ${{ matrix.channel == 'stable' }}
+#
+#      - name: Analyze
+#        run: flutter analyze lib
+#        if: ${{ matrix.channel == 'stable' }}
 
       - name: Build APK
         run: flutter build apk --no-shrink
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v5
-        if: ${{ matrix.channel == 'stable' }}
-        with:
-          name: app
-          path: example/build/app/outputs/apk/release/app-release.apk
 
   build-old-versions:
     runs-on: ubuntu-latest

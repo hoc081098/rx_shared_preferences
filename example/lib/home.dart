@@ -20,15 +20,18 @@ class _MyHomePageState extends State<MyHomePage> {
   final compositeSubscription = CompositeSubscription();
 
   final controller = StreamController<void>();
-  late final StateStream<ViewState> list$ = controller.stream
-      .startWith(null)
-      .switchMap((_) => context.rxPrefs
-          .getStringListStream(listKey)
-          .map((list) => ViewState.success(list ?? const []))
-          .onErrorReturnWith((e, s) => ViewState.failure(e, s)))
-      .debug(identifier: '<<STATE>>', log: debugPrint)
-      .publishState(ViewState.loading)
-    ..connect().addTo(compositeSubscription);
+  late final StateStream<ViewState> list$ =
+      controller.stream
+          .startWith(null)
+          .switchMap(
+            (_) => context.rxPrefs
+                .getStringListStream(listKey)
+                .map((list) => ViewState.success(list ?? const []))
+                .onErrorReturnWith((e, s) => ViewState.failure(e, s)),
+          )
+          .debug(identifier: '<<STATE>>', log: debugPrint)
+          .publishState(ViewState.loading)
+        ..connect().addTo(compositeSubscription);
 
   @override
   void initState() {
@@ -46,9 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('RxSharedPreferences example'),
-      ),
+      appBar: AppBar(title: const Text('RxSharedPreferences example')),
       body: StreamBuilder<ViewState>(
         stream: list$,
         initialData: list$.value,
@@ -71,9 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
 
           if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           final list = state.items;
@@ -125,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             tooltip: 'Reload',
             child: const Icon(Icons.refresh),
-          )
+          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -138,10 +137,7 @@ extension BuildContextX on BuildContext {
 
   void showSnackBar(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 1),
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
     );
   }
 }
@@ -159,7 +155,7 @@ class ViewState {
   const ViewState.success(List<String> items) : this._(items, false, null);
 
   ViewState.failure(Object e, StackTrace s)
-      : this._([], false, AsyncError(e, s));
+    : this._([], false, AsyncError(e, s));
 
   @override
   bool operator ==(Object other) =>

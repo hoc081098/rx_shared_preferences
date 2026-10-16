@@ -1,3 +1,5 @@
+// ignore_for_file: experimental_member_use
+
 import 'package:example/home.dart';
 import 'package:flutter/material.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
@@ -81,7 +83,7 @@ extension DialogExtensions on BuildContext {
         listKey,
         (currentList) => [
           for (final s in (currentList ?? const <String>[]))
-            if (s != needRemove) s
+            if (s != needRemove) s,
         ],
       );
       showSnackBar("Remove '$needRemove' successfully");

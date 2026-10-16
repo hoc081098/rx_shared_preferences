@@ -18,8 +18,8 @@ class User {
   Map<String, dynamic> toJson() => {'id': id, 'username': username};
 }
 
-final toUserOrNull =
-    (Object? s) => s == null ? null : User.fromJson(jsonDecode(s as String));
+final toUserOrNull = (Object? s) =>
+    s == null ? null : User.fromJson(jsonDecode(s as String));
 const idsKey = 'ids';
 const userKey = 'user';
 
@@ -38,8 +38,11 @@ void main() async {
 
   // Get/read, set/write
   final List<String>? currentIds = await rxPrefs.getStringList(idsKey);
-  await rxPrefs
-      .setStringList(idsKey, [...?currentIds, 'new id', 'and more...']);
+  await rxPrefs.setStringList(idsKey, [
+    ...?currentIds,
+    'new id',
+    'and more...',
+  ]);
 
   final User? currentUser = await rxPrefs.read<User>(userKey, toUserOrNull);
   await rxPrefs.write<User>(
@@ -50,5 +53,7 @@ void main() async {
 
   // Or read-modify-write style.
   await rxPrefs.updateStringList(
-      idsKey, (currentIds) => [...?currentIds, 'new id']);
+    idsKey,
+    (currentIds) => [...?currentIds, 'new id'],
+  );
 }
