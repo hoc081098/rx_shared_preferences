@@ -2,85 +2,71 @@ name: Build example
 
 on:
   push:
-    branches: [ master ]
-    paths-ignore: [ '**.md' ]
+    branches: [master]
+    paths-ignore: ['**.md']
   pull_request:
-    branches: [ master ]
-    paths-ignore: [ '**.md' ]
+    branches: [master]
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-stable-beta:
+  build-android:
+    name: Android (${{ matrix.name }})
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
+      fail-fast: false
       matrix:
-        channel: [ 'stable' ]
+        include:
+          - name: stable
+            version: ''
+          - name: minimum
+            version: '3.35.0'
     defaults:
       run:
-        working-directory: ./example
+        working-directory: example
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
-          distribution: 'zulu'
+          distribution: temurin
           java-version: '17'
+          cache: gradle
+          cache-dependency-path: |
+            example/android/**/*.gradle*
+            example/android/gradle.properties
+            example/android/gradle/wrapper/gradle-wrapper.properties
+            example/pubspec.lock
 
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2
         with:
-          channel: ${{ matrix.channel }}
-
-      - name: Print Dart SDK version
-        run: dart --version
-
-      - name: Print Flutter SDK version
-        run: flutter --version
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Pub upgrade (if beta)
-        run: flutter pub upgrade
-        if: ${{ matrix.channel == 'beta' }}
-
-#      - name: Format code
-#        run: dart format lib --set-exit-if-changed
-#        if: ${{ matrix.channel == 'stable' }}
-#
-#      - name: Analyze
-#        run: flutter analyze lib
-#        if: ${{ matrix.channel == 'stable' }}
-
-      - name: Build APK
-        run: flutter build apk --no-shrink
-
-  build-old-versions:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [ '3.35.0' ]
-    defaults:
-      run:
-        working-directory: ./example
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-java@v5
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - uses: subosito/flutter-action@v2.12.0
-        with:
+          channel: stable
           flutter-version: ${{ matrix.version }}
+          cache: true
 
-      - name: Print Dart SDK version
-        run: dart --version
-
-      - name: Print Flutter SDK version
-        run: flutter --version
+      - name: Show toolchain versions
+        run: |
+          java -version
+          flutter --version
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --no-shrink
+      - name: Build release APK
+        run: flutter build apk --release --no-pub
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: example-apk-${{ matrix.name }}
+          path: example/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 7

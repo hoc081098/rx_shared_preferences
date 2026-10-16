@@ -2,67 +2,79 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ master ]
-    paths-ignore: [ '**.md' ]
+    branches: [master]
+    paths-ignore: ['**.md']
   pull_request:
-    branches: [ master ]
-    paths-ignore: [ '**.md' ]
+    branches: [master]
+    paths-ignore: ['**.md']
+  workflow_dispatch:
   schedule:
-    # Runs at 02:00 UTC on the 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 and 31th of every month.
-    - cron: "0 2 */2 * *"
+    - cron: '0 2 */2 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test-stable-beta:
+  test:
+    name: Test (${{ matrix.name }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
-        channel: [ 'stable', 'beta' ]
+        include:
+          - name: stable
+            channel: stable
+            version: ''
+          - name: beta
+            channel: beta
+            version: ''
+          - name: minimum (3.35.0)
+            channel: stable
+            version: '3.35.0'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2
         with:
           channel: ${{ matrix.channel }}
+          flutter-version: ${{ matrix.version }}
+          cache: true
 
-      - name: Doctor
-        run: flutter doctor
+      - name: Show Flutter version
+        run: flutter --version
 
-      - name: Install dependencies
-        run: flutter packages get
+      - name: Install package dependencies
+        run: flutter pub get
+
+      - name: Install example dependencies
+        if: matrix.name == 'stable'
+        working-directory: example
+        run: flutter pub get
 
       - name: Format
-        run: dart format lib test example --set-exit-if-changed
-        if: ${{ matrix.channel == 'stable' }}
+        if: matrix.name == 'stable'
+        run: dart format --output=none --set-exit-if-changed lib test example
 
       - name: Analyze
-        run: flutter analyze lib test example
-        if: ${{ matrix.channel == 'stable' }}
+        if: matrix.name == 'stable'
+        run: flutter analyze --no-pub lib test example
 
       - name: Run tests
-        run: flutter test --coverage --coverage-path=lcov.info
+        if: matrix.name != 'stable'
+        run: flutter test --no-pub
 
-      - uses: codecov/codecov-action@v5
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.channel == 'stable' }}
+      - name: Run tests with coverage
+        if: matrix.name == 'stable'
+        run: flutter test --no-pub --coverage --coverage-path=coverage/lcov.info
 
-  test-old-versions:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [ '3.35.0' ]
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: subosito/flutter-action@v2.12.0
+      - name: Upload coverage
+        if: matrix.name == 'stable'
+        uses: codecov/codecov-action@v7
         with:
-          flutter-version: ${{ matrix.version }}
-
-      - name: Doctor
-        run: flutter doctor
-
-      - name: Install dependencies
-        run: flutter packages get
-
-      - name: Run tests
-        run: flutter test
+          files: coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -12,12 +12,12 @@
 Use Flutter 3.35.0 or newer with Dart `>=3.9.0 <4.0.0`. Run these commands from the repository root:
 
 - `flutter pub get`: resolve package dependencies.
-- `dart format lib test example --set-exit-if-changed`: format Dart files and report formatting changes, matching CI.
+- `dart format --output=none --set-exit-if-changed lib test example`: check Dart formatting without modifying files, matching CI.
 - `flutter analyze lib test example`: check analyzer and lint rules.
 - `flutter test`: run package tests.
-- `flutter test --coverage --coverage-path=lcov.info`: generate the coverage report used by CI.
+- `flutter test --coverage --coverage-path=coverage/lcov.info`: generate the coverage report used by CI.
 
-Inside `example/`, run `flutter pub get`, then `flutter run` to launch the demo. `flutter build apk --no-shrink` builds the Android example as CI does; use Java 17 and an Android SDK.
+Inside `example/`, run `flutter pub get`, then `flutter run` to launch the demo. `flutter build apk --release --no-pub` builds the Android example as CI does; use Java 17 and an Android SDK.
 
 ## Coding Style & Naming Conventions
 
