@@ -23,24 +23,21 @@ void main() {
 
       final preferences = await SharedPreferences.getInstance();
       await preferences.reload();
-      adapter =
-          SharedPreferencesAdapter.from(preferences)
-              as SharedPreferencesAdapter;
+      adapter = SharedPreferencesAdapter.from(preferences)
+          as SharedPreferencesAdapter;
 
       store.log.clear();
     });
 
     test('from Future<SharedPreferences>', () {
-      final value = SharedPreferencesAdapter.from(
-        SharedPreferences.getInstance(),
-      );
+      final value =
+          SharedPreferencesAdapter.from(SharedPreferences.getInstance());
       expect(value, isA<Future<SharedPreferencesAdapter>>());
     });
 
     test('from SharedPreferences', () async {
-      final value = SharedPreferencesAdapter.from(
-        await SharedPreferences.getInstance(),
-      );
+      final value =
+          SharedPreferencesAdapter.from(await SharedPreferences.getInstance());
       expect(value, isA<SharedPreferencesAdapter>());
     });
 
@@ -55,8 +52,20 @@ void main() {
       expect(await adapter.getInt('int'), kTestValues['flutter.int']);
       expect(await adapter.getDouble('double'), kTestValues['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues['flutter.List']);
-      expect(await adapter.read<User>('User', userFromString), user1);
-      expect(await adapter.read<User>('User', userFromStringFuture), user1);
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromString,
+        ),
+        user1,
+      );
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromStringFuture,
+        ),
+        user1,
+      );
 
       expect(store.log, <Matcher>[]);
     });
@@ -68,70 +77,58 @@ void main() {
         adapter.setInt('int', kTestValues2['flutter.int'] as int),
         adapter.setDouble('double', kTestValues2['flutter.double'] as double),
         adapter.setStringList(
-          'List',
-          kTestValues2['flutter.List'] as List<String>,
+            'List', kTestValues2['flutter.List'] as List<String>),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToString,
         ),
-        adapter.write<User>('User', user2, userToString),
-        adapter.write<User>('User', user2, userToStringFuture),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
+        ),
       ]);
-      expect(store.log, <Matcher>[
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+      expect(
+        store.log,
+        <Matcher>[
+          isMethodCall('setValue', arguments: <dynamic>[
             'String',
             'flutter.String',
             kTestValues2['flutter.String'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'Bool',
             'flutter.bool',
             kTestValues2['flutter.bool'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'Int',
             'flutter.int',
             kTestValues2['flutter.int'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'Double',
             'flutter.double',
             kTestValues2['flutter.double'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'StringList',
             'flutter.List',
             kTestValues2['flutter.List'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'String',
             'flutter.User',
             kTestValues2['flutter.User'],
-          ],
-        ),
-        isMethodCall(
-          'setValue',
-          arguments: <dynamic>[
+          ]),
+          isMethodCall('setValue', arguments: <dynamic>[
             'String',
             'flutter.User',
             kTestValues2['flutter.User'],
-          ],
-        ),
-      ]);
+          ]),
+        ],
+      );
       store.log.clear();
 
       expect(await adapter.getString('String'), kTestValues2['flutter.String']);
@@ -139,8 +136,20 @@ void main() {
       expect(await adapter.getInt('int'), kTestValues2['flutter.int']);
       expect(await adapter.getDouble('double'), kTestValues2['flutter.double']);
       expect(await adapter.getStringList('List'), kTestValues2['flutter.List']);
-      expect(await adapter.read<User>('User', userFromString), user2);
-      expect(await adapter.read<User>('User', userFromStringFuture), user2);
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromString,
+        ),
+        user2,
+      );
+      expect(
+        await adapter.read<User>(
+          'User',
+          userFromStringFuture,
+        ),
+        user2,
+      );
       expect(store.log, equals(<MethodCall>[]));
 
       await runZonedGuarded(
@@ -155,11 +164,17 @@ void main() {
         adapter.setInt('int', kTestValues2['flutter.int'] as int),
         adapter.setDouble('double', kTestValues2['flutter.double'] as double),
         adapter.setStringList(
-          'List',
-          kTestValues2['flutter.List'] as List<String>,
+            'List', kTestValues2['flutter.List'] as List<String>),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToString,
         ),
-        adapter.write<User>('User', user2, userToString),
-        adapter.write<User>('User', user2, userToStringFuture),
+        adapter.write<User>(
+          'User',
+          user2,
+          userToStringFuture,
+        ),
       ]) {
         expect(f, throwsPlatformException);
       }
@@ -174,13 +189,15 @@ void main() {
       await adapter.setStringList(key, null);
       await adapter.remove(key);
       expect(
-        store.log,
-        List<Matcher>.filled(
-          6,
-          isMethodCall('remove', arguments: 'flutter.$key'),
-          growable: true,
-        ),
-      );
+          store.log,
+          List<Matcher>.filled(
+            6,
+            isMethodCall(
+              'remove',
+              arguments: 'flutter.$key',
+            ),
+            growable: true,
+          ));
 
       store.failedMethod = const MethodCall('remove');
       expect(adapter.remove(key), throwsPlatformException);
@@ -210,9 +227,7 @@ void main() {
 
     test('reloading', () async {
       await adapter.setString(
-        'String',
-        kTestValues['flutter.String'] as String,
-      );
+          'String', kTestValues['flutter.String'] as String);
       expect(await adapter.getString('String'), kTestValues['flutter.String']);
 
       SharedPreferences.setMockInitialValues(kTestValues2);
@@ -221,8 +236,8 @@ void main() {
       await adapter.reload();
       expect(await adapter.getString('String'), kTestValues2['flutter.String']);
 
-      SharedPreferencesStorePlatform.instance = store =
-          FakeSharedPreferencesStore(kTestValues2)
+      SharedPreferencesStorePlatform.instance =
+          store = FakeSharedPreferencesStore(kTestValues2)
             ..failedMethod = const MethodCall('getAll');
       expect(adapter.reload(), throwsPlatformException);
     });
@@ -243,17 +258,25 @@ void main() {
     test('getKeys', () async {
       final keys = await adapter.getKeys();
       final expected = Set.of(
-        kTestValues.keys.map((s) => s.substring(prefix.length)),
+        kTestValues.keys.map(
+          (s) => s.substring(prefix.length),
+        ),
       );
 
-      expect(const SetEquality<String>().equals(keys, expected), isTrue);
+      expect(
+        const SetEquality<String>().equals(keys, expected),
+        isTrue,
+      );
     });
 
     test('readAll', () async {
       expect(
         await adapter.readAll(),
         kTestValues.map(
-          (key, value) => MapEntry(key.substring(prefix.length), value),
+          (key, value) => MapEntry(
+            key.substring(prefix.length),
+            value,
+          ),
         ),
       );
 
@@ -263,7 +286,10 @@ void main() {
       expect(
         await adapter.readAll(),
         kTestValues2.map(
-          (key, value) => MapEntry(key.substring(prefix.length), value),
+          (key, value) => MapEntry(
+            key.substring(prefix.length),
+            value,
+          ),
         ),
       );
     });

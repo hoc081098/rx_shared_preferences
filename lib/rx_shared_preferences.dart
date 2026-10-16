@@ -3,7 +3,7 @@
 ///
 /// Reactive shared preferences for Flutter.
 ///
-library;
+library rx_shared_preferences;
 
 export 'package:rx_storage/rx_storage.dart';
 export 'package:shared_preferences/shared_preferences.dart';

@@ -12,24 +12,25 @@ class RealRxSharedPreferences
     implements RxSharedPreferences {
   ///
   RealRxSharedPreferences(
-    super.prefsLikeOrFuture, [
-    RxSharedPreferencesLogger? super.logger,
-    super.onDispose,
-  ]);
+    FutureOr<SharedPreferencesLike> prefsLikeOrFuture, [
+    RxSharedPreferencesLogger? logger,
+    void Function()? onDispose,
+  ]) : super(prefsLikeOrFuture, logger, onDispose);
 
   @override
   Future<Map<String, Object?>> reload() {
     return enqueueWritingTask(null, () async {
-      final before = await useStorageWithHandlers(
-        (s) => s.readAll(),
-        null,
-        null,
-      );
+      final before =
+          await useStorageWithHandlers((s) => s.readAll(), null, null);
 
-      return useStorageWithHandlers((s) => s.reload(), (value, _) {
-        sendChange(_computeMap(before, value));
-        logIfEnabled(() => ReloadSuccessEvent(value.toListOfKeyAndValues()));
-      }, (error, _) => logIfEnabled(() => ReloadFailureEvent(error)));
+      return useStorageWithHandlers(
+        (s) => s.reload(),
+        (value, _) {
+          sendChange(_computeMap(before, value));
+          logIfEnabled(() => ReloadSuccessEvent(value.toListOfKeyAndValues()));
+        },
+        (error, _) => logIfEnabled(() => ReloadFailureEvent(error)),
+      );
     });
   }
 
