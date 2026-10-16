@@ -29,17 +29,22 @@ class SharedPreferencesAsyncAdapter implements SharedPreferencesLike {
   Future<void> remove(String key, [void _]) => _prefsAsync.remove(key);
 
   @override
-  Future<T?> read<T extends Object>(String key, Decoder<T?> decoder,
-          [void _]) =>
-      _prefsAsync.getAll(allowList: {key}).then((map) => decoder(map[key]));
+  Future<T?> read<T extends Object>(
+    String key,
+    Decoder<T?> decoder, [
+    void _,
+  ]) => _prefsAsync.getAll(allowList: {key}).then((map) => decoder(map[key]));
 
   @override
   Future<Map<String, Object?>> readAll([void _]) => _prefsAsync.getAll();
 
   @override
   Future<void> write<T extends Object>(
-      String key, T? value, Encoder<T?> encoder,
-      [void _]) {
+    String key,
+    T? value,
+    Encoder<T?> encoder, [
+    void _,
+  ]) {
     final encodedOrFuture = encoder(value);
     return encodedOrFuture is Future<Object?>
         ? encodedOrFuture.then((encoded) => _write(encoded, key, value))
@@ -47,8 +52,10 @@ class SharedPreferencesAsyncAdapter implements SharedPreferencesLike {
   }
 
   Future<void> _write(Object? encoded, String key, Object? value) {
-    assert(encoded is! Future<dynamic>,
-        'The actual type of encoded value is ${encoded.runtimeType}');
+    assert(
+      encoded is! Future<dynamic>,
+      'The actual type of encoded value is ${encoded.runtimeType}',
+    );
 
     if (encoded == null) {
       return remove(key);

@@ -12,9 +12,10 @@ class RxSharedPreferencesDefaultLogger
   static const defaultTag = '⚡ RxSharedPreferences';
 
   /// Construct a [RxSharedPreferencesDefaultLogger].
-  const RxSharedPreferencesDefaultLogger(
-      {String tag = defaultTag, bool trimValueOutput = false})
-      : super(tag: tag, trimValueOutput: trimValueOutput);
+  const RxSharedPreferencesDefaultLogger({
+    super.tag = defaultTag,
+    super.trimValueOutput,
+  });
 
   @override
   bool handleLogEvent(RxStorageLoggerEvent<String, void> event) {
@@ -24,9 +25,11 @@ class RxSharedPreferencesDefaultLogger
 
     if (event is ReloadSuccessEvent) {
       print('$tag $downArrow Reload success');
-      print(event.keyAndValues
-          .map((p) => '    $rightArrow ${keyAndValueToString(p)}')
-          .join('\n'));
+      print(
+        event.keyAndValues
+            .map((p) => '    $rightArrow ${keyAndValueToString(p)}')
+            .join('\n'),
+      );
       return true;
     }
 

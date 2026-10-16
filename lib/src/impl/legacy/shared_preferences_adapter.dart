@@ -26,11 +26,10 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   /// Create [SharedPreferencesAdapter] from [SharedPreferences].
   static FutureOr<SharedPreferencesAdapter> from(
     FutureOr<SharedPreferences> prefsOrFuture,
-  ) =>
-      prefsOrFuture is Future<SharedPreferences>
-          ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
-          : SharedPreferencesAdapter._(prefsOrFuture)
-              as FutureOr<SharedPreferencesAdapter>;
+  ) => prefsOrFuture is Future<SharedPreferences>
+      ? prefsOrFuture.then((p) => SharedPreferencesAdapter._(p))
+      : SharedPreferencesAdapter._(prefsOrFuture)
+            as FutureOr<SharedPreferencesAdapter>;
 
   @override
   Future<void> clear([void _]) =>
@@ -49,17 +48,22 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
       _prefs.remove(key).throwsIfUnsuccessful('Cannot remove key=$key');
 
   @override
-  Future<T?> read<T extends Object>(String key, Decoder<T?> decoder,
-          [void _]) =>
-      _wrapFutureOr(decoder(_getFromPrefs(key)));
+  Future<T?> read<T extends Object>(
+    String key,
+    Decoder<T?> decoder, [
+    void _,
+  ]) => _wrapFutureOr(decoder(_getFromPrefs(key)));
 
   @override
   Future<Map<String, Object?>> readAll([void _]) => _wrap(_getAllFromPrefs());
 
   @override
   Future<void> write<T extends Object>(
-      String key, T? value, Encoder<T?> encoder,
-      [void _]) {
+    String key,
+    T? value,
+    Encoder<T?> encoder, [
+    void _,
+  ]) {
     final encodedOrFuture = encoder(value);
     return encodedOrFuture is Future<Object?>
         ? encodedOrFuture.then((encoded) => _write(encoded, key, value))
@@ -72,21 +76,24 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   }
 
   Map<String, Object?> _getAllFromPrefs() {
-    return {
-      for (final k in _prefs.getKeys()) k: _getFromPrefs(k),
-    };
+    return {for (final k in _prefs.getKeys()) k: _getFromPrefs(k)};
   }
 
   Future<void> _write(Object? encoded, String key, Object? value) {
-    assert(encoded is! Future<dynamic>,
-        'The actual type of encoded value is ${encoded.runtimeType}');
+    assert(
+      encoded is! Future<dynamic>,
+      'The actual type of encoded value is ${encoded.runtimeType}',
+    );
 
     if (encoded == null) {
       return remove(key);
     }
     if (encoded is double) {
-      return _prefs.setDouble(key, encoded).throwsIfUnsuccessful(
-          'Cannot set double value: key=$key, value=$value');
+      return _prefs
+          .setDouble(key, encoded)
+          .throwsIfUnsuccessful(
+            'Cannot set double value: key=$key, value=$value',
+          );
     }
     if (encoded is int) {
       return _prefs
@@ -94,16 +101,25 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
           .throwsIfUnsuccessful('Cannot set int value: key=$key, value=$value');
     }
     if (encoded is bool) {
-      return _prefs.setBool(key, encoded).throwsIfUnsuccessful(
-          'Cannot set bool value: key=$key, value=$value');
+      return _prefs
+          .setBool(key, encoded)
+          .throwsIfUnsuccessful(
+            'Cannot set bool value: key=$key, value=$value',
+          );
     }
     if (encoded is String) {
-      return _prefs.setString(key, encoded).throwsIfUnsuccessful(
-          'Cannot set String value: key=$key, value=$value');
+      return _prefs
+          .setString(key, encoded)
+          .throwsIfUnsuccessful(
+            'Cannot set String value: key=$key, value=$value',
+          );
     }
     if (encoded is List<String>) {
-      return _prefs.setStringList(key, encoded).throwsIfUnsuccessful(
-          'Cannot set List<String> value: key=$key, value=$value');
+      return _prefs
+          .setStringList(key, encoded)
+          .throwsIfUnsuccessful(
+            'Cannot set List<String> value: key=$key, value=$value',
+          );
     }
 
     throw PlatformException(

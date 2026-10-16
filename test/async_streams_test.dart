@@ -38,174 +38,143 @@ void main() {
         final intStream = rxPrefs.getIntStream('bool'); // Actual: Stream<bool>
         await expectLater(
           intStream,
-          emitsAnyOf([
-            isNull,
-            emitsError(isInstanceOf<TypeError>()),
-          ]),
+          emitsAnyOf([isNull, emitsError(isInstanceOf<TypeError>())]),
         );
 
-        final listStringStream =
-            rxPrefs.getStringListStream('String'); // Actual: Stream<String>
+        final listStringStream = rxPrefs.getStringListStream(
+          'String',
+        ); // Actual: Stream<String>
         await expectLater(
           listStringStream,
-          emitsAnyOf([
-            isNull,
-            emitsError(isInstanceOf<TypeError>()),
-          ]),
+          emitsAnyOf([isNull, emitsError(isInstanceOf<TypeError>())]),
         );
 
-        final noSuchStream =
-            rxPrefs.getIntStream('###String'); // Actual: Stream<String>
+        final noSuchStream = rxPrefs.getIntStream(
+          '###String',
+        ); // Actual: Stream<String>
 
-        await expectLater(
-          noSuchStream,
+        await expectLater(noSuchStream, emits(isNull));
+      },
+    );
+
+    test('Stream will emit value as soon as possible after listen', () async {
+      await Future.wait([
+        expectLater(rxPrefs.getIntStream('int'), emits(anything)),
+        expectLater(rxPrefs.getBoolStream('bool'), emits(anything)),
+        expectLater(rxPrefs.getDoubleStream('double'), emits(anything)),
+        expectLater(rxPrefs.getStringStream('String'), emits(anything)),
+        expectLater(rxPrefs.getStringListStream('List'), emits(anything)),
+        expectLater(rxPrefs.getObjectStream('No such key'), emits(isNull)),
+        expectLater(
+          rxPrefs.getObjectStream('No such key', (o) => null),
           emits(isNull),
-        );
-      },
-    );
+        ),
+      ]);
+    });
 
-    test(
-      'Stream will emit value as soon as possible after listen',
-      () async {
-        await Future.wait([
-          expectLater(
-            rxPrefs.getIntStream('int'),
-            emits(anything),
-          ),
-          expectLater(
-            rxPrefs.getBoolStream('bool'),
-            emits(anything),
-          ),
-          expectLater(
-            rxPrefs.getDoubleStream('double'),
-            emits(anything),
-          ),
-          expectLater(
-            rxPrefs.getStringStream('String'),
-            emits(anything),
-          ),
-          expectLater(
-            rxPrefs.getStringListStream('List'),
-            emits(anything),
-          ),
-          expectLater(
-            rxPrefs.getObjectStream('No such key'),
-            emits(isNull),
-          ),
-          expectLater(
-            rxPrefs.getObjectStream('No such key', (o) => null),
-            emits(isNull),
-          ),
-        ]);
-      },
-    );
+    test('Stream will emit value as soon as possible after listen,'
+        ' and will emit value when value associated with key change', () async {
+      ///
+      /// Bool
+      ///
+      final streamBool = rxPrefs.getBoolStream('bool');
+      final expectStreamBoolFuture = expectLater(
+        streamBool,
+        emitsInOrder([anything, false, true, false, true, false]),
+      );
+      await rxPrefs.setBool('bool', false);
+      await rxPrefs.setBool('bool', true);
+      await rxPrefs.setBool('bool', false);
+      await rxPrefs.setBool('bool', true);
+      await rxPrefs.setBool('bool', false);
 
-    test(
-      'Stream will emit value as soon as possible after listen,'
-      ' and will emit value when value associated with key change',
-      () async {
-        ///
-        /// Bool
-        ///
-        final streamBool = rxPrefs.getBoolStream('bool');
-        final expectStreamBoolFuture = expectLater(
-          streamBool,
-          emitsInOrder([anything, false, true, false, true, false]),
-        );
-        await rxPrefs.setBool('bool', false);
-        await rxPrefs.setBool('bool', true);
-        await rxPrefs.setBool('bool', false);
-        await rxPrefs.setBool('bool', true);
-        await rxPrefs.setBool('bool', false);
+      ///
+      /// Double
+      ///
+      final streamDouble = rxPrefs.getDoubleStream('double');
+      final expectStreamDoubleFuture = expectLater(
+        streamDouble,
+        emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
+      );
+      await rxPrefs.setDouble('double', 0.3333);
+      await rxPrefs.setDouble('double', 1);
+      await rxPrefs.setDouble('double', 2);
+      await rxPrefs.setDouble('double', null);
+      await rxPrefs.setDouble('double', 3);
+      await rxPrefs.remove('double');
+      await rxPrefs.setDouble('double', 4);
 
-        ///
-        /// Double
-        ///
-        final streamDouble = rxPrefs.getDoubleStream('double');
-        final expectStreamDoubleFuture = expectLater(
-          streamDouble,
-          emitsInOrder([anything, 0.3333, 1, 2, isNull, 3, isNull, 4]),
-        );
-        await rxPrefs.setDouble('double', 0.3333);
-        await rxPrefs.setDouble('double', 1);
-        await rxPrefs.setDouble('double', 2);
-        await rxPrefs.setDouble('double', null);
-        await rxPrefs.setDouble('double', 3);
-        await rxPrefs.remove('double');
-        await rxPrefs.setDouble('double', 4);
+      ///
+      /// Int
+      ///
+      final streamInt = rxPrefs.getIntStream('int');
+      final expectStreamIntFuture = expectLater(
+        streamInt,
+        emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
+      );
+      await rxPrefs.setInt('int', 1);
+      await rxPrefs.setInt('int', null);
+      await rxPrefs.setInt('int', 2);
+      await rxPrefs.setInt('int', 3);
+      await rxPrefs.remove('int');
+      await rxPrefs.setInt('int', 3);
+      await rxPrefs.setInt('int', 2);
+      await rxPrefs.setInt('int', 1);
 
-        ///
-        /// Int
-        ///
-        final streamInt = rxPrefs.getIntStream('int');
-        final expectStreamIntFuture = expectLater(
-          streamInt,
-          emitsInOrder([anything, 1, isNull, 2, 3, isNull, 3, 2, 1]),
-        );
-        await rxPrefs.setInt('int', 1);
-        await rxPrefs.setInt('int', null);
-        await rxPrefs.setInt('int', 2);
-        await rxPrefs.setInt('int', 3);
-        await rxPrefs.remove('int');
-        await rxPrefs.setInt('int', 3);
-        await rxPrefs.setInt('int', 2);
-        await rxPrefs.setInt('int', 1);
+      ///
+      /// String
+      ///
+      final streamString = rxPrefs.getStringStream('String');
+      final expectStreamStringFuture = expectLater(
+        streamString,
+        emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
+      );
+      await rxPrefs.setString('String', 'h');
+      await rxPrefs.setString('String', 'e');
+      await rxPrefs.setString('String', 'l');
+      await rxPrefs.setString('String', 'l');
+      await rxPrefs.setString('String', 'o');
+      await rxPrefs.setString('String', null);
 
-        ///
-        /// String
-        ///
-        final streamString = rxPrefs.getStringStream('String');
-        final expectStreamStringFuture = expectLater(
-          streamString,
-          emitsInOrder([anything, 'h', 'e', 'l', 'l', 'o', isNull]),
-        );
-        await rxPrefs.setString('String', 'h');
-        await rxPrefs.setString('String', 'e');
-        await rxPrefs.setString('String', 'l');
-        await rxPrefs.setString('String', 'l');
-        await rxPrefs.setString('String', 'o');
-        await rxPrefs.setString('String', null);
+      ///
+      /// List<String>
+      ///
+      final streamListString = rxPrefs.getStringListStream('List');
+      final expectStreamListStringFuture = expectLater(
+        streamListString,
+        emitsInOrder([
+          anything,
+          <String>['1', '2', '3'],
+          <String>['1', '2', '3', '4'],
+          <String>['1', '2', '3', '4', '5'],
+          <String>['1', '2', '3', '4'],
+          <String>['1', '2', '3'],
+          <String>['1', '2'],
+          <String>['1'],
+          <String>[],
+          isNull,
+          <String>['done'],
+        ]),
+      );
+      await rxPrefs.setStringList('List', ['1', '2', '3']);
+      await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
+      await rxPrefs.setStringList('List', ['1', '2', '3', '4', '5']);
+      await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
+      await rxPrefs.setStringList('List', ['1', '2', '3']);
+      await rxPrefs.setStringList('List', ['1', '2']);
+      await rxPrefs.setStringList('List', ['1']);
+      await rxPrefs.setStringList('List', []);
+      await rxPrefs.remove('List');
+      await rxPrefs.setStringList('List', ['done']);
 
-        ///
-        /// List<String>
-        ///
-        final streamListString = rxPrefs.getStringListStream('List');
-        final expectStreamListStringFuture = expectLater(
-          streamListString,
-          emitsInOrder([
-            anything,
-            <String>['1', '2', '3'],
-            <String>['1', '2', '3', '4'],
-            <String>['1', '2', '3', '4', '5'],
-            <String>['1', '2', '3', '4'],
-            <String>['1', '2', '3'],
-            <String>['1', '2'],
-            <String>['1'],
-            <String>[],
-            isNull,
-            <String>['done'],
-          ]),
-        );
-        await rxPrefs.setStringList('List', ['1', '2', '3']);
-        await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
-        await rxPrefs.setStringList('List', ['1', '2', '3', '4', '5']);
-        await rxPrefs.setStringList('List', ['1', '2', '3', '4']);
-        await rxPrefs.setStringList('List', ['1', '2', '3']);
-        await rxPrefs.setStringList('List', ['1', '2']);
-        await rxPrefs.setStringList('List', ['1']);
-        await rxPrefs.setStringList('List', []);
-        await rxPrefs.remove('List');
-        await rxPrefs.setStringList('List', ['done']);
-
-        await Future.wait([
-          expectStreamBoolFuture,
-          expectStreamDoubleFuture,
-          expectStreamIntFuture,
-          expectStreamStringFuture,
-          expectStreamListStringFuture,
-        ]);
-      },
-    );
+      await Future.wait([
+        expectStreamBoolFuture,
+        expectStreamDoubleFuture,
+        expectStreamIntFuture,
+        expectStreamStringFuture,
+        expectStreamListStringFuture,
+      ]);
+    });
 
     test('Does not emit anything after disposed', () async {
       final stream = rxPrefs.getStringListStream('List');
@@ -222,10 +191,7 @@ void main() {
       );
 
       for (final v in expected.skip(1)) {
-        await rxPrefs.setStringList(
-          'List',
-          v as List<String>,
-        );
+        await rxPrefs.setStringList('List', v as List<String>);
         await Future.delayed(Duration.zero);
       }
 
@@ -236,20 +202,17 @@ void main() {
 
       try {
         // cannot use anymore
-        await rxPrefs.setStringList(
-          'List',
-          <String>['after', 'dispose'],
-        );
+        await rxPrefs.setStringList('List', <String>['after', 'dispose']);
       } catch (e) {
         expect(e, isStateError);
       }
 
       try {
         // cannot use anymore
-        expect(
-          await rxPrefs.getStringList('List'),
-          <String>['after', 'dispose'],
-        );
+        expect(await rxPrefs.getStringList('List'), <String>[
+          'after',
+          'dispose',
+        ]);
       } catch (e) {
         expect(e, isStateError);
       }
@@ -263,15 +226,7 @@ void main() {
     test('Emit null when clearing', () async {
       final stream = rxPrefs.getStringListStream('List');
 
-      final later = expectLater(
-        stream,
-        emitsInOrder(
-          [
-            anything,
-            isNull,
-          ],
-        ),
-      );
+      final later = expectLater(stream, emitsInOrder([anything, isNull]));
 
       await rxPrefs.clear();
 
@@ -283,25 +238,21 @@ void main() {
 
       final later = expectLater(
         stream,
-        emitsInOrder(
-          [
-            anything,
-            ['AFTER RELOAD'],
-            ['WORKING 1'],
-            ['WORKING 2'],
-          ],
-        ),
+        emitsInOrder([
+          anything,
+          ['AFTER RELOAD'],
+          ['WORKING 1'],
+          ['WORKING 2'],
+        ]),
       );
 
       await SharedPreferencesAsyncPlatform.instance!.clear(
         const ClearPreferencesParameters(filter: PreferencesFilters()),
         const SharedPreferencesOptions(),
       );
-      await SharedPreferencesAsyncPlatform.instance!.setStringList(
-        'List',
-        ['AFTER RELOAD'],
-        const SharedPreferencesOptions(),
-      );
+      await SharedPreferencesAsyncPlatform.instance!.setStringList('List', [
+        'AFTER RELOAD',
+      ], const SharedPreferencesOptions());
       await rxPrefs.reload(); // emits ['AFTER RELOAD']
 
       await rxPrefs.setStringList('List', ['WORKING 1']); // emits ['WORKING 1']
@@ -310,11 +261,9 @@ void main() {
         const ClearPreferencesParameters(filter: PreferencesFilters()),
         const SharedPreferencesOptions(),
       );
-      await SharedPreferencesAsyncPlatform.instance!.setStringList(
-        'List',
-        ['WORKING 2'],
-        const SharedPreferencesOptions(),
-      );
+      await SharedPreferencesAsyncPlatform.instance!.setStringList('List', [
+        'WORKING 2',
+      ], const SharedPreferencesOptions());
       await rxPrefs.reload(); // emits ['WORKING 2']
 
       await later;
@@ -325,12 +274,7 @@ void main() {
 
       final future = expectLater(
         keysStream,
-        emitsInOrder([
-          anything,
-          anything,
-          anything,
-          anything,
-        ]),
+        emitsInOrder([anything, anything, anything, anything]),
       );
 
       await rxPrefs.setInt('int', 0);

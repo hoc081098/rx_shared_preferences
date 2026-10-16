@@ -154,8 +154,9 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   @experimental
   @Deprecated('Use updateDouble instead. It will be removed in v4.0.0')
   Future<void> executeUpdateDouble(
-          String key, Transformer<double?> transformer) =>
-      updateDouble(key, transformer);
+    String key,
+    Transformer<double?> transformer,
+  ) => updateDouble(key, transformer);
 
   /// `Read–modify–write`.
   ///
@@ -223,8 +224,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   Future<void> executeUpdateString(
     String key,
     Transformer<String?> transformer,
-  ) =>
-      updateString(key, transformer);
+  ) => updateString(key, transformer);
 
   /// `Read–modify–write`.
   ///
@@ -245,7 +245,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
 
   /// `Read–modify–write`.
   ///
-  /// Read List<String> value by [key],
+  /// Read `List<String>` value by [key],
   /// then transforming the value by [transformer],
   /// and finally save transformed value to persistent storage.
   ///
@@ -259,12 +259,11 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   Future<void> executeUpdateStringList(
     String key,
     Transformer<List<String>?> transformer,
-  ) =>
-      updateStringList(key, transformer);
+  ) => updateStringList(key, transformer);
 
   /// `Read–modify–write`.
   ///
-  /// Read List<String> value by [key],
+  /// Read `List<String>` value by [key],
   /// then transforming the value by [transformer],
   /// and finally save transformed value to persistent storage.
   ///
@@ -274,11 +273,10 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   Future<void> updateStringList(
     String key,
     Transformer<List<String>?> transformer,
-  ) =>
-      update<List<String>>(
-        key: key,
-        decoder: _cast,
-        transformer: transformer,
-        encoder: _identity,
-      );
+  ) => update<List<String>>(
+    key: key,
+    decoder: _cast,
+    transformer: transformer,
+    encoder: _identity,
+  );
 }

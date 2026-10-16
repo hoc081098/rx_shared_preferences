@@ -11,11 +11,7 @@ class User {
       User(json['id'], json['name'], json['age']);
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'age': age,
-    };
+    return {'id': id, 'name': name, 'age': age};
   }
 
   @override

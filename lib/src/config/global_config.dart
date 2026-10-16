@@ -8,6 +8,7 @@ class RxSharedPreferencesConfigs {
   /// Config for logger.
   /// Default value is a [RxSharedPreferencesDefaultLogger].
   /// Can be set to `null` to disable logging.
-  static RxSharedPreferencesLogger? logger =
-      kReleaseMode ? null : const RxSharedPreferencesDefaultLogger();
+  static RxSharedPreferencesLogger? logger = kReleaseMode
+      ? null
+      : const RxSharedPreferencesDefaultLogger();
 }
