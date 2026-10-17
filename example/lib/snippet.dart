@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 // ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: experimental_member_use
 
 class User {
   final String id;
