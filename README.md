@@ -16,7 +16,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
--   Shared preference with `rxdart` Stream observation.
+-   Shared preferences with `rxdart` stream observation.
 -   Reactive shared preferences for `Flutter`.
 -   Reactive stream wrapper around SharedPreferences.
 -   This package provides reactive shared preferences interaction with very little code. It is designed specifically to be used with Flutter and Dart.
@@ -33,7 +33,7 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 ## More details about the returned `Stream`
 
--   It's a **single-subscription `Stream`** (i.e. it can only be listened once).
+-   It's a **single-subscription `Stream`** (i.e. it can only be listened to once).
 
 -   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listened to.
 
@@ -65,7 +65,7 @@ Value stream  |-----@----@------------@-----@-----------------> time
 
 ## Getting Started
 
-In your flutter project, add the dependency to your `pubspec.yaml`
+In your Flutter project, add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
@@ -83,7 +83,7 @@ dependencies:
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
--   Wrap your `SharedPreferences` in a `RxSharedPreferences`.
+-   Wrap your `SharedPreferences` in an `RxSharedPreferences` instance.
 
 ```dart
 // via constructor.
@@ -95,12 +95,12 @@ final rxPrefs = RxSharedPreferences.getInstance();                          // d
 final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
-> NOTE: When using `RxSharedPreferences.getInstance()` and extension `(await SharedPreferences.getInstance()).rx`, 
-> to config the logger, you can use `RxSharedPreferencesConfigs.logger` setter.
+> NOTE: When using `RxSharedPreferences.getInstance()` or the extension `(await SharedPreferences.getInstance()).rx`,
+> configure the logger with the `RxSharedPreferencesConfigs.logger` setter.
 
 ### 2. Add a logger (optional)
 
-You can pass a logger to the optional parameter of `RxSharedPreferences` constructor.
+You can pass a logger as an optional argument to the `RxSharedPreferences` constructor.
 The logger will log messages about operations (such as read, write, ...) and stream events.
 This package provides two `RxSharedPreferencesLogger`s: 
 -   `RxSharedPreferencesDefaultLogger`. 
@@ -117,7 +117,7 @@ final rxPrefs = RxSharedPreferences(
 > NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
 > to `RxSharedPreferences` constructor, or use `RxSharedPreferencesConfigs.logger` setter.
 
-> NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`.
+> NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`, disable the `DisposeBag` logger:
 > ```dart
 > import 'package:disposebag/disposebag.dart' show DisposeBagConfigs;
 > void main() {
@@ -127,7 +127,7 @@ final rxPrefs = RxSharedPreferences(
 
 ### 3. Select stream and observe
 
--   Then, just listen `Stream`s, transform `Stream`s through operators such as `map`, `flatMap`, etc...
+-   Listen to the `Stream`s and transform them with operators such as `map` and `flatMap`.
 -   If you need to listen to the `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
 
 ```dart
@@ -151,7 +151,7 @@ await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] w
 
 -   In the previous example, we re-used the `RxSharedPreferences` object `rxPrefs` for all operations.
     All operations must go through this object in order to correctly notify subscribers.
-    Basically, you must use the same `RxSharedPreferences` instance when set value and select stream.
+    Basically, you must use the same `RxSharedPreferences` instance when setting values and selecting streams.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
@@ -200,9 +200,9 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
   Future<void>                 dispose();
 ```
 
-### 5. Get and set methods likes `SharedPreferences`
+### 5. Get and set methods like `SharedPreferences`
 
--   `RxSharedPreferences` is like to `SharedPreferences`, it provides `read`, `write` functions (via extension methods).
+-   Like `SharedPreferences`, `RxSharedPreferences` provides read and write methods (via extension methods).
 
 ```dart
   Future<Object?>              getObject(String key, [Decoder<Object?>? decoder]);
@@ -237,7 +237,7 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
 
 You can dispose the `RxSharedPreferences` when it is no longer needed.
 Just call `rxPrefs.dispose()`.
-Usually, you call this method on `dispose` method of a Flutter `State`.
+Usually, you call this method from the `dispose` method of a Flutter `State`.
 
 ## Example demo
 
@@ -256,7 +256,7 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 ```text
 MIT License
 
-Copyright (c) 2019-2024 Petrus Nguyễn Thái Học
+Copyright (c) 2019-2026 Petrus Nguyễn Thái Học
 ```
 
 ## Contributors ✨
