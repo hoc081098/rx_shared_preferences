@@ -3,11 +3,13 @@ import 'package:rx_storage/rx_storage.dart'
 
 /// Log messages about operations (such as read, write, value change) and stream events.
 /// Must handle [ReloadSuccessEvent] and [ReloadFailureEvent].
-abstract class RxSharedPreferencesLogger
-    extends RxStorageLogger<String, void> {}
+///
+/// Implement this contract to provide a custom logger.
+abstract interface class RxSharedPreferencesLogger
+    implements RxStorageLogger<String, void> {}
 
 /// Reload successfully.
-class ReloadSuccessEvent implements RxStorageLoggerEvent<String, void> {
+final class ReloadSuccessEvent implements RxStorageLoggerEvent<String, void> {
   /// A list containing all values after reload.
   final List<KeyAndValue<String, Object?>> keyAndValues;
 
@@ -16,7 +18,7 @@ class ReloadSuccessEvent implements RxStorageLoggerEvent<String, void> {
 }
 
 /// Reload failed.
-class ReloadFailureEvent implements RxStorageLoggerEvent<String, void> {
+final class ReloadFailureEvent implements RxStorageLoggerEvent<String, void> {
   /// The error occurred when reloading.
   final RxStorageError error;
 

@@ -1,3 +1,35 @@
+## 5.0.0 - Oct 27, 2026
+
+- **Breaking**: require Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
+- Update `shared_preferences` to `^2.5.4` and `rx_storage` to `^4.0.0`
+  (which uses `rxdart_ext ^0.4.0`).
+- Add async and cached shared preferences support through `getAsyncInstance()`,
+  `getWithCacheInstance()`, and the experimental `RxSharedPreferences.async`
+  and `RxSharedPreferences.withCache` factories. Legacy factories and `.rx`
+  remain available.
+- **Breaking**: `readAll` and `observeAll` require an `EntryDecoder<String>`.
+  Bulk decoding supports sync and async callbacks, key-specific codecs, and
+  decoded null values. Bundled adapters decode shallow entry snapshots;
+  read and decoding failures produce Future or stream errors.
+  Pass `(_, raw) => raw` to retain raw-value behavior.
+- **Breaking**: remove `executeUpdateBool`, `executeUpdateDouble`,
+  `executeUpdateInt`, `executeUpdateString`, and `executeUpdateStringList`.
+  Use their `update*` replacements. The inherited `executeUpdate` was also
+  removed by rx_storage; use named-argument `update` instead.
+- **Breaking**: `RxSharedPreferences`, `SharedPreferencesLike`, and
+  `RxSharedPreferencesLogger` are now abstract interface classes. Built-in
+  preference loggers are base classes; reload events are final. Re-exported
+  upstream types also enforce Dart 3 class modifiers.
+- Fix reload notifications for externally removed keys previously read or
+  written through an async wrapper.
+- Inherit rx_storage lifecycle fixes: queued mutations and reloads fail on
+  disposal; started operations can finish without further notifications or
+  logs; cleanup runs at most once; adapter initialization failures remain
+  available to subsequent operations.
+- Add bulk-decoding and reload/disposal regression coverage, and update the
+  example to `rxdart_ext ^0.4.0`.
+- See [Migrating from 4.x to 5.0.0](MIGRATION.md) for migration examples.
+
 ## 4.0.0 - Jul 20, 2024
 
 -   Update dependencies:

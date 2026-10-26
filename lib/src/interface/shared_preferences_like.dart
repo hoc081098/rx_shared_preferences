@@ -5,7 +5,15 @@ import 'package:rx_storage/rx_storage.dart';
 /// a persistent store for simple data.
 ///
 /// Data is persisted to disk asynchronously.
-abstract class SharedPreferencesLike extends Storage<String, void> {
+/// Encoded nulls remove their keys.
+///
+/// The bundled adapters capture a shallow entry snapshot for [Storage.readAll]
+/// before invoking its decoders. Decoders may run concurrently and return
+/// synchronous or asynchronous values. Null decoding results retain their keys.
+///
+/// Implement this contract to provide a custom adapter.
+abstract interface class SharedPreferencesLike
+    implements Storage<String, void> {
   /// Error code when an error occurs when calling a method from [MethodChannel].
   static const errorCode = 'shared-preferences-error';
 

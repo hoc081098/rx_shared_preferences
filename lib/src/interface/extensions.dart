@@ -25,7 +25,8 @@ extension SharedPreferencesExtensions on SharedPreferencesLike {
   Future<int?> getInt(String key) => read<int>(key, _cast);
 
   /// Returns all keys in the persistent storage.
-  Future<Set<String>> getKeys() => readAll().then((map) => map.keys.toSet());
+  Future<Set<String>> getKeys() =>
+      readAll((_, raw) => raw).then((map) => map.keys.toSet());
 
   /// Reads a value from persistent storage, return a future that completes
   /// with an error if it's not a String.
@@ -105,23 +106,7 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// Return [Stream] that will emit all keys read from persistent storage.
   /// It will automatic emit all keys when any value was changed.
   Stream<Set<String>> getKeysStream() =>
-      observeAll().map((map) => map.keys.toSet());
-
-  /// `Read–modify–write`.
-  ///
-  /// Read bool value by [key],
-  /// then transforming the value by [transformer],
-  /// and finally save transformed value to persistent storage.
-  ///
-  /// Use [updateBool] instead. It will be removed in v4.0.0.
-  ///
-  /// See also:
-  ///   * [update] for more details.
-  ///   * [updateBool].
-  @experimental
-  @Deprecated('Use updateBool instead. It will be removed in v4.0.0')
-  Future<void> executeUpdateBool(String key, Transformer<bool?> transformer) =>
-      updateBool(key, transformer);
+      observeAll((_, raw) => raw).map((map) => map.keys.toSet());
 
   /// `Read–modify–write`.
   ///
@@ -146,24 +131,6 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// then transforming the value by [transformer],
   /// and finally save transformed value to persistent storage.
   ///
-  /// Use [updateDouble] instead. It will be removed in v4.0.0.
-  ///
-  /// See also:
-  ///   * [update] for more details.
-  ///   * [updateDouble].
-  @experimental
-  @Deprecated('Use updateDouble instead. It will be removed in v4.0.0')
-  Future<void> executeUpdateDouble(
-    String key,
-    Transformer<double?> transformer,
-  ) => updateDouble(key, transformer);
-
-  /// `Read–modify–write`.
-  ///
-  /// Read double value by [key],
-  /// then transforming the value by [transformer],
-  /// and finally save transformed value to persistent storage.
-  ///
   /// See also:
   ///   * [update] for more details.
   @experimental
@@ -174,22 +141,6 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
         transformer: transformer,
         encoder: _identity,
       );
-
-  /// `Read–modify–write`.
-  ///
-  /// Read int value by [key],
-  /// then transforming the value by [transformer],
-  /// and finally save transformed value to persistent storage.
-  ///
-  /// Use [updateInt] instead. It will be removed in v4.0.0.
-  ///
-  /// See also:
-  ///   * [update] for more details.
-  ///   * [updateInt].
-  @experimental
-  @Deprecated('Use updateInt instead. It will be removed in v4.0.0')
-  Future<void> executeUpdateInt(String key, Transformer<int?> transformer) =>
-      updateInt(key, transformer);
 
   /// `Read–modify–write`.
   ///
@@ -214,24 +165,6 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
   /// then transforming the value by [transformer],
   /// and finally save transformed value to persistent storage.
   ///
-  /// Use [updateString] instead. It will be removed in v4.0.0.
-  ///
-  /// See also:
-  ///   * [update] for more details.
-  ///   * [updateString].
-  @experimental
-  @Deprecated('Use updateString instead. It will be removed in v4.0.0')
-  Future<void> executeUpdateString(
-    String key,
-    Transformer<String?> transformer,
-  ) => updateString(key, transformer);
-
-  /// `Read–modify–write`.
-  ///
-  /// Read String value by [key],
-  /// then transforming the value by [transformer],
-  /// and finally save transformed value to persistent storage.
-  ///
   /// See also:
   ///   * [update] for more details.
   @experimental
@@ -242,24 +175,6 @@ extension RxSharedPreferencesExtension on RxSharedPreferences {
         transformer: transformer,
         encoder: _identity,
       );
-
-  /// `Read–modify–write`.
-  ///
-  /// Read `List<String>` value by [key],
-  /// then transforming the value by [transformer],
-  /// and finally save transformed value to persistent storage.
-  ///
-  /// Use [updateStringList] instead. It will be removed in v4.0.0.
-  ///
-  /// See also:
-  ///   * [update] for more details.
-  ///   * [updateStringList].
-  @experimental
-  @Deprecated('Use updateStringList instead. It will be removed in v4.0.0')
-  Future<void> executeUpdateStringList(
-    String key,
-    Transformer<List<String>?> transformer,
-  ) => updateStringList(key, transformer);
 
   /// `Read–modify–write`.
   ///

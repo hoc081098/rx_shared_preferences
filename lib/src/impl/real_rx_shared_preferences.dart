@@ -5,23 +5,28 @@ import 'package:rx_storage/rx_storage.dart';
 import '../interface/rx_shared_preferences.dart';
 import '../interface/shared_preferences_like.dart';
 import '../logger/logger.dart';
+import 'reloadable_shared_preferences.dart';
 
 /// Default [RxSharedPreferences] implementation
-class RealRxSharedPreferences
-    extends RealRxStorage<String, void, SharedPreferencesLike>
+final class RealRxSharedPreferences
+    extends RealRxStorage<String, void, ReloadableSharedPreferences>
     implements RxSharedPreferences {
   ///
   RealRxSharedPreferences(
-    super.prefsLikeOrFuture, [
-    RxSharedPreferencesLogger? super.logger,
-    super.onDispose,
-  ]);
+    FutureOr<SharedPreferencesLike> prefsLikeOrFuture, [
+    RxSharedPreferencesLogger? logger,
+    void Function()? onDispose,
+  ]) : super(
+         ReloadableSharedPreferences.from(prefsLikeOrFuture),
+         logger,
+         onDispose,
+       );
 
   @override
   Future<Map<String, Object?>> reload() {
     return enqueueWritingTask(null, () async {
-      final before = await useStorageWithHandlers(
-        (s) => s.readAll(),
+      final beforeKeys = await useStorageWithHandlers(
+        (s) => s.readKeysBeforeReload(),
         null,
         null,
       );
@@ -29,7 +34,7 @@ class RealRxSharedPreferences
       return useStorageWithHandlers(
         (s) => s.reload(),
         (value, _) {
-          sendChange(_computeMap(before, value));
+          sendChange(_computeMap(beforeKeys, value));
           logIfEnabled(() => ReloadSuccessEvent(value.toListOfKeyAndValues()));
         },
         (error, _) => logIfEnabled(() => ReloadFailureEvent(error)),
@@ -38,10 +43,10 @@ class RealRxSharedPreferences
   }
 
   static Map<String, KeyAndValue<String, Object?>> _computeMap(
-    Map<String, Object?> before,
+    Set<String> beforeKeys,
     Map<String, Object?> after,
   ) {
-    final deletedKeys = before.keys.toSet().difference(after.keys.toSet());
+    final deletedKeys = beforeKeys.difference(after.keys.toSet());
     return <String, Object?>{
       ...after,
       for (final k in deletedKeys) k: null,

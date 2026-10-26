@@ -65,12 +65,15 @@ Value stream  |-----@----@------------@-----@-----------------> time
 
 ## Getting Started
 
+Requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
+Upgrading from 4.x? See the [5.0.0 migration guide](https://github.com/hoc081098/rx_shared_preferences/blob/master/MIGRATION.md).
+
 In your Flutter project, add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   [...]
-  rx_shared_preferences: <latest_version>
+  rx_shared_preferences: ^5.0.0
 ```
 
 ## Usage
@@ -83,7 +86,22 @@ dependencies:
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
--   Wrap your `SharedPreferences` in an `RxSharedPreferences` instance.
+-   Choose a shared preferences API. For new code, use the async or cached API.
+
+```dart
+final rxPrefs = RxSharedPreferences.async(SharedPreferencesAsync());
+final rxPrefs = RxSharedPreferences.getAsyncInstance(); // default async singleton
+
+final rxPrefs = RxSharedPreferences.withCache(
+  SharedPreferencesWithCache.create(
+    cacheOptions: const SharedPreferencesWithCacheOptions(),
+  ),
+);
+final rxPrefs = RxSharedPreferences.getWithCacheInstance(); // default cached singleton
+```
+
+`RxSharedPreferences.async` and `RxSharedPreferences.withCache` are experimental.
+The legacy `SharedPreferences` API remains available:
 
 ```dart
 // via constructor.
@@ -95,7 +113,7 @@ final rxPrefs = RxSharedPreferences.getInstance();                          // d
 final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
-> NOTE: When using `RxSharedPreferences.getInstance()` or the extension `(await SharedPreferences.getInstance()).rx`,
+> NOTE: When using a default singleton or the extension `(await SharedPreferences.getInstance()).rx`,
 > configure the logger with the `RxSharedPreferencesConfigs.logger` setter.
 
 ### 2. Add a logger (optional)
@@ -194,9 +212,9 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
     (because `RxSharedPreferences` implements `RxStorage`).
 
 ```dart
-  Future<void>                 update<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
+  Future<void>                 update<T extends Object>({required String key, required Decoder<T?> decoder, required Transformer<T?> transformer, required Encoder<T?> encoder, void options});
   Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder);
-  Stream<Map<String, Object?>> observeAll();
+  Stream<Map<String, Object?>> observeAll(EntryDecoder<String> decoder, [void options]);
   Future<void>                 dispose();
 ```
 
@@ -227,17 +245,77 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
 ```dart
   Future<bool>                 containsKey(String key);
   Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder);
-  Future<Map<String, Object?>> readAll();
+  Future<Map<String, Object?>> readAll(EntryDecoder<String> decoder, [void options]);
   Future<void>                 clear();
   Future<void>                 remove(String key);
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
-### 6. Dispose
+### 6. Read and observe all entries
+
+Bulk reads require an `EntryDecoder<String>`. It receives each existing key and
+its stored value, and may return a synchronous value or a `Future`. Values in
+the resulting map can have different types. A decoded `null` retains its key;
+removed keys are omitted.
+
+```dart
+final raw = await rxPrefs.readAll((_, raw) => raw);
+final decoded = await rxPrefs.readAll((key, raw) {
+  if (key == 'name' && raw is String) return raw.toUpperCase();
+  return raw;
+});
+
+final changes = rxPrefs.observeAll((key, raw) async {
+  if (key == 'name' && raw is String) return raw.toUpperCase();
+  return raw;
+});
+```
+
+Each bundled adapter captures a shallow entry snapshot before decoding. Entry
+decoders may run concurrently. Reading or decoding failures fail the bulk read
+without returning a partial map. Decoders do not roll back their side effects.
+
+`observeAll` emits an initial decoded map, then reads and decodes again after
+successful writes, updates, removals, clears, and reloads through the same
+wrapper. Reads and async decoding complete in stream order; a read can reflect
+later mutations rather than the exact state when it was triggered. Read or
+decoding failures become stream errors; later changes can still be observed.
+The stream is single-subscription.
+
+`reload()` returns raw values and notifies observers of external additions,
+updates, and removals. Removed keys emit `null` on their key streams. This also
+works with the async adapter for keys previously read or written through the
+wrapper. External changes are observed when you call `reload()`.
+
+### 7. Dispose
 
 You can dispose the `RxSharedPreferences` when it is no longer needed.
 Just call `rxPrefs.dispose()`.
 Usually, you call this method from the `dispose` method of a Flutter `State`.
+
+Await required writes before disposal. Queued mutations and reloads that have
+not started fail with `StateError`; started operations may finish without
+further notifications or log events. Repeated disposal shares the same result
+and invokes the cleanup callback at most once. Disposal preserves stored data.
+
+### 8. Custom implementations and loggers
+
+Implement `SharedPreferencesLike`, `RxSharedPreferences`, or
+`RxSharedPreferencesLogger` to provide custom implementations. These contracts
+are `abstract interface` classes and cannot be extended outside their library.
+Custom adapters must implement entry decoding in `readAll`.
+
+To reuse the built-in logger, extend it with a `base`, `final`, or `sealed`
+subclass and override `handleLogEvent`. For example:
+
+```dart
+final class AppLogger extends RxSharedPreferencesDefaultLogger {
+  const AppLogger() : super(tag: 'App preferences');
+}
+```
+
+`ReloadSuccessEvent` and `ReloadFailureEvent` are final. Define additional custom
+events by implementing `RxStorageLoggerEvent<String, void>`.
 
 ## Example demo
 

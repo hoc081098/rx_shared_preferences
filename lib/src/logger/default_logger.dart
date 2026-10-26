@@ -5,7 +5,9 @@ import 'package:rx_storage/rx_storage.dart';
 import 'logger.dart';
 
 /// Default [RxSharedPreferencesLogger]'s implementation, simply print to the console.
-class RxSharedPreferencesDefaultLogger
+///
+/// Subclasses must be marked as `base`, `final`, or `sealed`.
+base class RxSharedPreferencesDefaultLogger
     extends RxStorageDefaultLogger<String, void>
     implements RxSharedPreferencesLogger {
   /// Default logger tag.

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 // ignore_for_file: omit_local_variable_types, unused_local_variable
@@ -24,37 +25,62 @@ final toUserOrNull = (Object? s) =>
 const idsKey = 'ids';
 const userKey = 'user';
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // Get RxSharedPreferences instance.
   final rxPrefs = RxSharedPreferences.getAsyncInstance();
 
   // Select stream by key and observe
-  rxPrefs
+  final idsSubscription = rxPrefs
       .getStringListStream(idsKey)
       .map((ids) => ids ?? [])
       .listen((List<String> ids) => print('Ids: $ids'));
-  rxPrefs
+  final userSubscription = rxPrefs
       .observe(userKey, toUserOrNull)
       .listen((User? user) => print('User: $user'));
 
-  // Get/read, set/write
-  final List<String>? currentIds = await rxPrefs.getStringList(idsKey);
-  await rxPrefs.setStringList(idsKey, [
-    ...?currentIds,
-    'new id',
-    'and more...',
-  ]);
+  // Bulk streams decode every snapshot, including the initial read.
+  final rawSubscription = rxPrefs.observeAll((_, raw) => raw).listen(print);
+  final decodedSubscription = rxPrefs
+      .observeAll((key, raw) async {
+        return key == userKey ? toUserOrNull(raw) : raw;
+      })
+      .listen(print);
 
-  final User? currentUser = await rxPrefs.read<User>(userKey, toUserOrNull);
-  await rxPrefs.write<User>(
-    userKey,
-    User('id', 'username'),
-    (u) => u == null ? null : jsonEncode(u),
-  );
+  try {
+    // Get/read, set/write
+    final List<String>? currentIds = await rxPrefs.getStringList(idsKey);
+    await rxPrefs.setStringList(idsKey, [
+      ...?currentIds,
+      'new id',
+      'and more...',
+    ]);
 
-  // Or read-modify-write style.
-  await rxPrefs.updateStringList(
-    idsKey,
-    (currentIds) => [...?currentIds, 'new id'],
-  );
+    final User? currentUser = await rxPrefs.read<User>(userKey, toUserOrNull);
+    await rxPrefs.write<User>(
+      userKey,
+      User('id', 'username'),
+      (u) => u == null ? null : jsonEncode(u),
+    );
+
+    // Or read-modify-write style.
+    await rxPrefs.updateStringList(
+      idsKey,
+      (currentIds) => [...?currentIds, 'new id'],
+    );
+
+    // Read all entries with an identity or key-specific decoder.
+    final raw = await rxPrefs.readAll((_, raw) => raw);
+    final decoded = await rxPrefs.readAll(
+      (key, raw) => key == userKey ? toUserOrNull(raw) : raw,
+    );
+    print('Raw: $raw');
+    print('Decoded: $decoded');
+  } finally {
+    await idsSubscription.cancel();
+    await userSubscription.cancel();
+    await rawSubscription.cancel();
+    await decodedSubscription.cancel();
+    await rxPrefs.dispose();
+  }
 }
