@@ -11,6 +11,7 @@
   Bulk decoding supports sync and async callbacks, key-specific codecs, and
   decoded null values. Bundled adapters decode shallow entry snapshots;
   read and decoding failures produce Future or stream errors.
+  The first decoder error is reported immediately; other decoders keep running.
   Pass `(_, raw) => raw` to retain raw-value behavior.
 - **Breaking**: remove `executeUpdateBool`, `executeUpdateDouble`,
   `executeUpdateInt`, `executeUpdateString`, and `executeUpdateStringList`.

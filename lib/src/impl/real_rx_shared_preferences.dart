@@ -24,6 +24,8 @@ final class RealRxSharedPreferences
 
   @override
   Future<Map<String, Object?>> reload() {
+    // Upstream maps null to this wrapper instance, sharing clear()'s queue.
+    // Per-key writes and updates use separate queues.
     return enqueueWritingTask(null, () async {
       final result = await useStorageWithHandlers(
         (s) => s.reload(),

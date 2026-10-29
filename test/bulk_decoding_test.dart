@@ -93,6 +93,48 @@ void main() {
         },
       );
 
+      for (final asynchronous in [false, true]) {
+        test(
+          '${asynchronous ? 'Async' : 'Sync'} decoder failure is reported '
+          'before another decoder settles',
+          () async {
+            final pending = Completer<Object?>();
+            final failure = StateError('Cannot decode name');
+            final stackTrace = StackTrace.current;
+            Object? observedError;
+            StackTrace? observedStackTrace;
+            final result = adapter.readAll((key, raw) {
+              if (key == 'count') return pending.future;
+              if (key == 'name') {
+                if (asynchronous) {
+                  return Future<Object?>.error(failure, stackTrace);
+                }
+                Error.throwWithStackTrace(failure, stackTrace);
+              }
+              return raw;
+            });
+            final handled = result.then<void>(
+              (_) => fail('A failed bulk read must not return a map'),
+              onError: (Object error, StackTrace trace) {
+                observedError = error;
+                observedStackTrace = trace;
+              },
+            );
+
+            try {
+              await _flushEvents();
+              expect(observedError, same(failure));
+              expect(observedStackTrace.toString(), stackTrace.toString());
+              expect(pending.isCompleted, isFalse);
+            } finally {
+              pending.completeError(StateError('Late decoder failure'));
+              await handled;
+              await _flushEvents();
+            }
+          },
+        );
+      }
+
       test(
         'decoders use a snapshot when they mutate the backing store',
         () async {

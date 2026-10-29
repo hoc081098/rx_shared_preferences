@@ -198,6 +198,30 @@ void main() {
       expect(await prefs.reload(), {'name': 'Ada'});
     });
 
+    test('reload and clear share a queue', () async {
+      final started = Completer<void>();
+      final finish = Completer<Map<String, Object?>>();
+      adapter.onReload = () {
+        started.complete();
+        return finish.future;
+      };
+      final completed = <String>[];
+      final reload = prefs.reload().then((_) => completed.add('reload'));
+      await started.future;
+
+      final clear = prefs.clear().then((_) => completed.add('clear'));
+      try {
+        await _flushEvents();
+        expect(await adapter.getString('name'), 'Ada');
+        expect(completed, isEmpty);
+      } finally {
+        finish.complete({'name': 'Ada'});
+        await Future.wait([reload, clear]);
+      }
+      expect(completed, ['reload', 'clear']);
+      expect(await adapter.getKeys(), isEmpty);
+    });
+
     test(
       'queued reloads fail on disposal and started reloads finish silently',
       () async {

@@ -46,7 +46,8 @@ and async decoding. Custom reactive implementations must also implement
 `observeAll(EntryDecoder<String> decoder, [void options])`. Report read and
 decoding failures through the Future or stream, without returning partial maps.
 The bundled adapters decode shallow entry snapshots; callbacks may run
-concurrently. `getKeys()`, `getKeysStream()`, and `reload()` keep their signatures.
+concurrently. Decoder failures are reported immediately; other callbacks keep
+running. `getKeys()`, `getKeysStream()`, and `reload()` keep their signatures.
 
 ## Replace removed update methods
 
@@ -73,6 +74,7 @@ await rxPrefs.update<int>(
 Updates remain experimental. They serialize with writes and removals for the
 same key on the same wrapper. Reads, clears, reloads, other keys, and other
 wrappers do not participate in that per-key queue.
+Clears and reloads share a separate queue on the same wrapper.
 
 ## Update custom class declarations
 

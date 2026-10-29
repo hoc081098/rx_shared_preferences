@@ -273,11 +273,13 @@ final changes = rxPrefs.observeAll((key, raw) async {
 
 Each bundled adapter captures a shallow entry snapshot before decoding. Entry
 decoders may run concurrently. Reading or decoding failures fail the bulk read
-without returning a partial map. Decoders do not roll back their side effects.
+without returning a partial map. The first decoder failure is reported
+immediately with its original error and stack trace. Other decoders keep running;
+their side effects are not rolled back.
 
 `observeAll` emits an initial decoded map, then reads and decodes again after
 successful writes, updates, removals, clears, and reloads through the same
-wrapper. Reads and async decoding complete in stream order; a read can reflect
+wrapper. Bulk results and errors are emitted in stream order; a read can reflect
 later mutations rather than the exact state when it was triggered. Read or
 decoding failures become stream errors; later changes can still be observed.
 The stream is single-subscription.
