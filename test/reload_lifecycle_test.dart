@@ -107,6 +107,29 @@ void main() {
       },
     );
 
+    test('failed encoded removals retain keys for external reloads', () async {
+      final initial = Completer<void>();
+      final events = <String?>[];
+      final subscription = prefs.getStringStream('name').listen((value) {
+        events.add(value);
+        if (!initial.isCompleted) initial.complete();
+      });
+      addTearDown(subscription.cancel);
+      await initial.future;
+
+      final failure = StateError('Remove failed');
+      adapter.writeFailure = failure;
+      await expectLater(prefs.setString('name', null), throwsA(same(failure)));
+      await _flushEvents();
+      expect(events, ['Ada']);
+
+      adapter.writeFailure = null;
+      await adapter.remove('name');
+      expect(await prefs.reload(), isEmpty);
+      await _flushEvents();
+      expect(events, ['Ada', null]);
+    });
+
     test(
       'reload reconciles known keys for subsequent external changes',
       () async {
@@ -300,6 +323,7 @@ final class _ControlledPreferences implements SharedPreferencesLike {
   Future<void> Function()? beforeReadAll;
   Future<Object?> Function(String key)? onRead;
   Object? readFailure;
+  Object? writeFailure;
 
   @override
   Future<Map<String, Object?>> reload() =>
@@ -334,7 +358,13 @@ final class _ControlledPreferences implements SharedPreferencesLike {
     T? value,
     Encoder<T?> encoder, [
     void options,
-  ]) => _storage.write(key, value, encoder);
+  ]) {
+    final failure = writeFailure;
+    if (failure != null) {
+      return Future.sync(() => encoder(value)).then((_) => throw failure);
+    }
+    return _storage.write(key, value, encoder);
+  }
 
   @override
   Future<bool> containsKey(String key, [void options]) =>

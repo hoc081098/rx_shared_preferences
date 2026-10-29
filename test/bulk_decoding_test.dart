@@ -145,6 +145,77 @@ void main() {
         },
       );
 
+      for (final asynchronous in [false, true]) {
+        for (final input in <String?>[null, 'remove']) {
+          test(
+            'reload does not repeat a local encoded removal with '
+            '${input == null ? 'null' : 'non-null'} input and '
+            '${asynchronous ? 'async' : 'sync'} encoding',
+            () async {
+              final initial = Completer<void>();
+              final events = <String?>[];
+              final subscription = prefs.getStringStream('name').listen((
+                value,
+              ) {
+                events.add(value);
+                if (!initial.isCompleted) initial.complete();
+              });
+              addTearDown(subscription.cancel);
+              await initial.future;
+              expect(events, ['Ada']);
+
+              var encoderCalls = 0;
+              await prefs.write<String>('name', input, (_) {
+                encoderCalls++;
+                return asynchronous ? Future<Object?>.value(null) : null;
+              });
+              await _flushEvents();
+              expect(encoderCalls, 1);
+              expect(await adapter.containsKey('name'), isFalse);
+              expect(events, hasLength(2));
+              final beforeReload = List<String?>.of(events);
+
+              await prefs.reload();
+              await prefs.reload();
+              await _flushEvents();
+              expect(events, beforeReload);
+            },
+          );
+        }
+
+        test(
+          'reload tracks a null input encoded to a non-null value with '
+          '${asynchronous ? 'async' : 'sync'} encoding',
+          () async {
+            await prefs.clear();
+            final initial = Completer<void>();
+            final events = <String?>[];
+            final subscription = prefs.getStringStream('added').listen((value) {
+              events.add(value);
+              if (!initial.isCompleted) initial.complete();
+            });
+            addTearDown(subscription.cancel);
+            await initial.future;
+
+            var encoderCalls = 0;
+            await prefs.write<String>('added', null, (_) {
+              encoderCalls++;
+              return asynchronous ? Future<Object?>.value('Grace') : 'Grace';
+            });
+            await _flushEvents();
+            expect(encoderCalls, 1);
+            expect(await adapter.getString('added'), 'Grace');
+            final beforeReload = events.length;
+
+            await fixture.replaceExternal({});
+            expect(await prefs.reload(), isEmpty);
+            await _flushEvents();
+            expect(events, hasLength(beforeReload + 1));
+            expect(events.last, isNull);
+          },
+        );
+      }
+
       test(
         'observeAll decodes initial data and each successful mutation',
         () async {
@@ -320,6 +391,8 @@ void main() {
     });
   }
 }
+
+Future<void> _flushEvents() => Future<void>.delayed(Duration.zero);
 
 Future<void> _expectNext<T>(StreamIterator<T> iterator, Object? value) async {
   expect(await iterator.moveNext().timeout(const Duration(seconds: 5)), isTrue);

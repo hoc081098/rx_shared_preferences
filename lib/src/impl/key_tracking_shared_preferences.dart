@@ -55,9 +55,28 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
     T? value,
     Encoder<T?> encoder, [
     void options,
-  ]) => _delegate.write<T>(key, value, encoder, options).then((_) {
-    _knownKeys.add(key);
-  });
+  ]) {
+    var removesKey = false;
+    Object? captureEncoded(Object? encoded) {
+      removesKey = encoded == null;
+      return encoded;
+    }
+
+    return _delegate
+        .write<T>(key, value, (value) {
+          final encoded = encoder(value);
+          return encoded is Future<Object?>
+              ? encoded.then(captureEncoded)
+              : captureEncoded(encoded);
+        }, options)
+        .then((_) {
+          if (removesKey) {
+            _knownKeys.remove(key);
+          } else {
+            _knownKeys.add(key);
+          }
+        });
+  }
 
   @override
   Future<void> remove(String key, [void options]) =>
