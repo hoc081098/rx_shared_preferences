@@ -38,19 +38,26 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
     String key,
     Decoder<T?> decoder, [
     void options,
-  ]) => _delegate.read<T>(key, (raw) {
-    if (raw != null) _knownKeys.add(key);
-    return decoder(raw);
-  }, options);
+  ]) => _delegate.read<T>(
+    key,
+    (raw) {
+      if (raw != null) _knownKeys.add(key);
+      return decoder(raw);
+    },
+    options,
+  );
 
   @override
   Future<Map<String, Object?>> readAll(
     EntryDecoder<String> decoder, [
     void options,
-  ]) => _delegate.readAll((key, raw) {
-    _knownKeys.add(key);
-    return decoder(key, raw);
-  }, options);
+  ]) => _delegate.readAll(
+    (key, raw) {
+      _knownKeys.add(key);
+      return decoder(key, raw);
+    },
+    options,
+  );
 
   @override
   Future<void> write<T extends Object>(
@@ -59,19 +66,24 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
     Encoder<T?> encoder, [
     void options,
   ]) {
-    var removesKey = false;
+    late bool removesKey;
     Object? captureEncoded(Object? encoded) {
       removesKey = encoded == null;
       return encoded;
     }
 
     return _delegate
-        .write<T>(key, value, (value) {
-          final encoded = encoder(value);
-          return encoded is Future<Object?>
-              ? encoded.then(captureEncoded)
-              : captureEncoded(encoded);
-        }, options)
+        .write<T>(
+          key,
+          value,
+          (value) {
+            final encoded = encoder(value);
+            return encoded is Future<Object?>
+                ? encoded.then(captureEncoded)
+                : captureEncoded(encoded);
+          },
+          options,
+        )
         .then((_) {
           if (removesKey) {
             _knownKeys.remove(key);
