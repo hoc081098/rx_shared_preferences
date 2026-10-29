@@ -95,6 +95,88 @@ void main() {
 
       for (final asynchronous in [false, true]) {
         test(
+          '${asynchronous ? 'Async' : 'Sync'} encoder errors preserve tracked '
+          'keys without inventing missing keys',
+          () async {
+            await prefs.clear();
+            await prefs.setString('name', 'Ada');
+            final initialName = Completer<void>();
+            final initialAdded = Completer<void>();
+            final names = <String?>[];
+            final added = <String?>[];
+            final nameSubscription = prefs.getStringStream('name').listen((
+              value,
+            ) {
+              names.add(value);
+              if (!initialName.isCompleted) initialName.complete();
+            });
+            final addedSubscription = prefs.getStringStream('added').listen((
+              value,
+            ) {
+              added.add(value);
+              if (!initialAdded.isCompleted) initialAdded.complete();
+            });
+            addTearDown(nameSubscription.cancel);
+            addTearDown(addedSubscription.cancel);
+            await Future.wait([initialName.future, initialAdded.future]);
+
+            final failure = StateError('Cannot encode');
+            for (final key in ['name', 'added']) {
+              await expectLater(
+                prefs.write<String>(key, 'Grace', (_) {
+                  if (asynchronous) return Future<Object?>.error(failure);
+                  throw failure;
+                }),
+                throwsA(same(failure)),
+              );
+            }
+            await _flushEvents();
+            expect(names, ['Ada']);
+            expect(added, [null]);
+
+            await fixture.replaceExternal({});
+            expect(await prefs.reload(), isEmpty);
+            await _flushEvents();
+            expect(names, ['Ada', null]);
+            expect(added, [null]);
+          },
+        );
+
+        test(
+          'reload notifies an external removal after a '
+          '${asynchronous ? 'async' : 'sync'} decoder error',
+          () async {
+            final failure = StateError('Cannot decode');
+            final failed = Completer<void>();
+            final values = <String?>[];
+            final errors = <Object>[];
+            final subscription = prefs
+                .observe<String>('name', (raw) {
+                  if (raw == null) return null;
+                  if (asynchronous) return Future<String?>.error(failure);
+                  throw failure;
+                })
+                .listen(
+                  values.add,
+                  onError: (Object error) {
+                    errors.add(error);
+                    if (!failed.isCompleted) failed.complete();
+                  },
+                );
+            addTearDown(subscription.cancel);
+            await failed.future;
+            expect(values, isEmpty);
+            expect(errors, [same(failure)]);
+
+            await fixture.replaceExternal({});
+            expect(await prefs.reload(), isEmpty);
+            await _flushEvents();
+            expect(values, [null]);
+            expect(errors, [same(failure)]);
+          },
+        );
+
+        test(
           '${asynchronous ? 'Async' : 'Sync'} decoder failure is reported '
           'before another decoder settles',
           () async {

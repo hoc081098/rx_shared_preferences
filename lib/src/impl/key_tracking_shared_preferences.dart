@@ -11,6 +11,9 @@ import '../utils/identity.dart';
 /// earlier reads and successful writes, including reads that finish during
 /// reload. Cached adapters also contribute their pre-reload keys.
 ///
+/// Reads remember raw keys even if decoding fails. Writes change tracking only
+/// after persistence succeeds, using the encoded value to identify removals.
+///
 /// [reload] owns key collection and reconciliation together. It returns raw
 /// values and removed keys; the reactive wrapper publishes the notifications.
 final class KeyTrackingSharedPreferences implements Storage<String, void> {
