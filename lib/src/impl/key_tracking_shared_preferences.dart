@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:rx_storage/rx_storage.dart';
 
+import '../identity.dart';
 import '../interface/shared_preferences_like.dart';
 
 /// Wraps a preferences adapter and tracks keys for reload notifications.
@@ -74,7 +75,7 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
   Future<({Map<String, Object?> values, Set<String> removedKeys})>
   reload() async {
     final previousKeys = Set<String>.of(_knownKeys);
-    final current = await readAll((_, raw) => raw);
+    final current = await readAll(identityEntryDecoder);
     previousKeys.addAll(current.keys);
 
     final values = await _delegate.reload();
