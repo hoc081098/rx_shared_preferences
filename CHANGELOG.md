@@ -21,7 +21,10 @@
   preference loggers are base classes; reload events are final. Re-exported
   upstream types also enforce Dart 3 class modifiers.
 - Fix reload notifications for externally removed keys previously read or
-  written through an async wrapper.
+  written through an async wrapper, including reads that complete while reload
+  is scanning keys or fetching platform values.
+- Log reload failures consistently, including failures while scanning current
+  keys.
 - Inherit rx_storage lifecycle fixes: queued mutations and reloads fail on
   disposal; started operations can finish without further notifications or
   logs; cleanup runs at most once; adapter initialization failures remain

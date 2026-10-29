@@ -19,6 +19,61 @@ void main() {
 
     tearDown(() => prefs.dispose());
 
+    for (final phase in ['key scan', 'delegate reload']) {
+      test('reload includes keys learned by a read during $phase', () async {
+        final readStarted = Completer<void>();
+        final finishRead = Completer<Object?>();
+        adapter.onRead = (key) {
+          expect(key, 'name');
+          readStarted.complete();
+          return finishRead.future;
+        };
+
+        final initial = Completer<void>();
+        final events = <String?>[];
+        final subscription = prefs.getStringStream('name').listen((value) {
+          events.add(value);
+          if (!initial.isCompleted) initial.complete();
+        });
+        addTearDown(subscription.cancel);
+        await readStarted.future;
+        await adapter.remove('name');
+
+        final phaseStarted = Completer<void>();
+        final finishPhase = Completer<void>();
+        if (phase == 'key scan') {
+          adapter.beforeReadAll = () {
+            phaseStarted.complete();
+            return finishPhase.future;
+          };
+        } else {
+          adapter.onReload = () async {
+            phaseStarted.complete();
+            await finishPhase.future;
+            return <String, Object?>{};
+          };
+        }
+
+        final reload = prefs.reload();
+        await phaseStarted.future;
+        // The per-key read captured this value before the external removal,
+        // but only delivers it after reload has started scanning current keys.
+        finishRead.complete('Ada');
+        await initial.future;
+        finishPhase.complete();
+        expect(await reload, isEmpty);
+        await _flushEvents();
+
+        expect(events, ['Ada', null]);
+
+        adapter.beforeReadAll = null;
+        adapter.onReload = null;
+        await prefs.reload();
+        await _flushEvents();
+        expect(events, ['Ada', null]);
+      });
+    }
+
     test(
       'reload notifies removals known only from a per-key observer',
       () async {
@@ -88,12 +143,18 @@ void main() {
         expect(success.keyAndValues.single.value, 'Grace');
 
         final failure = StateError('Reload failed');
+        await adapter.remove('name');
         adapter.onReload = () => Future.error(failure);
         await expectLater(prefs.reload(), throwsA(same(failure)));
         await _flushEvents();
         final error = logger.events.whereType<ReloadFailureEvent>().single;
         expect(error.error.error, same(failure));
         expect(logger.events.whereType<ReloadSuccessEvent>(), hasLength(1));
+
+        adapter.onReload = null;
+        expect(await prefs.reload(), isEmpty);
+        expect(await iterator.moveNext(), isTrue);
+        expect(iterator.current, isNull);
       },
     );
 
@@ -105,6 +166,11 @@ void main() {
         throwsA(same(failure)),
       );
       await expectLater(prefs.reload(), throwsA(same(failure)));
+      await _flushEvents();
+      expect(
+        logger.events.whereType<ReloadFailureEvent>().single.error.error,
+        same(failure),
+      );
       adapter.readFailure = null;
       expect(await prefs.reload(), {'name': 'Ada'});
     });
@@ -235,6 +301,8 @@ final class _CustomEmptyLogger extends RxSharedPreferencesEmptyLogger {
 final class _ControlledPreferences implements SharedPreferencesLike {
   final _storage = InMemoryStorage<String>();
   Future<Map<String, Object?>> Function()? onReload;
+  Future<void> Function()? beforeReadAll;
+  Future<Object?> Function(String key)? onRead;
   Object? readFailure;
 
   @override
@@ -245,9 +313,11 @@ final class _ControlledPreferences implements SharedPreferencesLike {
   Future<Map<String, Object?>> readAll(
     EntryDecoder<String> decoder, [
     void options,
-  ]) {
+  ]) async {
     final failure = readFailure;
-    return failure == null ? _storage.readAll(decoder) : Future.error(failure);
+    if (failure != null) throw failure;
+    await beforeReadAll?.call();
+    return _storage.readAll(decoder);
   }
 
   @override
@@ -255,7 +325,12 @@ final class _ControlledPreferences implements SharedPreferencesLike {
     String key,
     Decoder<T?> decoder, [
     void options,
-  ]) => _storage.read(key, decoder);
+  ]) {
+    final read = onRead;
+    return read == null
+        ? _storage.read(key, decoder)
+        : Future.sync(() => read(key)).then(decoder);
+  }
 
   @override
   Future<void> write<T extends Object>(

@@ -5,11 +5,11 @@ import 'package:rx_storage/rx_storage.dart';
 import '../interface/rx_shared_preferences.dart';
 import '../interface/shared_preferences_like.dart';
 import '../logger/logger.dart';
-import 'reloadable_shared_preferences.dart';
+import 'key_tracking_shared_preferences.dart';
 
 /// Default [RxSharedPreferences] implementation
 final class RealRxSharedPreferences
-    extends RealRxStorage<String, void, ReloadableSharedPreferences>
+    extends RealRxStorage<String, void, KeyTrackingSharedPreferences>
     implements RxSharedPreferences {
   ///
   RealRxSharedPreferences(
@@ -17,7 +17,7 @@ final class RealRxSharedPreferences
     RxSharedPreferencesLogger? logger,
     void Function()? onDispose,
   ]) : super(
-         ReloadableSharedPreferences.from(prefsLikeOrFuture),
+         KeyTrackingSharedPreferences.from(prefsLikeOrFuture),
          logger,
          onDispose,
        );
@@ -25,31 +25,22 @@ final class RealRxSharedPreferences
   @override
   Future<Map<String, Object?>> reload() {
     return enqueueWritingTask(null, () async {
-      final beforeKeys = await useStorageWithHandlers(
-        (s) => s.readKeysBeforeReload(),
-        null,
-        null,
-      );
-
-      return useStorageWithHandlers(
+      final result = await useStorageWithHandlers(
         (s) => s.reload(),
-        (value, _) {
-          sendChange(_computeMap(beforeKeys, value));
-          logIfEnabled(() => ReloadSuccessEvent(value.toListOfKeyAndValues()));
+        (result, _) {
+          sendChange({
+            for (final entry in result.values.entries)
+              entry.key: KeyAndValue(entry.key, entry.value, dynamic),
+            for (final key in result.removedKeys)
+              key: KeyAndValue(key, null, dynamic),
+          });
+          logIfEnabled(
+            () => ReloadSuccessEvent(result.values.toListOfKeyAndValues()),
+          );
         },
         (error, _) => logIfEnabled(() => ReloadFailureEvent(error)),
       );
+      return result.values;
     });
-  }
-
-  static Map<String, KeyAndValue<String, Object?>> _computeMap(
-    Set<String> beforeKeys,
-    Map<String, Object?> after,
-  ) {
-    final deletedKeys = beforeKeys.difference(after.keys.toSet());
-    return <String, Object?>{
-      ...after,
-      for (final k in deletedKeys) k: null,
-    }.map((key, value) => MapEntry(key, KeyAndValue(key, value, dynamic)));
   }
 }

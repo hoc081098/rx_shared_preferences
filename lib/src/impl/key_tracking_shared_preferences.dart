@@ -4,30 +4,26 @@ import 'package:rx_storage/rx_storage.dart';
 
 import '../interface/shared_preferences_like.dart';
 
-/// Tracks known keys so reload can notify observers of external removals.
+/// Wraps a preferences adapter and tracks keys for reload notifications.
 ///
 /// An async adapter's next read already sees external changes. Keep keys from
-/// earlier reads and successful writes until reload reconciles them with the
-/// backing store. Cached adapters also contribute their pre-reload keys.
-final class ReloadableSharedPreferences implements SharedPreferencesLike {
+/// earlier reads and successful writes, including reads that finish during
+/// reload. Cached adapters also contribute their pre-reload keys.
+///
+/// [reload] owns key collection and reconciliation together. It returns raw
+/// values and removed keys; the reactive wrapper publishes the notifications.
+final class KeyTrackingSharedPreferences implements Storage<String, void> {
   final SharedPreferencesLike _delegate;
   final _knownKeys = <String>{};
 
-  ReloadableSharedPreferences._(this._delegate);
+  KeyTrackingSharedPreferences._(this._delegate);
 
   /// Wraps an adapter without making synchronous initialization asynchronous.
-  static FutureOr<ReloadableSharedPreferences> from(
+  static FutureOr<KeyTrackingSharedPreferences> from(
     FutureOr<SharedPreferencesLike> storage,
   ) => storage is Future<SharedPreferencesLike>
-      ? storage.then(ReloadableSharedPreferences._)
-      : ReloadableSharedPreferences._(storage);
-
-  /// Returns previously known keys together with the current adapter's keys.
-  Future<Set<String>> readKeysBeforeReload() async {
-    final keys = Set<String>.of(_knownKeys);
-    final current = await readAll((_, raw) => raw);
-    return keys..addAll(current.keys);
-  }
+      ? storage.then(KeyTrackingSharedPreferences._)
+      : KeyTrackingSharedPreferences._(storage);
 
   @override
   Future<bool> containsKey(String key, [void options]) =>
@@ -70,14 +66,24 @@ final class ReloadableSharedPreferences implements SharedPreferencesLike {
   Future<void> clear([void options]) =>
       _delegate.clear(options).then((_) => _knownKeys.clear());
 
-  @override
-  Future<Map<String, Object?>> reload() {
+  /// Reloads raw values and reports keys removed since earlier operations.
+  ///
+  /// Include keys learned while either storage read was pending, then reconcile
+  /// the tracked keys without another await. Failed reloads retain known keys
+  /// so that a later successful reload can still report their removal.
+  Future<({Map<String, Object?> values, Set<String> removedKeys})>
+  reload() async {
     final previousKeys = Set<String>.of(_knownKeys);
-    return _delegate.reload().then((values) {
-      _knownKeys
-        ..removeAll(previousKeys.difference(values.keys.toSet()))
-        ..addAll(values.keys);
-      return values;
-    });
+    final current = await readAll((_, raw) => raw);
+    previousKeys.addAll(current.keys);
+
+    final values = await _delegate.reload();
+    final removedKeys = {...previousKeys, ..._knownKeys}.difference(
+      values.keys.toSet(),
+    );
+    _knownKeys
+      ..removeAll(removedKeys)
+      ..addAll(values.keys);
+    return (values: values, removedKeys: removedKeys);
   }
 }
