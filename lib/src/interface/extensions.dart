@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../rx_shared_preferences.dart';
-import '../identity.dart';
+import '../utils/identity.dart';
 
 T _cast<T>(Object? value) => value as T;
 

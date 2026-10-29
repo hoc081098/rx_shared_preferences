@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:rx_storage/rx_storage.dart';
 
-import '../identity.dart';
 import '../interface/shared_preferences_like.dart';
+import '../utils/identity.dart';
 
 /// Wraps a preferences adapter and tracks keys for reload notifications.
 ///
