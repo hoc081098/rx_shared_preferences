@@ -72,6 +72,45 @@ void main() {
         await _flushEvents();
         expect(events, ['Ada', null]);
       });
+
+      test('reload does not repeat a local removal during $phase', () async {
+        final initial = Completer<void>();
+        final events = <String?>[];
+        final subscription = prefs.getStringStream('name').listen((value) {
+          events.add(value);
+          if (!initial.isCompleted) initial.complete();
+        });
+        addTearDown(subscription.cancel);
+        await initial.future;
+
+        final phaseStarted = Completer<void>();
+        final finishPhase = Completer<void>();
+        if (phase == 'key scan') {
+          adapter.beforeReadAll = () {
+            phaseStarted.complete();
+            return finishPhase.future;
+          };
+        } else {
+          adapter.onReload = () async {
+            phaseStarted.complete();
+            await finishPhase.future;
+            return <String, Object?>{};
+          };
+        }
+
+        final reload = prefs.reload();
+        try {
+          await phaseStarted.future;
+          await prefs.remove('name');
+          await _flushEvents();
+          expect(events, ['Ada', null]);
+        } finally {
+          finishPhase.complete();
+          expect(await reload, isEmpty);
+        }
+        await _flushEvents();
+        expect(events, ['Ada', null]);
+      });
     }
 
     test(

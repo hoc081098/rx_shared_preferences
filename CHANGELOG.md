@@ -25,8 +25,8 @@
 - Fix reload notifications for externally removed keys previously read or
   written through an async wrapper, including reads that complete while reload
   is scanning keys or fetching platform values.
-- Avoid duplicate removal notifications on reload after a local write encodes
-  to null.
+- Avoid duplicate removal notifications for local removals and writes that
+  encode to null, including removals completed while reload is pending.
 - Log reload failures consistently, including failures while scanning current
   keys.
 - Inherit rx_storage lifecycle fixes: queued mutations and reloads fail on
