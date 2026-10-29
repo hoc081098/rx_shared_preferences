@@ -17,8 +17,9 @@
   Use their `update*` replacements. The inherited `executeUpdate` was also
   removed by rx_storage; use named-argument `update` instead.
 - **Breaking**: `RxSharedPreferences`, `SharedPreferencesLike`, and
-  `RxSharedPreferencesLogger` are now abstract interface classes. Built-in
-  preference loggers are base classes; reload events are final. Re-exported
+  `RxSharedPreferencesLogger` are now abstract interface classes.
+  `RxSharedPreferencesDefaultLogger` is a base class;
+  `RxSharedPreferencesEmptyLogger` and reload events are final. Re-exported
   upstream types also enforce Dart 3 class modifiers.
 - Fix reload notifications for externally removed keys previously read or
   written through an async wrapper, including reads that complete while reload

@@ -305,14 +305,17 @@ Implement `SharedPreferencesLike`, `RxSharedPreferences`, or
 are `abstract interface` classes and cannot be extended outside their library.
 Custom adapters must implement entry decoding in `readAll`.
 
-To reuse the built-in logger, extend it with a `base`, `final`, or `sealed`
-subclass and override `handleLogEvent`. For example:
+To reuse the default logger, extend `RxSharedPreferencesDefaultLogger` with a
+`base`, `final`, or `sealed` subclass. Override `handleLogEvent` when you need
+custom event handling. For example:
 
 ```dart
 final class AppLogger extends RxSharedPreferencesDefaultLogger {
   const AppLogger() : super(tag: 'App preferences');
 }
 ```
+
+`RxSharedPreferencesEmptyLogger` is final and discards all log events.
 
 `ReloadSuccessEvent` and `ReloadFailureEvent` are final. Define additional custom
 events by implementing `RxStorageLoggerEvent<String, void>`.

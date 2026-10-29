@@ -247,7 +247,7 @@ void main() {
     );
   });
 
-  test('base loggers support subclasses and handle reload events', () {
+  test('default logger supports subclasses and empty logger stays silent', () {
     final output = <String>[];
     final logger = _CustomDefaultLogger();
     final success = ReloadSuccessEvent([
@@ -260,8 +260,8 @@ void main() {
       () {
         logger.log(success);
         logger.log(failure);
-        const _CustomEmptyLogger().log(success);
-        const _CustomEmptyLogger().log(failure);
+        const RxSharedPreferencesEmptyLogger().log(success);
+        const RxSharedPreferencesEmptyLogger().log(failure);
       },
       zoneSpecification: ZoneSpecification(
         print: (_, _, _, line) => output.add(line),
@@ -292,10 +292,6 @@ final class _CustomDefaultLogger extends RxSharedPreferencesDefaultLogger {
     handled.add(event);
     return super.handleLogEvent(event);
   }
-}
-
-final class _CustomEmptyLogger extends RxSharedPreferencesEmptyLogger {
-  const _CustomEmptyLogger();
 }
 
 final class _ControlledPreferences implements SharedPreferencesLike {

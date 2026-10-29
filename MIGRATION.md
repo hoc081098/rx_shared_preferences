@@ -78,9 +78,11 @@ wrappers do not participate in that per-key queue.
 
 - Implement `SharedPreferencesLike`, `RxSharedPreferences`, and
   `RxSharedPreferencesLogger`; these are now `abstract interface` classes.
-- Extend `RxSharedPreferencesDefaultLogger` or `RxSharedPreferencesEmptyLogger`
-  to reuse their implementation. Mark subclasses as `base`, `final`, or
-  `sealed`; they can no longer be implemented outside their defining library.
+- Extend `RxSharedPreferencesDefaultLogger` to reuse its implementation.
+  Mark subclasses as `base`, `final`, or `sealed`. The default logger can
+  no longer be implemented outside its defining library.
+- `RxSharedPreferencesEmptyLogger` is now final. It cannot be extended or
+  implemented; implement `RxSharedPreferencesLogger` for custom logging behavior.
 - `ReloadSuccessEvent` and `ReloadFailureEvent` are now final. Implement
   `RxStorageLoggerEvent<String, void>` for custom events.
 - Re-exported upstream contracts (`Storage`, `TransactionalStorage`, `RxStorage`,
