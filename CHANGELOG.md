@@ -15,7 +15,7 @@
 - Fix reload notifications for external removals; reject queued mutations and
   reloads on disposal.
 - Update the example to `rxdart_ext ^0.4.0`.
-- See the [4.x migration guide](MIGRATION.md).
+- See the [5.0.0 migration guide](MIGRATION.md).
 
 ## 4.0.0 - Jul 20, 2024
 
