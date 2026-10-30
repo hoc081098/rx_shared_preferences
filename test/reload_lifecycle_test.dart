@@ -4,8 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rx_shared_preferences/src/impl/real_rx_shared_preferences.dart';
 
+import 'stream_expectations.dart';
+
+enum _ReloadPhase { keyScan, platformReload }
+
 void main() {
-  group('Reload lifecycle', () {
+  group('reload', () {
     late _ControlledPreferences adapter;
     late _RecordingLogger logger;
     late RxSharedPreferences prefs;
@@ -16,190 +20,135 @@ void main() {
       logger = _RecordingLogger();
       prefs = RealRxSharedPreferences(adapter, logger);
     });
-
     tearDown(() => prefs.dispose());
 
-    for (final phase in ['key scan', 'delegate reload']) {
-      test('reload includes keys learned by a read during $phase', () async {
-        final readStarted = Completer<void>();
-        final finishRead = Completer<Object?>();
-        adapter.onRead = (key) {
-          expect(key, 'name');
-          readStarted.complete();
-          return finishRead.future;
-        };
+    group('async gaps', () {
+      for (final phase in _ReloadPhase.values) {
+        group(phase.name, () {
+          test('includes keys learned by a pending read', () async {
+            final readStarted = Completer<void>();
+            final finishRead = Completer<Object?>();
+            adapter.onRead = (key) {
+              expect(key, 'name');
+              readStarted.complete();
+              return finishRead.future;
+            };
+            addTearDown(() {
+              if (!finishRead.isCompleted) finishRead.complete(null);
+            });
+            final output = expectStreamEvents(prefs.getStringStream('name'), [
+              'Ada',
+              null,
+            ]);
+            await readStarted.future;
+            await adapter.remove('name');
 
-        final initial = Completer<void>();
-        final events = <String?>[];
-        final subscription = prefs.getStringStream('name').listen((value) {
-          events.add(value);
-          if (!initial.isCompleted) initial.complete();
+            final gate = _blockReload(adapter, phase);
+            addTearDown(gate.resume);
+            final reload = prefs.reload();
+            await gate.started;
+            finishRead.complete('Ada');
+            await output.firstEvent;
+            gate.resume();
+            expect(await reload, isEmpty);
+            await prefs.reload();
+            await prefs.dispose();
+            await output.done;
+          });
+
+          test('does not repeat a completed local removal', () async {
+            final output = expectStreamEvents(prefs.getStringStream('name'), [
+              'Ada',
+              null,
+            ]);
+            await output.firstEvent;
+            final gate = _blockReload(adapter, phase);
+            addTearDown(gate.resume);
+            final reload = prefs.reload();
+            await gate.started;
+            await prefs.remove('name');
+            gate.resume();
+            expect(await reload, isEmpty);
+            await prefs.dispose();
+            await output.done;
+          });
         });
-        addTearDown(subscription.cancel);
-        await readStarted.future;
-        await adapter.remove('name');
-
-        final phaseStarted = Completer<void>();
-        final finishPhase = Completer<void>();
-        if (phase == 'key scan') {
-          adapter.beforeReadAll = () {
-            phaseStarted.complete();
-            return finishPhase.future;
-          };
-        } else {
-          adapter.onReload = () async {
-            phaseStarted.complete();
-            await finishPhase.future;
-            return <String, Object?>{};
-          };
-        }
-
-        final reload = prefs.reload();
-        await phaseStarted.future;
-        // The per-key read captured this value before the external removal,
-        // but only delivers it after reload has started scanning current keys.
-        finishRead.complete('Ada');
-        await initial.future;
-        finishPhase.complete();
-        expect(await reload, isEmpty);
-        await _flushEvents();
-
-        expect(events, ['Ada', null]);
-
-        adapter.beforeReadAll = null;
-        adapter.onReload = null;
-        await prefs.reload();
-        await _flushEvents();
-        expect(events, ['Ada', null]);
-      });
-
-      test('reload does not repeat a local removal during $phase', () async {
-        final initial = Completer<void>();
-        final events = <String?>[];
-        final subscription = prefs.getStringStream('name').listen((value) {
-          events.add(value);
-          if (!initial.isCompleted) initial.complete();
-        });
-        addTearDown(subscription.cancel);
-        await initial.future;
-
-        final phaseStarted = Completer<void>();
-        final finishPhase = Completer<void>();
-        if (phase == 'key scan') {
-          adapter.beforeReadAll = () {
-            phaseStarted.complete();
-            return finishPhase.future;
-          };
-        } else {
-          adapter.onReload = () async {
-            phaseStarted.complete();
-            await finishPhase.future;
-            return <String, Object?>{};
-          };
-        }
-
-        final reload = prefs.reload();
-        try {
-          await phaseStarted.future;
-          await prefs.remove('name');
-          await _flushEvents();
-          expect(events, ['Ada', null]);
-        } finally {
-          finishPhase.complete();
-          expect(await reload, isEmpty);
-        }
-        await _flushEvents();
-        expect(events, ['Ada', null]);
-      });
-    }
-
-    test(
-      'reload notifies removals known only from a per-key observer',
-      () async {
-        final iterator = StreamIterator(prefs.getStringStream('name'));
-        addTearDown(iterator.cancel);
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, 'Ada');
-
-        await adapter.remove('name');
-        expect(await prefs.reload(), isEmpty);
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, isNull);
-      },
-    );
-
-    test(
-      'successful writes track keys absent during the initial read',
-      () async {
-        final iterator = StreamIterator(prefs.getStringStream('added'));
-        addTearDown(iterator.cancel);
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, isNull);
-        await prefs.setString('added', 'Grace');
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, 'Grace');
-
-        await adapter.remove('added');
-        await prefs.reload();
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, isNull);
-      },
-    );
-
-    test('failed encoded removals retain keys for external reloads', () async {
-      final initial = Completer<void>();
-      final events = <String?>[];
-      final subscription = prefs.getStringStream('name').listen((value) {
-        events.add(value);
-        if (!initial.isCompleted) initial.complete();
-      });
-      addTearDown(subscription.cancel);
-      await initial.future;
-
-      final failure = StateError('Remove failed');
-      adapter.writeFailure = failure;
-      await expectLater(prefs.setString('name', null), throwsA(same(failure)));
-      await _flushEvents();
-      expect(events, ['Ada']);
-
-      adapter.writeFailure = null;
-      await adapter.remove('name');
-      expect(await prefs.reload(), isEmpty);
-      await _flushEvents();
-      expect(events, ['Ada', null]);
+      }
     });
 
-    test(
-      'reload reconciles known keys for subsequent external changes',
-      () async {
-        await prefs.reload();
-        final iterator = StreamIterator(prefs.getStringStream('added'));
-        addTearDown(iterator.cancel);
-        expect(await iterator.moveNext(), isTrue);
-        await adapter.setString('added', 'Grace');
-        await prefs.reload();
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, 'Grace');
+    group('notifications', () {
+      test('remembers keys observed by per-key streams', () async {
+        final output = expectStreamEvents(prefs.getStringStream('name'), [
+          'Ada',
+          null,
+        ]);
+        await output.firstEvent;
+        await adapter.remove('name');
+        expect(await prefs.reload(), isEmpty);
+        await prefs.dispose();
+        await output.done;
+      });
 
+      test('tracks successful writes after an initially missing key', () async {
+        final output = expectStreamEvents(prefs.getStringStream('added'), [
+          null,
+          'Grace',
+          null,
+        ]);
+        await output.firstEvent;
+        await prefs.setString('added', 'Grace');
         await adapter.remove('added');
         await prefs.reload();
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, isNull);
-      },
-    );
+        await prefs.dispose();
+        await output.done;
+      });
 
-    test(
-      'reload logs raw results and failures without publishing a failed reload',
-      () async {
-        final iterator = StreamIterator(prefs.getStringStream('name'));
-        addTearDown(iterator.cancel);
-        expect(await iterator.moveNext(), isTrue);
+      test('retains keys after a failed encoded removal', () async {
+        final output = expectStreamEvents(prefs.getStringStream('name'), [
+          'Ada',
+          null,
+        ]);
+        await output.firstEvent;
+        final failure = StateError('Remove failed');
+        adapter.writeFailure = failure;
+        await expectLater(
+          prefs.setString('name', null),
+          throwsA(same(failure)),
+        );
+        adapter.writeFailure = null;
+        await adapter.remove('name');
+        expect(await prefs.reload(), isEmpty);
+        await prefs.dispose();
+        await output.done;
+      });
+
+      test('reconciles keys across successive external changes', () async {
+        await prefs.reload();
+        final output = expectStreamEvents(prefs.getStringStream('added'), [
+          null,
+          'Grace',
+          null,
+        ]);
+        await output.firstEvent;
+        await adapter.setString('added', 'Grace');
+        await prefs.reload();
+        await adapter.remove('added');
+        await prefs.reload();
+        await prefs.dispose();
+        await output.done;
+      });
+    });
+
+    group('failures and logging', () {
+      test('logs raw results, preserves failures and supports retry', () async {
+        final output = expectStreamEvents(prefs.getStringStream('name'), [
+          'Ada',
+          'Grace',
+          null,
+        ]);
+        await output.firstEvent;
         await adapter.setString('name', 'Grace');
         expect(await prefs.reload(), {'name': 'Grace'});
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, 'Grace');
-        await _flushEvents();
-
         final success = logger.events.whereType<ReloadSuccessEvent>().single;
         expect(success.keyAndValues.single.key, 'name');
         expect(success.keyAndValues.single.value, 'Grace');
@@ -208,160 +157,192 @@ void main() {
         await adapter.remove('name');
         adapter.onReload = () => Future.error(failure);
         await expectLater(prefs.reload(), throwsA(same(failure)));
-        await _flushEvents();
         final error = logger.events.whereType<ReloadFailureEvent>().single;
         expect(error.error.error, same(failure));
         expect(logger.events.whereType<ReloadSuccessEvent>(), hasLength(1));
 
         adapter.onReload = null;
         expect(await prefs.reload(), isEmpty);
-        expect(await iterator.moveNext(), isTrue);
-        expect(iterator.current, isNull);
-      },
-    );
+        await prefs.dispose();
+        await output.done;
+      });
 
-    test('read failures complete bulk futures with an error', () async {
-      final failure = StateError('Read failed');
-      adapter.readFailure = failure;
-      await expectLater(
-        prefs.readAll((_, raw) => raw),
-        throwsA(same(failure)),
-      );
-      await expectLater(prefs.reload(), throwsA(same(failure)));
-      await _flushEvents();
-      expect(
-        logger.events.whereType<ReloadFailureEvent>().single.error.error,
-        same(failure),
-      );
-      adapter.readFailure = null;
-      expect(await prefs.reload(), {'name': 'Ada'});
+      test('propagates and logs key-scan failures', () async {
+        final failure = StateError('Read failed');
+        adapter.readFailure = failure;
+        await expectLater(
+          prefs.readAll((_, raw) => raw),
+          throwsA(same(failure)),
+        );
+        await expectLater(prefs.reload(), throwsA(same(failure)));
+        expect(
+          logger.events.whereType<ReloadFailureEvent>().single.error.error,
+          same(failure),
+        );
+        adapter.readFailure = null;
+        expect(await prefs.reload(), {'name': 'Ada'});
+      });
     });
 
-    test('reload and clear share a queue', () async {
-      final started = Completer<void>();
-      final finish = Completer<Map<String, Object?>>();
-      adapter.onReload = () {
-        started.complete();
-        return finish.future;
-      };
-      final completed = <String>[];
-      final reload = prefs.reload().then((_) => completed.add('reload'));
-      await started.future;
-
-      final clear = prefs.clear().then((_) => completed.add('clear'));
-      try {
-        await _flushEvents();
-        expect(await adapter.getString('name'), 'Ada');
-        expect(completed, isEmpty);
-      } finally {
-        finish.complete({'name': 'Ada'});
-        await Future.wait([reload, clear]);
-      }
-      expect(completed, ['reload', 'clear']);
-      expect(await adapter.getKeys(), isEmpty);
-    });
-
-    test(
-      'queued reloads fail on disposal and started reloads finish silently',
-      () async {
-        final initial = Completer<void>();
-        final changes = <Map<String, Object?>>[];
-        final subscription = prefs.observeAll((_, raw) => raw).listen((value) {
-          changes.add(value);
-          if (!initial.isCompleted) initial.complete();
-        });
-        addTearDown(subscription.cancel);
-        await initial.future;
-
+    group('queue and disposal', () {
+      test('shares a queue with clear', () async {
         final started = Completer<void>();
         final finish = Completer<Map<String, Object?>>();
-        var reloadCalls = 0;
         adapter.onReload = () {
-          reloadCalls++;
           started.complete();
           return finish.future;
         };
-        final running = prefs.reload();
+        final completed = <String>[];
+        final reload = prefs.reload().then((_) => completed.add('reload'));
         await started.future;
-        final pending = prefs.reload();
-        final pendingExpectation = expectLater(pending, throwsStateError);
-        await prefs.dispose();
-        await pendingExpectation;
-        final logCount = logger.events.length;
-
-        finish.complete({'name': 'Grace'});
-        expect(await running, {'name': 'Grace'});
-        await _flushEvents();
-        expect(reloadCalls, 1);
-        expect(changes, [
-          {'name': 'Ada'},
-        ]);
-        expect(logger.events, hasLength(logCount));
-        expect(logger.events.whereType<ReloadSuccessEvent>(), isEmpty);
-      },
-    );
-
-    test('repeated disposal shares cleanup and its result', () async {
-      var cleanupCalls = 0;
-      final storage = RealRxSharedPreferences(adapter, null, () {
-        cleanupCalls++;
+        final clear = prefs.clear().then((_) => completed.add('clear'));
+        try {
+          await _flushEvents();
+          expect(await adapter.getString('name'), 'Ada');
+          expect(completed, isEmpty);
+        } finally {
+          finish.complete({'name': 'Ada'});
+          await Future.wait([reload, clear]);
+        }
+        expect(completed, ['reload', 'clear']);
+        expect(await adapter.getKeys(), isEmpty);
       });
-      final first = storage.dispose();
-      final second = storage.dispose();
-      expect(identical(first, second), isTrue);
-      await Future.wait([first, second]);
-      expect(identical(first, storage.dispose()), isTrue);
-      expect(cleanupCalls, 1);
-    });
 
-    test(
-      'failed future initialization is retained until operations request it',
-      () async {
+      test(
+        'rejects queued reloads and lets a running reload finish silently',
+        () async {
+          final output = expectStreamEvents(prefs.observeAll((_, raw) => raw), [
+            {'name': 'Ada'},
+          ]);
+          await output.firstEvent;
+          final started = Completer<void>();
+          final finish = Completer<Map<String, Object?>>();
+          var reloadCalls = 0;
+          adapter.onReload = () {
+            reloadCalls++;
+            started.complete();
+            return finish.future;
+          };
+          final running = prefs.reload();
+          await started.future;
+          final pending = expectLater(prefs.reload(), throwsStateError);
+          await prefs.dispose();
+          await pending;
+          await output.done;
+          final logCount = logger.events.length;
+
+          finish.complete({'name': 'Grace'});
+          expect(await running, {'name': 'Grace'});
+          await _flushEvents();
+          expect(reloadCalls, 1);
+          expect(logger.events, hasLength(logCount));
+          expect(logger.events.whereType<ReloadSuccessEvent>(), isEmpty);
+        },
+      );
+
+      test('shares repeated disposal and invokes cleanup once', () async {
+        var cleanupCalls = 0;
+        final storage = RealRxSharedPreferences(
+          adapter,
+          null,
+          () => cleanupCalls++,
+        );
+        final first = storage.dispose();
+        final second = storage.dispose();
+        expect(identical(first, second), isTrue);
+        await Future.wait([first, second]);
+        expect(identical(first, storage.dispose()), isTrue);
+        expect(cleanupCalls, 1);
+      });
+
+      test('retains initialization errors for subsequent operations', () async {
         final initialization = Completer<SharedPreferencesLike>();
         final storage = RealRxSharedPreferences(initialization.future);
         addTearDown(storage.dispose);
         final failure = StateError('Initialization failed');
         initialization.completeError(failure);
         await _flushEvents();
-
         await expectLater(
           storage.readAll((_, raw) => raw),
           throwsA(same(failure)),
         );
         await expectLater(storage.reload(), throwsA(same(failure)));
-      },
-    );
+      });
+    });
   });
 
-  test('default logger supports subclasses and empty logger stays silent', () {
-    final output = <String>[];
-    final logger = _CustomDefaultLogger();
+  group('loggers', () {
     final success = ReloadSuccessEvent([
       const KeyAndValue('name', 'Ada', String),
     ]);
     final failure = ReloadFailureEvent(
       RxStorageError(StateError('Failed'), StackTrace.current),
     );
-    runZoned(
-      () {
+
+    test('default logger subclasses handle reload events', () {
+      final logger = _CustomDefaultLogger();
+      final output = _capturePrints(() {
         logger.log(success);
         logger.log(failure);
+      });
+      expect(output, hasLength(3));
+      expect(output[0], contains('Reload success'));
+      expect(output[1], contains('Ada'));
+      expect(output[2], contains('Failed'));
+      expect(logger.handled, [same(success), same(failure)]);
+    });
+
+    test('empty logger ignores reload events', () {
+      final output = _capturePrints(() {
         const RxSharedPreferencesEmptyLogger().log(success);
         const RxSharedPreferencesEmptyLogger().log(failure);
-      },
-      zoneSpecification: ZoneSpecification(
-        print: (_, _, _, line) => output.add(line),
-      ),
-    );
-    expect(output, hasLength(3));
-    expect(output[0], contains('Reload success'));
-    expect(output[1], contains('Ada'));
-    expect(output[2], contains('Failed'));
-    expect(logger.handled, [same(success), same(failure)]);
+      });
+      expect(output, isEmpty);
+    });
   });
 }
 
 Future<void> _flushEvents() => Future<void>.delayed(Duration.zero);
+
+({Future<void> started, void Function() resume}) _blockReload(
+  _ControlledPreferences adapter,
+  _ReloadPhase phase,
+) {
+  final started = Completer<void>();
+  final release = Completer<void>();
+  Future<void> wait() {
+    started.complete();
+    return release.future;
+  }
+
+  if (phase == _ReloadPhase.keyScan) {
+    adapter.beforeReadAll = wait;
+  } else {
+    adapter.onReload = () async {
+      await wait();
+      return adapter.readAll((_, raw) => raw);
+    };
+  }
+  return (
+    started: started.future,
+    resume: () {
+      adapter.beforeReadAll = null;
+      adapter.onReload = null;
+      if (!release.isCompleted) release.complete();
+    },
+  );
+}
+
+List<String> _capturePrints(void Function() action) {
+  final output = <String>[];
+  runZoned(
+    action,
+    zoneSpecification: ZoneSpecification(
+      print: (_, _, _, line) => output.add(line),
+    ),
+  );
+  return output;
+}
 
 final class _RecordingLogger implements RxSharedPreferencesLogger {
   final events = <RxStorageLoggerEvent<String, void>>[];

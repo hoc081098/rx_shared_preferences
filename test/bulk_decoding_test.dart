@@ -9,6 +9,8 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
+import 'stream_expectations.dart';
+
 enum _AdapterKind { legacy, async, withCache }
 
 const _initialValues = <String, Object>{
@@ -19,7 +21,7 @@ const _initialValues = <String, Object>{
 
 void main() {
   for (final kind in _AdapterKind.values) {
-    group('${kind.name} bulk decoding', () {
+    group('${kind.name} adapter', () {
       late _PreferencesFixture fixture;
       late SharedPreferencesLike adapter;
       late RxSharedPreferences prefs;
@@ -29,21 +31,16 @@ void main() {
         adapter = fixture.adapter;
         prefs = fixture.prefs;
       });
-
       tearDown(() => prefs.dispose());
 
-      test(
-        'identity decoder reads raw entries through the public API',
-        () async {
+      group('readAll', () {
+        test('reads raw entries and keys', () async {
           expect(await adapter.readAll((_, raw) => raw), _initialValues);
           expect(await prefs.readAll((_, raw) => raw), _initialValues);
           expect(await prefs.getKeys(), _initialValues.keys.toSet());
-        },
-      );
+        });
 
-      test(
-        'entry decoder receives keys and supports mixed async results',
-        () async {
+        test('supports key-specific sync, async and null results', () async {
           final keys = <String>[];
           final result = await adapter.readAll((key, raw) {
             keys.add(key);
@@ -54,172 +51,20 @@ void main() {
               _ => throw StateError('Unexpected key: $key'),
             };
           });
-
           expect(keys, unorderedEquals(_initialValues.keys));
           expect(result, {'count': 'count=1', 'name': 3, 'tags': null});
           expect(await adapter.readAll((_, raw) => raw), _initialValues);
-        },
-      );
+        });
 
-      test('empty storage does not invoke the decoder', () async {
-        await adapter.clear();
-        expect(
-          await adapter.readAll((_, _) => fail('No entries to decode')),
-          isEmpty,
-        );
-      });
-
-      test(
-        'a synchronous decoder failure completes the future with an error',
-        () async {
-          final failure = StateError('Cannot decode');
-          final result = adapter.readAll((_, _) => throw failure);
-          await expectLater(result, throwsA(same(failure)));
-          expect(await adapter.readAll((_, raw) => raw), _initialValues);
-        },
-      );
-
-      test(
-        'an asynchronous decoder failure returns no partial result',
-        () async {
-          final failure = StateError('Cannot decode name');
-          await expectLater(
-            adapter.readAll(
-              (key, raw) =>
-                  key == 'name' ? Future<Object?>.error(failure) : raw,
-            ),
-            throwsA(same(failure)),
+        test('does not decode empty storage', () async {
+          await adapter.clear();
+          expect(
+            await adapter.readAll((_, _) => fail('No entries to decode')),
+            isEmpty,
           );
-        },
-      );
+        });
 
-      for (final asynchronous in [false, true]) {
-        test(
-          '${asynchronous ? 'Async' : 'Sync'} encoder errors preserve tracked '
-          'keys without inventing missing keys',
-          () async {
-            await prefs.clear();
-            await prefs.setString('name', 'Ada');
-            final initialName = Completer<void>();
-            final initialAdded = Completer<void>();
-            final names = <String?>[];
-            final added = <String?>[];
-            final nameSubscription = prefs.getStringStream('name').listen((
-              value,
-            ) {
-              names.add(value);
-              if (!initialName.isCompleted) initialName.complete();
-            });
-            final addedSubscription = prefs.getStringStream('added').listen((
-              value,
-            ) {
-              added.add(value);
-              if (!initialAdded.isCompleted) initialAdded.complete();
-            });
-            addTearDown(nameSubscription.cancel);
-            addTearDown(addedSubscription.cancel);
-            await Future.wait([initialName.future, initialAdded.future]);
-
-            final failure = StateError('Cannot encode');
-            for (final key in ['name', 'added']) {
-              await expectLater(
-                prefs.write<String>(key, 'Grace', (_) {
-                  if (asynchronous) return Future<Object?>.error(failure);
-                  throw failure;
-                }),
-                throwsA(same(failure)),
-              );
-            }
-            await _flushEvents();
-            expect(names, ['Ada']);
-            expect(added, [null]);
-
-            await fixture.replaceExternal({});
-            expect(await prefs.reload(), isEmpty);
-            await _flushEvents();
-            expect(names, ['Ada', null]);
-            expect(added, [null]);
-          },
-        );
-
-        test(
-          'reload notifies an external removal after a '
-          '${asynchronous ? 'async' : 'sync'} decoder error',
-          () async {
-            final failure = StateError('Cannot decode');
-            final failed = Completer<void>();
-            final values = <String?>[];
-            final errors = <Object>[];
-            final subscription = prefs
-                .observe<String>('name', (raw) {
-                  if (raw == null) return null;
-                  if (asynchronous) return Future<String?>.error(failure);
-                  throw failure;
-                })
-                .listen(
-                  values.add,
-                  onError: (Object error) {
-                    errors.add(error);
-                    if (!failed.isCompleted) failed.complete();
-                  },
-                );
-            addTearDown(subscription.cancel);
-            await failed.future;
-            expect(values, isEmpty);
-            expect(errors, [same(failure)]);
-
-            await fixture.replaceExternal({});
-            expect(await prefs.reload(), isEmpty);
-            await _flushEvents();
-            expect(values, [null]);
-            expect(errors, [same(failure)]);
-          },
-        );
-
-        test(
-          '${asynchronous ? 'Async' : 'Sync'} decoder failure is reported '
-          'before another decoder settles',
-          () async {
-            final pending = Completer<Object?>();
-            final failure = StateError('Cannot decode name');
-            final stackTrace = StackTrace.current;
-            Object? observedError;
-            StackTrace? observedStackTrace;
-            final result = adapter.readAll((key, raw) {
-              if (key == 'count') return pending.future;
-              if (key == 'name') {
-                if (asynchronous) {
-                  return Future<Object?>.error(failure, stackTrace);
-                }
-                Error.throwWithStackTrace(failure, stackTrace);
-              }
-              return raw;
-            });
-            final handled = result.then<void>(
-              (_) => fail('A failed bulk read must not return a map'),
-              onError: (Object error, StackTrace trace) {
-                observedError = error;
-                observedStackTrace = trace;
-              },
-            );
-
-            try {
-              await _flushEvents();
-              expect(observedError, same(failure));
-              expect(observedStackTrace.toString(), stackTrace.toString());
-              expect(pending.isCompleted, isFalse);
-            } finally {
-              pending.completeError(StateError('Late decoder failure'));
-              await handled;
-              await _flushEvents();
-            }
-          },
-        );
-      }
-
-      test(
-        'decoders use a snapshot when they mutate the backing store',
-        () async {
+        test('decodes a snapshot when the decoder mutates storage', () async {
           final mutations = <Future<void>>[];
           final result = await adapter.readAll((key, raw) {
             if (mutations.isEmpty) {
@@ -231,7 +76,6 @@ void main() {
             }
             return raw;
           });
-
           await Future.wait(mutations);
           expect(result, _initialValues);
           expect(await adapter.readAll((_, raw) => raw), {
@@ -239,12 +83,9 @@ void main() {
             'name': 'Grace',
             'added': 2,
           });
-        },
-      );
+        });
 
-      test(
-        'bulk maps are independent and cached string lists remain copies',
-        () async {
+        test('copies maps and cached string lists', () async {
           final result = await adapter.readAll((_, raw) => raw);
           if (kind != _AdapterKind.async) {
             (result['tags'] as List<String>).add('changed');
@@ -252,103 +93,72 @@ void main() {
           result['count'] = 99;
           expect(await adapter.getStringList('tags'), ['one']);
           expect(await adapter.getInt('count'), 1);
-        },
-      );
+        });
 
-      test(
-        'encoded null removes an entry while decoded null retains it',
-        () async {
+        test('retains decoded nulls and omits removed keys', () async {
           final decoded = await adapter.readAll((_, _) => null);
           expect(decoded.keys, unorderedEquals(_initialValues.keys));
           expect(decoded.values, everyElement(isNull));
 
           await adapter.setString('name', null);
-          final raw = await adapter.readAll((_, value) => value);
-          expect(raw.containsKey('name'), isFalse);
+          expect(
+            (await adapter.readAll((_, raw) => raw)).containsKey('name'),
+            isFalse,
+          );
           expect(await adapter.containsKey('name'), isFalse);
-        },
-      );
+        });
 
-      for (final asynchronous in [false, true]) {
-        for (final input in <String?>[null, 'remove']) {
+        for (final asynchronous in [false, true]) {
           test(
-            'reload does not repeat a local encoded removal with '
-            '${input == null ? 'null' : 'non-null'} input and '
-            '${asynchronous ? 'async' : 'sync'} encoding',
+            'reports ${asynchronous ? 'async' : 'sync'} errors immediately',
             () async {
-              final initial = Completer<void>();
-              final events = <String?>[];
-              final subscription = prefs.getStringStream('name').listen((
-                value,
-              ) {
-                events.add(value);
-                if (!initial.isCompleted) initial.complete();
+              final pending = Completer<Object?>();
+              final failure = StateError('Cannot decode name');
+              final stackTrace = StackTrace.current;
+              Object? observedError;
+              StackTrace? observedStackTrace;
+              final result = adapter.readAll((key, raw) {
+                if (key == 'count') return pending.future;
+                if (key == 'name') {
+                  if (asynchronous) {
+                    return Future<Object?>.error(failure, stackTrace);
+                  }
+                  Error.throwWithStackTrace(failure, stackTrace);
+                }
+                return raw;
               });
-              addTearDown(subscription.cancel);
-              await initial.future;
-              expect(events, ['Ada']);
-
-              var encoderCalls = 0;
-              await prefs.write<String>('name', input, (_) {
-                encoderCalls++;
-                return asynchronous ? Future<Object?>.value(null) : null;
-              });
-              await _flushEvents();
-              expect(encoderCalls, 1);
-              expect(await adapter.containsKey('name'), isFalse);
-              expect(events, hasLength(2));
-              final beforeReload = List<String?>.of(events);
-
-              await prefs.reload();
-              await prefs.reload();
-              await _flushEvents();
-              expect(events, beforeReload);
+              final handled = result.then<void>(
+                (_) => fail('A failed bulk read must not return a map'),
+                onError: (Object error, StackTrace trace) {
+                  observedError = error;
+                  observedStackTrace = trace;
+                },
+              );
+              try {
+                await _flushEvents();
+                expect(observedError, same(failure));
+                expect(observedStackTrace.toString(), stackTrace.toString());
+                expect(pending.isCompleted, isFalse);
+              } finally {
+                pending.completeError(StateError('Late decoder failure'));
+                await handled;
+                await _flushEvents();
+              }
+              expect(await adapter.readAll((_, raw) => raw), _initialValues);
             },
           );
         }
+      });
 
-        test(
-          'reload tracks a null input encoded to a non-null value with '
-          '${asynchronous ? 'async' : 'sync'} encoding',
-          () async {
-            await prefs.clear();
-            final initial = Completer<void>();
-            final events = <String?>[];
-            final subscription = prefs.getStringStream('added').listen((value) {
-              events.add(value);
-              if (!initial.isCompleted) initial.complete();
-            });
-            addTearDown(subscription.cancel);
-            await initial.future;
-
-            var encoderCalls = 0;
-            await prefs.write<String>('added', null, (_) {
-              encoderCalls++;
-              return asynchronous ? Future<Object?>.value('Grace') : 'Grace';
-            });
-            await _flushEvents();
-            expect(encoderCalls, 1);
-            expect(await adapter.getString('added'), 'Grace');
-            final beforeReload = events.length;
-
-            await fixture.replaceExternal({});
-            expect(await prefs.reload(), isEmpty);
-            await _flushEvents();
-            expect(events, hasLength(beforeReload + 1));
-            expect(events.last, isNull);
-          },
-        );
-      }
-
-      test(
-        'observeAll decodes initial data and each successful mutation',
-        () async {
+      group('observeAll', () {
+        test('decodes initial data and each mutation', () async {
           await prefs.clear();
           final iterator = StreamIterator(
             prefs.observeAll((key, raw) => '$key=$raw'),
           );
           addTearDown(iterator.cancel);
 
+          // Advance each read before the next mutation changes its snapshot.
           await _expectNext(iterator, <String, Object?>{});
           await prefs.setInt('count', 1);
           await _expectNext(iterator, {'count': 'count=1'});
@@ -360,69 +170,50 @@ void main() {
           await _expectNext(iterator, {'name': 'name=Ada'});
           await prefs.clear();
           await _expectNext(iterator, <String, Object?>{});
-        },
-      );
-
-      test('observeAll retains null decoding results', () async {
-        final iterator = StreamIterator(prefs.observeAll((_, _) => null));
-        addTearDown(iterator.cancel);
-        await _expectNext(iterator, {
-          'count': null,
-          'name': null,
-          'tags': null,
         });
-        await prefs.remove('name');
-        await _expectNext(iterator, {'count': null, 'tags': null});
-      });
 
-      for (final asynchronous in [false, true]) {
-        test(
-          'observeAll recovers after ${asynchronous ? 'async' : 'sync'} decoder errors',
-          () async {
-            final failure = StateError('Cannot decode count');
-            final initial = Completer<void>();
-            final failed = Completer<void>();
-            final recovered = Completer<void>();
-            final data = <Map<String, Object?>>[];
-            final errors = <Object>[];
-            final subscription = prefs
-                .observeAll((key, raw) {
-                  if (key == 'count' && raw == 2) {
-                    if (asynchronous) {
-                      return Future<Object?>.error(failure);
-                    }
-                    throw failure;
-                  }
-                  return raw;
-                })
-                .listen(
-                  (value) {
-                    data.add(value);
-                    if (!initial.isCompleted) initial.complete();
-                    if (value['count'] == 3) recovered.complete();
-                  },
-                  onError: (Object error) {
-                    errors.add(error);
-                    failed.complete();
-                  },
-                );
-            addTearDown(subscription.cancel);
+        test('retains decoded nulls until removal', () async {
+          final iterator = StreamIterator(prefs.observeAll((_, _) => null));
+          addTearDown(iterator.cancel);
+          await _expectNext(iterator, {
+            'count': null,
+            'name': null,
+            'tags': null,
+          });
+          await prefs.remove('name');
+          await _expectNext(iterator, {'count': null, 'tags': null});
+        });
 
-            await initial.future;
-            await prefs.setInt('count', 2);
-            await failed.future;
-            await prefs.setInt('count', 3);
-            await recovered.future;
+        for (final asynchronous in [false, true]) {
+          test(
+            'recovers after ${asynchronous ? 'async' : 'sync'} decoder errors',
+            () async {
+              final failure = StateError('Cannot decode count');
+              final decodingFailed = Completer<void>();
+              final output = expectStreamEvents(
+                prefs
+                    .observeAll((key, raw) {
+                      if (key == 'count' && raw == 2) {
+                        decodingFailed.complete();
+                        if (asynchronous) return Future<Object?>.error(failure);
+                        throw failure;
+                      }
+                      return raw;
+                    })
+                    .map((values) => values['count']),
+                [1, emitsError(same(failure)), 3],
+              );
+              await output.firstEvent;
+              await prefs.setInt('count', 2);
+              await decodingFailed.future;
+              await prefs.setInt('count', 3);
+              await prefs.dispose();
+              await output.done;
+            },
+          );
+        }
 
-            expect(errors, [same(failure)]);
-            expect(data.map((value) => value['count']), [1, 3]);
-          },
-        );
-      }
-
-      test(
-        'observeAll waits for async decoding before processing later reads',
-        () async {
+        test('preserves emission order during async decoding', () async {
           final decodingStarted = Completer<void>();
           final finishDecoding = Completer<Object?>();
           final decodedCounts = <Object?>[];
@@ -440,7 +231,6 @@ void main() {
             stream.map((values) => values['count']),
             emitsInOrder([1, 3, 3]),
           );
-
           await decodingStarted.future;
           await prefs.setInt('count', 2);
           await prefs.setInt('count', 3);
@@ -448,48 +238,160 @@ void main() {
           finishDecoding.complete(1);
           await expectation;
           expect(decodedCounts, [1, 3, 3]);
-        },
-      );
+        });
 
-      test('observeAll is single-subscription', () async {
-        final stream = prefs.observeAll((_, raw) => raw);
-        expect(stream.isBroadcast, isFalse);
-        final subscription = stream.listen(null);
-        expect(() => stream.listen(null), throwsStateError);
-        await subscription.cancel();
+        test('is single-subscription', () async {
+          final stream = prefs.observeAll((_, raw) => raw);
+          expect(stream.isBroadcast, isFalse);
+          final subscription = stream.listen(null);
+          expect(() => stream.listen(null), throwsStateError);
+          await subscription.cancel();
+        });
       });
 
-      test(
-        'reload notifies updated, added and removed keys using raw values',
-        () async {
-          final count = StreamIterator(prefs.getIntStream('count'));
-          final name = StreamIterator(prefs.getStringStream('name'));
-          final added = StreamIterator(prefs.getStringStream('added'));
-          final keys = StreamIterator(prefs.getKeysStream());
-          final decoded = StreamIterator(
-            prefs.observeAll((key, raw) => '$key=$raw'),
-          );
-          for (final iterator in [count, name, added, keys, decoded]) {
-            addTearDown(iterator.cancel);
-            expect(await iterator.moveNext(), isTrue);
-          }
+      group('reload', () {
+        test(
+          'notifies key, keys and bulk streams of external changes',
+          () async {
+            final count = expectStreamEvents(prefs.getIntStream('count'), [
+              1,
+              2,
+            ]);
+            final name = expectStreamEvents(prefs.getStringStream('name'), [
+              'Ada',
+              null,
+            ]);
+            final added = expectStreamEvents(prefs.getStringStream('added'), [
+              null,
+              'Grace',
+            ]);
+            final keys = expectStreamEvents(prefs.getKeysStream(), [
+              {'count', 'name', 'tags'},
+              {'count', 'added'},
+            ]);
+            final decoded = expectStreamEvents(
+              prefs.observeAll((key, raw) => '$key=$raw'),
+              [
+                {'count': 'count=1', 'name': 'name=Ada', 'tags': 'tags=[one]'},
+                {'count': 'count=2', 'added': 'added=Grace'},
+              ],
+            );
+            await Future.wait([
+              count.firstEvent,
+              name.firstEvent,
+              added.firstEvent,
+              keys.firstEvent,
+              decoded.firstEvent,
+            ]);
+            await fixture.replaceExternal({'count': 2, 'added': 'Grace'});
+            expect(await prefs.reload(), {'count': 2, 'added': 'Grace'});
+            await prefs.dispose();
+            await Future.wait([
+              count.done,
+              name.done,
+              added.done,
+              keys.done,
+              decoded.done,
+            ]);
+          },
+        );
 
-          await fixture.replaceExternal({'count': 2, 'added': 'Grace'});
-          expect(await prefs.reload(), {'count': 2, 'added': 'Grace'});
-          await _expectNext(count, 2);
-          await _expectNext(name, null);
-          await _expectNext(added, 'Grace');
-          await _expectNext(keys, {'count', 'added'});
-          await _expectNext(decoded, {
-            'count': 'count=2',
-            'added': 'added=Grace',
+        for (final asynchronous in [false, true]) {
+          group('${asynchronous ? 'async' : 'sync'} codecs', () {
+            test('encoder errors preserve existing and missing keys', () async {
+              await prefs.clear();
+              await prefs.setString('name', 'Ada');
+              final names = expectStreamEvents(prefs.getStringStream('name'), [
+                'Ada',
+                null,
+              ]);
+              final added = expectStreamEvents(prefs.getStringStream('added'), [
+                null,
+              ]);
+              await Future.wait([names.firstEvent, added.firstEvent]);
+
+              final failure = StateError('Cannot encode');
+              for (final key in ['name', 'added']) {
+                await expectLater(
+                  prefs.write<String>(key, 'Grace', (_) {
+                    if (asynchronous) return Future<Object?>.error(failure);
+                    throw failure;
+                  }),
+                  throwsA(same(failure)),
+                );
+              }
+              await fixture.replaceExternal({});
+              expect(await prefs.reload(), isEmpty);
+              await prefs.dispose();
+              await Future.wait([names.done, added.done]);
+            });
+
+            test('decoder errors still allow removal notifications', () async {
+              final failure = StateError('Cannot decode');
+              final output = expectStreamEvents(
+                prefs.observe<String>('name', (raw) {
+                  if (raw == null) return null;
+                  if (asynchronous) return Future<String?>.error(failure);
+                  throw failure;
+                }),
+                [emitsError(same(failure)), null],
+              );
+              await output.firstEvent;
+              await fixture.replaceExternal({});
+              expect(await prefs.reload(), isEmpty);
+              await prefs.dispose();
+              await output.done;
+            });
+
+            for (final input in <String?>[null, 'remove']) {
+              test(
+                'does not repeat encoded removals for ${input == null ? 'null' : 'non-null'} input',
+                () async {
+                  final output = expectStreamEvents(
+                    prefs.getStringStream('name'),
+                    ['Ada', anything],
+                  );
+                  await output.firstEvent;
+                  var encoderCalls = 0;
+                  await prefs.write<String>('name', input, (_) {
+                    encoderCalls++;
+                    return asynchronous ? Future<Object?>.value(null) : null;
+                  });
+                  expect(encoderCalls, 1);
+                  expect(await adapter.containsKey('name'), isFalse);
+                  await prefs.reload();
+                  await prefs.reload();
+                  await prefs.dispose();
+                  await output.done;
+                },
+              );
+            }
+
+            test('tracks null inputs encoded to stored values', () async {
+              await prefs.clear();
+              final output = expectStreamEvents(
+                prefs.getStringStream('added'),
+                [null, anything, null],
+              );
+              await output.firstEvent;
+              var encoderCalls = 0;
+              await prefs.write<String>('added', null, (_) {
+                encoderCalls++;
+                return asynchronous ? Future<Object?>.value('Grace') : 'Grace';
+              });
+              expect(encoderCalls, 1);
+              expect(await adapter.getString('added'), 'Grace');
+              await fixture.replaceExternal({});
+              expect(await prefs.reload(), isEmpty);
+              await prefs.dispose();
+              await output.done;
+            });
           });
-        },
-      );
+        }
+      });
 
-      test(
-        'all typed update helpers accept asynchronous transformers',
-        () async {
+      group('typed updates', () {
+        test('accept async transformers and remove null results', () async {
           await prefs.setBool('bool', true);
           await prefs.setDouble('double', 1.5);
           await prefs.updateBool('bool', (value) async => !value!);
@@ -500,7 +402,6 @@ void main() {
             'tags',
             (value) async => [...value!, 'two'],
           );
-
           expect(await prefs.readAll((_, raw) => raw), {
             'bool': false,
             'double': 2.0,
@@ -510,8 +411,8 @@ void main() {
           });
           await prefs.updateString('name', (_) async => null);
           expect(await prefs.containsKey('name'), isFalse);
-        },
-      );
+        });
+      });
     });
   }
 }

@@ -86,22 +86,16 @@ dependencies:
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
--   Choose a shared preferences API. For new code, use the async or cached API.
+-   Choose an async or cached singleton for new code:
 
 ```dart
-final rxPrefs = RxSharedPreferences.async(SharedPreferencesAsync());
-final rxPrefs = RxSharedPreferences.getAsyncInstance(); // default async singleton
-
-final rxPrefs = RxSharedPreferences.withCache(
-  SharedPreferencesWithCache.create(
-    cacheOptions: const SharedPreferencesWithCacheOptions(),
-  ),
-);
-final rxPrefs = RxSharedPreferences.getWithCacheInstance(); // default cached singleton
+final rxPrefs = RxSharedPreferences.getAsyncInstance();
+// Or:
+final rxPrefs = RxSharedPreferences.getWithCacheInstance();
 ```
 
-`RxSharedPreferences.async` and `RxSharedPreferences.withCache` are experimental.
-The legacy `SharedPreferences` API remains available:
+The experimental `RxSharedPreferences.async` and `RxSharedPreferences.withCache`
+constructors wrap existing instances. The legacy API is also available:
 
 ```dart
 // via constructor.
@@ -253,63 +247,34 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
 
 ### 6. Read and observe all entries
 
-Bulk reads require an `EntryDecoder<String>`. It receives each existing key and
-its stored value, and may return a synchronous value or a `Future`. Values in
-the resulting map can have different types. A decoded `null` retains its key;
-removed keys are omitted.
+Pass a `(key, raw)` decoder to `readAll` and `observeAll`. It can be sync or async:
 
 ```dart
 final raw = await rxPrefs.readAll((_, raw) => raw);
-final decoded = await rxPrefs.readAll((key, raw) {
-  if (key == 'name' && raw is String) return raw.toUpperCase();
-  return raw;
-});
-
-final changes = rxPrefs.observeAll((key, raw) async {
+final changes = rxPrefs.observeAll((_, raw) => raw);
+final decoded = await rxPrefs.readAll((key, raw) async {
   if (key == 'name' && raw is String) return raw.toUpperCase();
   return raw;
 });
 ```
 
-Each bundled adapter captures a shallow entry snapshot before decoding. Entry
-decoders may run concurrently. Reading or decoding failures fail the bulk read
-without returning a partial map. The first decoder failure is reported
-immediately with its original error and stack trace. Other decoders keep running;
-their side effects are not rolled back.
+`observeAll` emits an initial map and refreshes after changes. Streams are
+single-subscription. Decoded `null` retains its key; removed keys are omitted.
+Failures surface as Future or stream errors.
 
-`observeAll` emits an initial decoded map, then reads and decodes again after
-successful writes, updates, removals, clears, and reloads through the same
-wrapper. Bulk results and errors are emitted in stream order; a read can reflect
-later mutations rather than the exact state when it was triggered. Read or
-decoding failures become stream errors; later changes can still be observed.
-The stream is single-subscription.
-
-`reload()` returns raw values and notifies observers of external additions,
-updates, and removals. Removed keys emit `null` on their key streams. This also
-works with the async adapter for keys previously read or written through the
-wrapper. External changes are observed when you call `reload()`.
+Call `reload()` to pick up external changes; removed keys emit `null` on key
+streams. Async adapters track removals for keys previously read or written.
 
 ### 7. Dispose
 
-You can dispose the `RxSharedPreferences` when it is no longer needed.
-Just call `rxPrefs.dispose()`.
-Usually, you call this method from the `dispose` method of a Flutter `State`.
-
-Await required writes before disposal. Queued mutations and reloads that have
-not started fail with `StateError`; started operations may finish without
-further notifications or log events. Repeated disposal shares the same result
-and invokes the cleanup callback at most once. Disposal preserves stored data.
+Await required writes before `dispose()`. It closes the wrapper's streams and
+rejects queued mutations and reloads. Operations already running may finish silently.
 
 ### 8. Custom implementations and loggers
 
 Implement `SharedPreferencesLike`, `RxSharedPreferences`, or
-`RxSharedPreferencesLogger` to provide custom implementations. These contracts
-are `abstract interface` classes and cannot be extended outside their library.
-Custom adapters must implement entry decoding in `readAll`.
-
-To reuse the default logger, extend `RxSharedPreferencesDefaultLogger` with a
-`base`, `final`, or `sealed` subclass. Override `handleLogEvent` when you need
-custom event handling. For example:
+`RxSharedPreferencesLogger` for custom behavior. Extend the default logger
+with a `base`, `final`, or `sealed` subclass:
 
 ```dart
 final class AppLogger extends RxSharedPreferencesDefaultLogger {
@@ -317,10 +282,7 @@ final class AppLogger extends RxSharedPreferencesDefaultLogger {
 }
 ```
 
-`RxSharedPreferencesEmptyLogger` is final and discards all log events.
-
-`ReloadSuccessEvent` and `ReloadFailureEvent` are final. Define additional custom
-events by implementing `RxStorageLoggerEvent<String, void>`.
+`RxSharedPreferencesEmptyLogger` and reload event classes are final.
 
 ## Example demo
 
