@@ -35,10 +35,11 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   It's a **single-subscription `Stream`** (i.e. it can only be listened to once).
 
--   Per-key streams read the current value when listened to.
+-   Per-key streams emit the **current value** when listened to.
 
--   Updates are emitted after successful writes and removals through the same
-    `RxSharedPreferences` instance. Removing a key or setting it to `null` emits `null`.
+-   Updates are **automatically emitted** after successful writes and removals
+    through the same `RxSharedPreferences` instance. Removing a key or setting it
+    to `null` **emits `null`**.
 
 -   Typed key streams emit `null` for missing keys and `TypeError` events for
     stored values of the wrong type.
