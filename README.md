@@ -131,7 +131,8 @@ void _setupLoggers({bool enabled = true}) {
 
 void main() {
   _setupLoggers();
-  // Initialize preferences and start your app.
+  RxSharedPreferences.getAsyncInstance();
+  // Start your app.
 }
 ```
 
