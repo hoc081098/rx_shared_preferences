@@ -20,8 +20,8 @@
         and reload events are `final`. Re-exported `rx_storage` types also enforce Dart 3 modifiers.
 
 -   Fixes:
-    -   Notify key streams about external removals on reload.
-    -   Reject queued mutations and reloads on disposal.
+    -   `reload()` now emits `null` on key streams for externally removed keys.
+    -   Queued mutations and reloads now fail with `StateError` on disposal.
 
 -   Update docs and examples. See the [5.0.0 migration guide](MIGRATION.md).
 
