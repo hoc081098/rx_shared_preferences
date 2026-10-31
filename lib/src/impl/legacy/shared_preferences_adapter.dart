@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../interface/shared_preferences_like.dart';
 import '../async/shared_preferences_async_adapter.dart';
 import '../async/shared_preferences_with_cache_adapter.dart';
+import '../decode_entries.dart';
 
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferences].
 ///
@@ -55,7 +56,10 @@ class SharedPreferencesAdapter implements SharedPreferencesLike {
   ]) => _wrapFutureOr(decoder(_getFromPrefs(key)));
 
   @override
-  Future<Map<String, Object?>> readAll([void _]) => _wrap(_getAllFromPrefs());
+  Future<Map<String, Object?>> readAll(
+    EntryDecoder<String> decoder, [
+    void _,
+  ]) => readAllDecoded(_getAllFromPrefs, decoder);
 
   @override
   Future<void> write<T extends Object>(

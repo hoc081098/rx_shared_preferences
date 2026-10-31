@@ -1,3 +1,30 @@
+## 5.0.0 - Oct 27, 2026
+
+-   Update dependencies:
+    -   `shared_preferences` to `^2.5.4`.
+    -   `rx_storage` to `^4.0.0`.
+    -   `rxdart_ext` to `^0.4.0` in the example.
+
+-   Change `Flutter` constraint to `'>=3.35.0'`.
+-   Change `Dart SDK` constraint to `'>=3.9.0 <4.0.0'`.
+
+-   Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`:
+    -   Default singletons: `getAsyncInstance()` and `getWithCacheInstance()`.
+    -   Experimental factories: `RxSharedPreferences.async` and `RxSharedPreferences.withCache`.
+    -   Legacy factories and `.rx` remain available.
+
+-   **Breaking changes**:
+    -   `readAll` and `observeAll` require an `EntryDecoder<String>` supporting sync and async decoding.
+    -   Remove `executeUpdate*`; use `update*`. Generic `update` uses named arguments.
+    -   Contracts are interfaces, the default logger is `base`, and the empty logger
+        and reload events are `final`. Re-exported `rx_storage` types also enforce Dart 3 modifiers.
+
+-   Fixes:
+    -   `reload()` now emits `null` on key streams for externally removed keys.
+    -   Queued mutations and reloads now fail with `StateError` on disposal.
+
+-   Update docs and examples. See the [5.0.0 migration guide](MIGRATION.md).
+
 ## 4.0.0 - Jul 20, 2024
 
 -   Update dependencies:
