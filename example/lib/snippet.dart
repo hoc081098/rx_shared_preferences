@@ -40,12 +40,12 @@ Future<void> main() async {
       .listen((User? user) => print('User: $user'));
 
   // Bulk streams decode every snapshot, including the initial read.
-  final rawSubscription = rxPrefs.observeAll((_, raw) => raw).listen(print);
+  final rawSubscription = rxPrefs
+      .observeAll((_, raw) => raw)
+      .listen((values) => print('Raw: $values'));
   final decodedSubscription = rxPrefs
-      .observeAll((key, raw) async {
-        return key == userKey ? toUserOrNull(raw) : raw;
-      })
-      .listen(print);
+      .observeAll((key, raw) => key == userKey ? toUserOrNull(raw) : raw)
+      .listen((values) => print('Decoded: $values'));
 
   try {
     // Get/read, set/write
