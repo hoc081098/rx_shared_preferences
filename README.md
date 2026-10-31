@@ -95,7 +95,7 @@ final rxPrefs = RxSharedPreferences.getInstance();                          // d
 final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
-> NOTE: Configure logging before creating a default singleton or using `.rx`, as shown below.
+> NOTE: Configure logging before first accessing a default singleton or `.rx`, as shown below.
 
 ### 2. Add a logger (optional)
 
@@ -105,7 +105,11 @@ operations and stream events. Two implementations are included:
 -   `RxSharedPreferencesDefaultLogger` prints logs to the console.
 -   `RxSharedPreferencesEmptyLogger` is a no-op logger.
 
-Use one flag to control `RxSharedPreferences` and `DisposeBag` logging.
+**Default singletons and `.rx`**
+
+Default singletons read `RxSharedPreferencesConfigs.logger` **on first access**.
+The `.rx` extension reads it on first access for each `SharedPreferences`
+instance. Existing wrappers keep their original logger.
 
 Add `disposebag` as a direct dependency with `flutter pub add disposebag`,
 then copy this setup into your app entry point:
@@ -134,8 +138,22 @@ void main() {
 Use `enabled` for your app's environment condition. This setup keeps both
 loggers disabled in release builds.
 
-For directly constructed wrappers, pass `RxSharedPreferencesConfigs.logger` as the
-logger argument.
+**Instances created directly**
+
+`RxSharedPreferences(...)`, `.async(...)`, and `.withCache(...)` use their optional
+logger argument. It defaults to `null`, which disables storage and stream logging:
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+
+final rxPrefs = RxSharedPreferences.async(
+  SharedPreferencesAsync(),
+  kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
+);
+```
+
+`DisposeBagConfigs.logger` controls cleanup logging separately for both cases.
 
 ### 3. Select stream and observe
 
