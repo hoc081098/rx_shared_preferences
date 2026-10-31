@@ -99,7 +99,13 @@ final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // a
 
 ### 2. Add a logger (optional)
 
-Use one flag to control storage, stream, and `DisposeBag` cleanup logging.
+You can provide an optional `RxSharedPreferencesLogger` to log storage
+operations and stream events. Two implementations are included:
+
+-   `RxSharedPreferencesDefaultLogger` prints logs to the console.
+-   `RxSharedPreferencesEmptyLogger` is a no-op logger.
+
+Use one flag to control `RxSharedPreferences` and `DisposeBag` logging.
 
 Add `disposebag` as a direct dependency with `flutter pub add disposebag`,
 then copy this setup into your app entry point:
@@ -129,7 +135,7 @@ Use `enabled` for your app's environment condition. This setup keeps both
 loggers disabled in release builds.
 
 For directly constructed wrappers, pass `RxSharedPreferencesConfigs.logger` as the
-logger argument. `RxSharedPreferencesEmptyLogger` is also available as a no-op logger.
+logger argument.
 
 ### 3. Select stream and observe
 
