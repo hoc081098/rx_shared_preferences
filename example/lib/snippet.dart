@@ -1,4 +1,6 @@
 // ignore_for_file: avoid_print, prefer_function_declarations_over_variables
+// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: experimental_member_use
 
 import 'dart:convert';
 
@@ -6,14 +8,12 @@ import 'package:flutter/widgets.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart_ext/rxdart_ext.dart';
 
-// ignore_for_file: omit_local_variable_types, unused_local_variable
-// ignore_for_file: experimental_member_use
-
+@immutable
 class User {
   final String id;
   final String username;
 
-  User(this.id, this.username);
+  const User(this.id, this.username);
 
   factory User.fromJson(Map<String, dynamic> json) =>
       User(json['id'], json['username']);
