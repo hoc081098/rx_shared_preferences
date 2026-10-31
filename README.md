@@ -94,35 +94,41 @@ final rxPrefs = RxSharedPreferences.getInstance();                          // d
 final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
-> NOTE: When using a default singleton or the extension `(await SharedPreferences.getInstance()).rx`,
-> configure the logger with the `RxSharedPreferencesConfigs.logger` setter.
+> NOTE: Configure logging before creating a default singleton or using `.rx`, as shown below.
 
 ### 2. Add a logger (optional)
 
-Pass a logger when constructing `RxSharedPreferences` to log operations and
-stream events. Two implementations are included:
+Use one flag to control storage, stream, and `DisposeBag` cleanup logging.
 
--   `RxSharedPreferencesDefaultLogger` prints events to the console.
--   `RxSharedPreferencesEmptyLogger` discards events.
+Add `disposebag` as a direct dependency with `flutter pub add disposebag`,
+then copy this setup into your app entry point:
 
 ```dart
-final rxPrefs = RxSharedPreferences(
-  SharedPreferences.getInstance(),
-  kReleaseMode ? null : RxSharedPreferencesDefaultLogger(),
-  // disable logging when running in release mode.
-);
+import 'package:disposebag/disposebag.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+
+void _setupLoggers({bool enabled = true}) {
+  final isLoggingEnabled = !kReleaseMode && enabled;
+
+  // Set loggers to null to disable logging.
+  DisposeBagConfigs.logger = isLoggingEnabled ? disposeBagDefaultLogger : null;
+  RxSharedPreferencesConfigs.logger = isLoggingEnabled
+      ? const RxSharedPreferencesDefaultLogger()
+      : null;
+}
+
+void main() {
+  _setupLoggers();
+  // Initialize preferences and start your app.
+}
 ```
 
-> NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
-> to `RxSharedPreferences` constructor, or use `RxSharedPreferencesConfigs.logger` setter.
+Use `enabled` for your app's environment condition. This setup keeps both
+loggers disabled in release builds.
 
-> NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`, disable the `DisposeBag` logger:
-> ```dart
-> import 'package:disposebag/disposebag.dart' show DisposeBagConfigs;
-> void main() {
->   DisposeBagConfigs.logger = null;
-> }
-> ```
+For directly constructed wrappers, pass `RxSharedPreferencesConfigs.logger` as the
+logger argument. `RxSharedPreferencesEmptyLogger` is also available as a no-op logger.
 
 ### 3. Select stream and observe
 
