@@ -35,7 +35,7 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   It's a **single-subscription `Stream`** (i.e. it can only be listened to once).
 
--   Per-key streams read the current value when subscribed to.
+-   Per-key streams read the current value when listened to.
 
 -   Updates are emitted after successful writes and removals through the same
     `RxSharedPreferences` instance. Removing a key or setting it to `null` emits `null`.
@@ -46,18 +46,8 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 -   Consecutive events can be equal. Use `distinct` (`distinctUntilChanged` in
     other Rx implementations) to skip values equal to the previous event.
 
-```text
-Key changed   |----------K1---K2------K1----K1-----K2---------> time
-              |                                                
-Value stream  |-----@----@------------@-----@-----------------> time
-              |    ^                                      
-              |    |
-              |  Listen(key=K1)
-              |
-              |  @: nullable value or TypeError
-```
 <p align="center">
-    <img src="https://github.com/hoc081098/rx_shared_preferences/raw/master/rx_prefs.png" width="700">
+    <img src="https://raw.githubusercontent.com/Flutter-Dart-Open-Source/rx_storage/master/screenshots/stream-timeline.png" width="720" alt="Stream timeline: an initial read when listening to K1, then events for mutations to K1 only.">
 </p>
 
 ## Getting Started
@@ -158,8 +148,8 @@ rxPrefs.getIntStream('KEY_INT')
 await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] will print ['Cool']
 ```
 
--   Use the same `RxSharedPreferences` instance for writes and subscriptions.
-    Changes made elsewhere require `reload()` to notify subscribers.
+-   Use the same `RxSharedPreferences` instance for writing values and listening
+    to streams. Changes made elsewhere require `reload()` to notify listeners.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
