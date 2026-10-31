@@ -261,8 +261,7 @@ Read or decoder failures complete `readAll` with an error or become stream
 errors in `observeAll`, which keeps listening for later changes.
 
 Call `reload()` to refresh raw values and notify streams of external changes.
-Removed keys emit `null` on key streams. With the async adapter, this covers keys
-previously read or written through the wrapper.
+This works with all three adapters; removed keys emit `null` on their key streams.
 
 ### 7. Dispose
 

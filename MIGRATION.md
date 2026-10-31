@@ -49,9 +49,8 @@ Transformers can return a value or a `Future`. Updates remain experimental.
 
 ## Reload and disposal
 
-`reload()` returns raw values and notifies streams of external changes.
-With the async adapter, removal notifications cover keys previously read or
-written through the wrapper. Removed keys emit `null` on key streams.
+`reload()` returns raw values and notifies streams of external changes for all
+three adapters. Removed keys emit `null` on their key streams.
 
 Await required writes before calling `dispose()`. Disposal closes streams and
 rejects queued mutations and reloads with `StateError`. Mutations and reloads
