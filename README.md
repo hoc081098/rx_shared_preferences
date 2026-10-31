@@ -35,19 +35,16 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   It's a **single-subscription `Stream`** (i.e. it can only be listened to once).
 
--   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listened to.
+-   Per-key streams read the current value when subscribed to.
 
--   It will **automatically** emit the new value when the value associated with key was changed successfully
-    (it will also **emit `null`** when value associated with key was `removed` or set to `null`).
+-   Updates are emitted after successful writes and removals through the same
+    `RxSharedPreferences` instance. Removing a key or setting it to `null` emits `null`.
 
--   When value read from Storage has a type other than expected type:
-    -   If value is `null`, the `Stream` will **emit `null`** (this occurred because `null` can be cast to any nullable type).
-    -   Otherwise, the `Stream` will **emit a `TypeError`**.
+-   Typed key streams emit `null` for missing keys and `TypeError` events for
+    stored values of the wrong type.
 
--   **Can emit** two consecutive data events that are equal.
-    You should use Rx operator like `distinct`
-    (more commonly known as `distinctUntilChanged` in other Rx implementations)
-    to create a `Stream` where data events are skipped if they are equal to the previous data event.
+-   Consecutive events can be equal. Use `distinct` (`distinctUntilChanged` in
+    other Rx implementations) to skip values equal to the previous event.
 
 ```text
 Key changed   |----------K1---K2------K1----K1-----K2---------> time
@@ -112,11 +109,11 @@ final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // a
 
 ### 2. Add a logger (optional)
 
-You can pass a logger as an optional argument to the `RxSharedPreferences` constructor.
-The logger will log messages about operations (such as read, write, ...) and stream events.
-This package provides two `RxSharedPreferencesLogger`s: 
--   `RxSharedPreferencesDefaultLogger`. 
--   `RxSharedPreferencesEmptyLogger`.
+Pass a logger when constructing `RxSharedPreferences` to log operations and
+stream events. Two implementations are included:
+
+-   `RxSharedPreferencesDefaultLogger` prints events to the console.
+-   `RxSharedPreferencesEmptyLogger` discards events.
 
 ```dart
 final rxPrefs = RxSharedPreferences(
@@ -161,14 +158,14 @@ rxPrefs.getIntStream('KEY_INT')
 await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] will print ['Cool']
 ```
 
--   In the previous example, we re-used the `RxSharedPreferences` object `rxPrefs` for all operations.
-    All operations must go through this object in order to correctly notify subscribers.
-    Basically, you must use the same `RxSharedPreferences` instance when setting values and selecting streams.
+-   Use the same `RxSharedPreferences` instance for writes and subscriptions.
+    Changes made elsewhere require `reload()` to notify subscribers.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
         
-    -   Use the default singleton instance via `RxSharedPreferences.getInstance()`.
+    -   Use a default singleton via `RxSharedPreferences.getAsyncInstance()` or
+        `RxSharedPreferences.getWithCacheInstance()`.
         
     -   Use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
         See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/95642a7fe8e8e0ad4579d7ae084aec9a10fe6dff/example/lib/main.dart#L17).
@@ -247,34 +244,37 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
 
 ### 6. Read and observe all entries
 
-Pass a `(key, raw)` decoder to `readAll` and `observeAll`. It can be sync or async:
+Pass a `(key, raw)` decoder to `readAll` and `observeAll`. It can return a value
+or a `Future`:
 
 ```dart
 final raw = await rxPrefs.readAll((_, raw) => raw);
 final changes = rxPrefs.observeAll((_, raw) => raw);
-final decoded = await rxPrefs.readAll((key, raw) async {
-  if (key == 'name' && raw is String) return raw.toUpperCase();
-  return raw;
-});
+final decoded = await rxPrefs.readAll(
+  (key, raw) => key == 'name' && raw is String ? raw.toUpperCase() : raw,
+);
 ```
 
-`observeAll` emits an initial map and refreshes after changes. Streams are
-single-subscription. Decoded `null` retains its key; removed keys are omitted.
-Failures surface as Future or stream errors.
+`observeAll` emits an initial map and rereads after changes through the same
+wrapper. Decoder results of `null` retain their keys; removed keys are omitted.
+Read or decoder failures complete `readAll` with an error or become stream
+errors in `observeAll`, which keeps listening for later changes.
 
-Call `reload()` to pick up external changes; removed keys emit `null` on key
-streams. Async adapters track removals for keys previously read or written.
+Call `reload()` to refresh raw values and notify streams of external changes.
+Removed keys emit `null` on key streams. With the async adapter, this covers keys
+previously read or written through the wrapper.
 
 ### 7. Dispose
 
-Await required writes before `dispose()`. It closes the wrapper's streams and
-rejects queued mutations and reloads. Operations already running may finish silently.
+Await required writes, then call `await rxPrefs.dispose()`. Disposal closes the
+wrapper's streams and rejects queued mutations and reloads with `StateError`.
+Mutations and reloads already running may finish without further notifications or logs.
 
 ### 8. Custom implementations and loggers
 
-Implement `SharedPreferencesLike`, `RxSharedPreferences`, or
-`RxSharedPreferencesLogger` for custom behavior. Extend the default logger
-with a `base`, `final`, or `sealed` subclass:
+Use `implements` for custom `SharedPreferencesLike`, `RxSharedPreferences`, or
+`RxSharedPreferencesLogger` implementations. To reuse default logging, extend
+`RxSharedPreferencesDefaultLogger` with a `base`, `final`, or `sealed` subclass:
 
 ```dart
 final class AppLogger extends RxSharedPreferencesDefaultLogger {
@@ -282,7 +282,7 @@ final class AppLogger extends RxSharedPreferencesDefaultLogger {
 }
 ```
 
-`RxSharedPreferencesEmptyLogger` and reload event classes are final.
+`RxSharedPreferencesEmptyLogger` and reload event classes are `final`.
 
 ## Example demo
 
