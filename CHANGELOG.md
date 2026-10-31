@@ -1,21 +1,29 @@
 ## 5.0.0 - Oct 27, 2026
 
-- **New**: support `SharedPreferencesAsync` and `SharedPreferencesWithCache`.
-  Use `getAsyncInstance()` / `getWithCacheInstance()`, or wrap existing instances
-  with the experimental `.async` / `.withCache` factories.
-- **Breaking**: require Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
-- Upgrade to `rx_storage ^4.0.0` and `shared_preferences ^2.5.4`.
-- **Breaking**: `readAll` and `observeAll` require an `EntryDecoder<String>`
-  supporting sync and async decoding.
-- **Breaking**: remove `executeUpdate*`; use `update*` and named arguments for
-  generic `update`.
-- **Breaking**: contracts are interfaces, the default logger is base, and the
-  empty logger and reload events are final. Upstream types also use Dart 3 modifiers.
-- Legacy factories and `.rx` remain available.
-- Fix reload notifications for external removals; reject queued mutations and
-  reloads on disposal.
-- Update the example to `rxdart_ext ^0.4.0`.
-- See the [5.0.0 migration guide](MIGRATION.md).
+-   Update dependencies:
+    -   `shared_preferences` to `^2.5.4`.
+    -   `rx_storage` to `^4.0.0`.
+    -   `rxdart_ext` to `^0.4.0` in the example.
+
+-   Change `Flutter` constraint to `'>=3.35.0'`.
+-   Change `Dart SDK` constraint to `'>=3.9.0 <4.0.0'`.
+
+-   Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`:
+    -   Default singletons: `getAsyncInstance()` and `getWithCacheInstance()`.
+    -   Experimental factories: `RxSharedPreferences.async` and `RxSharedPreferences.withCache`.
+    -   Legacy factories and `.rx` remain available.
+
+-   **Breaking changes**:
+    -   `readAll` and `observeAll` require an `EntryDecoder<String>` supporting sync and async decoding.
+    -   Remove `executeUpdate*`; use `update*`. Generic `update` uses named arguments.
+    -   Contracts are interfaces, the default logger is `base`, and the empty logger
+        and reload events are `final`. Re-exported `rx_storage` types also enforce Dart 3 modifiers.
+
+-   Fixes:
+    -   Notify key streams about external removals on reload.
+    -   Reject queued mutations and reloads on disposal.
+
+-   Update docs and examples. See the [5.0.0 migration guide](MIGRATION.md).
 
 ## 4.0.0 - Jul 20, 2024
 
