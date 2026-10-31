@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+import 'package:rxdart_ext/rxdart_ext.dart';
 
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 // ignore_for_file: experimental_member_use
@@ -29,23 +30,28 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Get RxSharedPreferences instance.
   final rxPrefs = RxSharedPreferences.getAsyncInstance();
+  final subscriptions = CompositeSubscription();
 
   // Select stream by key and observe
-  final idsSubscription = rxPrefs
+  rxPrefs
       .getStringListStream(idsKey)
       .map((ids) => ids ?? [])
-      .listen((List<String> ids) => print('Ids: $ids'));
-  final userSubscription = rxPrefs
+      .listen((List<String> ids) => print('Ids: $ids'))
+      .addTo(subscriptions);
+  rxPrefs
       .observe(userKey, toUserOrNull)
-      .listen((User? user) => print('User: $user'));
+      .listen((User? user) => print('User: $user'))
+      .addTo(subscriptions);
 
   // Bulk streams decode every snapshot, including the initial read.
-  final rawSubscription = rxPrefs
+  rxPrefs
       .observeAll((_, raw) => raw)
-      .listen((values) => print('Raw: $values'));
-  final decodedSubscription = rxPrefs
+      .listen((values) => print('Raw: $values'))
+      .addTo(subscriptions);
+  rxPrefs
       .observeAll((key, raw) => key == userKey ? toUserOrNull(raw) : raw)
-      .listen((values) => print('Decoded: $values'));
+      .listen((values) => print('Decoded: $values'))
+      .addTo(subscriptions);
 
   try {
     // Get/read, set/write
@@ -77,10 +83,7 @@ Future<void> main() async {
     print('Raw: $raw');
     print('Decoded: $decoded');
   } finally {
-    await idsSubscription.cancel();
-    await userSubscription.cancel();
-    await rawSubscription.cancel();
-    await decodedSubscription.cancel();
+    await subscriptions.dispose();
     await rxPrefs.dispose();
   }
 }
