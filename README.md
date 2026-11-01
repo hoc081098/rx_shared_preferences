@@ -35,42 +35,33 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 
 -   It's a **single-subscription `Stream`** (i.e. it can only be listened to once).
 
--   `Stream` will emit the **value (nullable)** or **a `TypeError`** as its first event when it is listened to.
+-   Per-key streams emit the **current value** when listened to.
 
--   It will **automatically** emit the new value when the value associated with key was changed successfully
-    (it will also **emit `null`** when value associated with key was `removed` or set to `null`).
+-   Updates are **automatically emitted** after successful writes and removals
+    through the same `RxSharedPreferences` instance. Removing a key or setting it
+    to `null` **emits `null`**.
 
--   When value read from Storage has a type other than expected type:
-    -   If value is `null`, the `Stream` will **emit `null`** (this occurred because `null` can be cast to any nullable type).
-    -   Otherwise, the `Stream` will **emit a `TypeError`**.
+-   Typed key streams emit `null` for missing keys and `TypeError` events for
+    stored values of the wrong type.
 
--   **Can emit** two consecutive data events that are equal.
-    You should use Rx operator like `distinct`
-    (more commonly known as `distinctUntilChanged` in other Rx implementations)
-    to create a `Stream` where data events are skipped if they are equal to the previous data event.
+-   Consecutive events can be equal. Use `distinct` (`distinctUntilChanged` in
+    other Rx implementations) to skip values equal to the previous event.
 
-```text
-Key changed   |----------K1---K2------K1----K1-----K2---------> time
-              |                                                
-Value stream  |-----@----@------------@-----@-----------------> time
-              |    ^                                      
-              |    |
-              |  Listen(key=K1)
-              |
-              |  @: nullable value or TypeError
-```
 <p align="center">
-    <img src="https://github.com/hoc081098/rx_shared_preferences/raw/master/rx_prefs.png" width="700">
+    <img src="https://raw.githubusercontent.com/Flutter-Dart-Open-Source/rx_storage/master/screenshots/stream-timeline.png" width="720" alt="Stream timeline: an initial read when listening to K1, then events for mutations to K1 only.">
 </p>
 
 ## Getting Started
+
+Requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
+Upgrading from 4.x? See the [5.0.0 migration guide](https://github.com/hoc081098/rx_shared_preferences/blob/master/MIGRATION.md).
 
 In your Flutter project, add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   [...]
-  rx_shared_preferences: <latest_version>
+  rx_shared_preferences: ^5.0.0
 ```
 
 ## Usage
@@ -83,7 +74,16 @@ dependencies:
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```
 
--   Wrap your `SharedPreferences` in an `RxSharedPreferences` instance.
+-   Choose an async or cached singleton for new code:
+
+```dart
+final rxPrefs = RxSharedPreferences.getAsyncInstance();
+// Or:
+final rxPrefs = RxSharedPreferences.getWithCacheInstance();
+```
+
+The experimental `RxSharedPreferences.async` and `RxSharedPreferences.withCache`
+constructors wrap existing instances. The legacy API is also available:
 
 ```dart
 // via constructor.
@@ -95,35 +95,66 @@ final rxPrefs = RxSharedPreferences.getInstance();                          // d
 final rxPrefs = (await SharedPreferences.getInstance()).rx;                 // await is required
 ```
 
-> NOTE: When using `RxSharedPreferences.getInstance()` or the extension `(await SharedPreferences.getInstance()).rx`,
-> configure the logger with the `RxSharedPreferencesConfigs.logger` setter.
+> NOTE: Configure logging before first accessing a default singleton or `.rx`, as shown below.
 
 ### 2. Add a logger (optional)
 
-You can pass a logger as an optional argument to the `RxSharedPreferences` constructor.
-The logger will log messages about operations (such as read, write, ...) and stream events.
-This package provides two `RxSharedPreferencesLogger`s: 
--   `RxSharedPreferencesDefaultLogger`. 
--   `RxSharedPreferencesEmptyLogger`.
+You can provide an optional `RxSharedPreferencesLogger` to log storage
+operations and stream events. Two implementations are included:
+
+-   `RxSharedPreferencesDefaultLogger` prints logs to the console.
+-   `RxSharedPreferencesEmptyLogger` is a no-op logger.
+
+**Default singletons and `.rx`**
+
+Default singletons read `RxSharedPreferencesConfigs.logger` **on first access**.
+The `.rx` extension reads it on first access for each `SharedPreferences`
+instance. Existing wrappers keep their original logger.
+
+Add `disposebag` as a direct dependency with `flutter pub add disposebag`,
+then copy this setup into your app entry point:
 
 ```dart
-final rxPrefs = RxSharedPreferences(
-  SharedPreferences.getInstance(),
-  kReleaseMode ? null : RxSharedPreferencesDefaultLogger(),
-  // disable logging when running in release mode.
+import 'package:disposebag/disposebag.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+
+void _setupLoggers({bool enabled = true}) {
+  final isLoggingEnabled = !kReleaseMode && enabled;
+
+  // Set loggers to null to disable logging.
+  DisposeBagConfigs.logger = isLoggingEnabled ? disposeBagDefaultLogger : null;
+  RxSharedPreferencesConfigs.logger = isLoggingEnabled
+      ? const RxSharedPreferencesDefaultLogger()
+      : null;
+}
+
+void main() {
+  _setupLoggers();
+  RxSharedPreferences.getAsyncInstance();
+  // Start your app.
+}
+```
+
+Use `enabled` for your app's environment condition. This setup keeps both
+loggers disabled in release builds.
+
+**Instances created directly**
+
+`RxSharedPreferences(...)`, `.async(...)`, and `.withCache(...)` use their optional
+logger argument. It defaults to `null`, which disables storage and stream logging:
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
+
+final rxPrefs = RxSharedPreferences.async(
+  SharedPreferencesAsync(),
+  kReleaseMode ? null : const RxSharedPreferencesDefaultLogger(),
 );
 ```
 
-> NOTE: To disable logging when running in release mode, you can pass `null` or `const RxSharedPreferencesEmptyLogger()` 
-> to `RxSharedPreferences` constructor, or use `RxSharedPreferencesConfigs.logger` setter.
-
-> NOTE: To prevent printing `↓ Disposed successfully → DisposeBag#...`, disable the `DisposeBag` logger:
-> ```dart
-> import 'package:disposebag/disposebag.dart' show DisposeBagConfigs;
-> void main() {
->   DisposeBagConfigs.logger = null;
-> }
-> ```
+`DisposeBagConfigs.logger` controls cleanup logging separately for both cases.
 
 ### 3. Select stream and observe
 
@@ -149,14 +180,14 @@ rxPrefs.getIntStream('KEY_INT')
 await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] will print ['Cool']
 ```
 
--   In the previous example, we re-used the `RxSharedPreferences` object `rxPrefs` for all operations.
-    All operations must go through this object in order to correctly notify subscribers.
-    Basically, you must use the same `RxSharedPreferences` instance when setting values and selecting streams.
+-   Use the same `RxSharedPreferences` instance for writing values and listening
+    to streams. Changes made elsewhere require `reload()` to notify listeners.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
         
-    -   Use the default singleton instance via `RxSharedPreferences.getInstance()`.
+    -   Use a default singleton via `RxSharedPreferences.getAsyncInstance()` or
+        `RxSharedPreferences.getWithCacheInstance()`.
         
     -   Use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
         See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/95642a7fe8e8e0ad4579d7ae084aec9a10fe6dff/example/lib/main.dart#L17).
@@ -194,9 +225,9 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
     (because `RxSharedPreferences` implements `RxStorage`).
 
 ```dart
-  Future<void>                 update<T extends Object>(String key, Decoder<T?> decoder, Transformer<T?> transformer, Encoder<T?> encoder);
+  Future<void>                 update<T extends Object>({required String key, required Decoder<T?> decoder, required Transformer<T?> transformer, required Encoder<T?> encoder, void options});
   Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder);
-  Stream<Map<String, Object?>> observeAll();
+  Stream<Map<String, Object?>> observeAll(EntryDecoder<String> decoder, [void options]);
   Future<void>                 dispose();
 ```
 
@@ -227,17 +258,52 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
 ```dart
   Future<bool>                 containsKey(String key);
   Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder);
-  Future<Map<String, Object?>> readAll();
+  Future<Map<String, Object?>> readAll(EntryDecoder<String> decoder, [void options]);
   Future<void>                 clear();
   Future<void>                 remove(String key);
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
 ```
 
-### 6. Dispose
+### 6. Read and observe all entries
 
-You can dispose the `RxSharedPreferences` when it is no longer needed.
-Just call `rxPrefs.dispose()`.
-Usually, you call this method from the `dispose` method of a Flutter `State`.
+Pass a `(key, raw)` decoder to `readAll` and `observeAll`. It can return a value
+or a `Future`:
+
+```dart
+final raw = await rxPrefs.readAll((_, raw) => raw);
+final changes = rxPrefs.observeAll((_, raw) => raw);
+final decoded = await rxPrefs.readAll(
+  (key, raw) => key == 'name' && raw is String ? raw.toUpperCase() : raw,
+);
+```
+
+`observeAll` emits an initial map and rereads after changes through the same
+wrapper. Decoder results of `null` retain their keys; removed keys are omitted.
+Read or decoder failures complete `readAll` with an error or become stream
+errors in `observeAll`, which keeps listening for later changes.
+
+Call `reload()` to refresh raw values and notify streams of external changes.
+This works with all three adapters; removed keys emit `null` on their key streams.
+
+### 7. Dispose
+
+Await required writes, then call `await rxPrefs.dispose()`. Disposal closes the
+wrapper's streams and rejects queued mutations and reloads with `StateError`.
+Mutations and reloads already running may finish without further notifications or logs.
+
+### 8. Custom implementations and loggers
+
+Use `implements` for custom `SharedPreferencesLike`, `RxSharedPreferences`, or
+`RxSharedPreferencesLogger` implementations. To reuse default logging, extend
+`RxSharedPreferencesDefaultLogger` with a `base`, `final`, or `sealed` subclass:
+
+```dart
+final class AppLogger extends RxSharedPreferencesDefaultLogger {
+  const AppLogger() : super(tag: 'App preferences');
+}
+```
+
+`RxSharedPreferencesEmptyLogger` and reload event classes are `final`.
 
 ## Example demo
 

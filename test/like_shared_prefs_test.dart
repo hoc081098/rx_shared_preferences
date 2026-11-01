@@ -299,7 +299,7 @@ void main() {
       const prefix = 'flutter.';
 
       expect(
-        await rxPrefs.readAll(),
+        await rxPrefs.readAll((_, raw) => raw),
         kTestValues.map(
           (key, value) => MapEntry(
             key.substring(prefix.length),
@@ -312,7 +312,7 @@ void main() {
       await rxPrefs.reload();
 
       expect(
-        await rxPrefs.readAll(),
+        await rxPrefs.readAll((_, raw) => raw),
         kTestValues2.map(
           (key, value) => MapEntry(
             key.substring(prefix.length),

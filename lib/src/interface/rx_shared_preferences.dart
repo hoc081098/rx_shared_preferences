@@ -20,8 +20,10 @@ class _LegacyRxSharedPreferencesApi {
 const legacyRxSharedPreferencesApi = _LegacyRxSharedPreferencesApi();
 
 /// Get [Stream]s by key from persistent storage.
-abstract class RxSharedPreferences extends RxStorage<String, void>
-    implements SharedPreferencesLike {
+///
+/// Implement this contract to provide a custom reactive implementation.
+abstract interface class RxSharedPreferences
+    implements RxStorage<String, void>, SharedPreferencesLike {
   @legacyRxSharedPreferencesApi
   static RxSharedPreferences? _defaultInstance;
 
@@ -38,7 +40,8 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
         () => _defaultInstance = null,
       );
 
-  /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional [Logger].
+  /// Construct a [RxSharedPreferences] with [SharedPreferences] and optional
+  /// [RxSharedPreferencesLogger].
   ///
   /// This is a legacy API. For new code, consider [RxSharedPreferences.async]
   /// or [RxSharedPreferences.withCache].
@@ -79,7 +82,8 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
     () => _defaultWithCacheInstance = null,
   );
 
-  /// Construct a [RxSharedPreferences] with [SharedPreferencesAsync] and optional [Logger].
+  /// Construct a [RxSharedPreferences] with [SharedPreferencesAsync] and optional
+  /// [RxSharedPreferencesLogger].
   @experimental
   factory RxSharedPreferences.async(
     SharedPreferencesAsync prefsAsync, [
@@ -91,7 +95,8 @@ abstract class RxSharedPreferences extends RxStorage<String, void>
     onDispose,
   );
 
-  /// Construct a [RxSharedPreferences] with [SharedPreferencesWithCache] and optional [Logger].
+  /// Construct a [RxSharedPreferences] with [SharedPreferencesWithCache] and
+  /// optional [RxSharedPreferencesLogger].
   @experimental
   factory RxSharedPreferences.withCache(
     FutureOr<SharedPreferencesWithCache> prefsWithCache, [

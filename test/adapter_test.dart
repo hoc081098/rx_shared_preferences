@@ -302,7 +302,7 @@ void main() {
 
     test('readAll', () async {
       expect(
-        await adapter.readAll(),
+        await adapter.readAll((_, raw) => raw),
         kTestValues.map(
           (key, value) => MapEntry(
             key.substring(prefix.length),
@@ -315,7 +315,7 @@ void main() {
       await adapter.reload();
 
       expect(
-        await adapter.readAll(),
+        await adapter.readAll((_, raw) => raw),
         kTestValues2.map(
           (key, value) => MapEntry(
             key.substring(prefix.length),

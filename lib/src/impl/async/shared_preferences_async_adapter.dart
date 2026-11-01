@@ -6,13 +6,14 @@ import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../interface/shared_preferences_like.dart';
+import '../decode_entries.dart';
 
 /// [SharedPreferencesLike]'s implementation by delegating a [SharedPreferencesAsync].
 @experimental
 class SharedPreferencesAsyncAdapter implements SharedPreferencesLike {
   final SharedPreferencesAsync _prefsAsync;
 
-  /// Construct a [SharedPreferencesAdapter] with [SharedPreferencesAsync].
+  /// Construct an adapter with [SharedPreferencesAsync].
   SharedPreferencesAsyncAdapter(this._prefsAsync);
 
   @override
@@ -36,7 +37,10 @@ class SharedPreferencesAsyncAdapter implements SharedPreferencesLike {
   ]) => _prefsAsync.getAll(allowList: {key}).then((map) => decoder(map[key]));
 
   @override
-  Future<Map<String, Object?>> readAll([void _]) => _prefsAsync.getAll();
+  Future<Map<String, Object?>> readAll(
+    EntryDecoder<String> decoder, [
+    void _,
+  ]) => readAllDecoded(_prefsAsync.getAll, decoder);
 
   @override
   Future<void> write<T extends Object>(

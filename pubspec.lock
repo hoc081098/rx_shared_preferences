@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: dart_either
-      sha256: "928895b8266ac5906eb4e2993fead563a73b17fc86eec6b40172100d56ca2507"
+      sha256: "2f84b82ee609c26bfa5d9fc8717daa7020ee7c712a29578bd9bedb6fe7439fad"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "2.5.0"
   disposebag:
     dependency: transitive
     description:
@@ -220,10 +220,10 @@ packages:
     dependency: "direct main"
     description:
       name: rx_storage
-      sha256: "06c73a6960eb49b410e26d55fcdec0a2c098314ddf6940dc2d499290ea8a930f"
+      sha256: "6c17f90b78d8aa2b456d5bb2428fd2f6a3300f75542d53c11eab2d4e1c14af3e"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.0"
   rxdart:
     dependency: transitive
     description:
@@ -236,10 +236,10 @@ packages:
     dependency: transitive
     description:
       name: rxdart_ext
-      sha256: "95df7e8b13140e2c3fdb3b943569a51f18090e82aaaf6ca6e8e6437e434a6fb0"
+      sha256: "9d6fcf38d3e125c1ccf0b4eaf50e1838e613f91c33bf5608fc9c036e3a9f453c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.4.0"
   shared_preferences:
     dependency: "direct main"
     description:
