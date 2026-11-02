@@ -28,7 +28,7 @@ jobs:
           - name: stable
             version: ''
           - name: minimum
-            version: '3.35.0'
+            version: '3.38.4'
     defaults:
       run:
         working-directory: example

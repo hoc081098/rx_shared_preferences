@@ -72,6 +72,11 @@ jobs:
         if: matrix.name == 'stable'
         run: flutter test --no-pub --coverage --coverage-path=coverage/lcov.info
 
+      - name: Run example tests
+        if: matrix.name == 'stable'
+        working-directory: example
+        run: flutter test --no-pub
+
       - name: Upload coverage
         if: matrix.name == 'stable'
         uses: codecov/codecov-action@v7

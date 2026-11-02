@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
-import 'package:rx_shared_preferences/src/impl/real_rx_shared_preferences.dart';
 
 import 'stream_expectations.dart';
 
@@ -18,7 +17,7 @@ void main() {
       adapter = _ControlledPreferences();
       await adapter.setString('name', 'Ada');
       logger = _RecordingLogger();
-      prefs = RealRxSharedPreferences(adapter, logger);
+      prefs = RxSharedPreferences.custom(adapter, logger);
     });
     tearDown(() => prefs.dispose());
 
@@ -242,7 +241,7 @@ void main() {
 
       test('shares repeated disposal and invokes cleanup once', () async {
         var cleanupCalls = 0;
-        final storage = RealRxSharedPreferences(
+        final storage = RxSharedPreferences.custom(
           adapter,
           null,
           () => cleanupCalls++,
@@ -255,9 +254,24 @@ void main() {
         expect(cleanupCalls, 1);
       });
 
+      test('waits for custom adapter initialization', () async {
+        final initialization = Completer<SharedPreferencesLike>();
+        final storage = RxSharedPreferences.custom(initialization.future);
+        addTearDown(storage.dispose);
+        final read = storage.getString('name');
+        final reload = storage.reload();
+
+        initialization.complete(adapter);
+
+        expect(await read, 'Ada');
+        expect(await reload, {'name': 'Ada'});
+        await storage.setString('name', 'Grace');
+        expect(await adapter.getString('name'), 'Grace');
+      });
+
       test('retains initialization errors for subsequent operations', () async {
         final initialization = Completer<SharedPreferencesLike>();
-        final storage = RealRxSharedPreferences(initialization.future);
+        final storage = RxSharedPreferences.custom(initialization.future);
         addTearDown(storage.dispose);
         final failure = StateError('Initialization failed');
         initialization.completeError(failure);

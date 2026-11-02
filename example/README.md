@@ -1,1 +1,41 @@
-# [Build ListView from Stream using RxSharedPreferences](https://github.com/hoc081098/rx_shared_preferences/tree/master/example)
+# RxSharedPreferences examples
+
+Requires Flutter `>=3.38.4` and Dart `>=3.10.3 <4.0.0` for the example's
+dependencies. The package itself still supports Flutter `>=3.35.0` and Dart
+`>=3.9.0 <4.0.0`.
+
+Run commands from this directory:
+
+```sh
+flutter pub get
+flutter run
+```
+
+- [ListView demo](lib/main.dart): render a list from preference streams.
+- [API snippets](lib/snippet.dart): typed values, custom codecs and bulk streams.
+- [Secure storage adapter](lib/flutter_secure_storage_snippet.dart): implement
+  `SharedPreferencesLike` and use `RxSharedPreferences.custom` with
+  `flutter_secure_storage`.
+
+To run the secure storage snippet, follow the plugin's
+[platform setup instructions](https://pub.dev/packages/flutter_secure_storage),
+then run:
+
+```sh
+flutter run -t lib/flutter_secure_storage_snippet.dart
+```
+
+The snippet logs token presence, writes a sample string, removes it, and disposes
+its subscription and reactive wrapper. It does not display a UI. It leaves
+storage logging disabled because those events include stored values.
+
+The adapter accepts encoded strings and treats encoded nulls as removals. Use
+the string helpers, or generic `read`/`write`/`observe`/`update` methods with codecs
+that convert values to and from strings. Direct changes through
+`FlutterSecureStorage` need `rxPrefs.reload()` to notify streams.
+
+Run the adapter and reactive integration tests with the plugin's in-memory store:
+
+```sh
+flutter test
+```

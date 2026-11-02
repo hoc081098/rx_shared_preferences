@@ -1,3 +1,6 @@
+// Legacy storage compatibility intentionally exercises the deprecated constructor.
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
