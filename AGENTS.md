@@ -36,3 +36,17 @@ Cover new code paths across the relevant legacy, async, and cached adapters. Use
 History mixes Conventional Commits and free-form messages. Use `<type>(<scope>): <summary>`, for example `fix(streams): emit null after removal`.
 
 Keep PRs focused; describe behavior changes, validation performed, and relevant issues. Update `README.md`, `CHANGELOG.md`, and examples when public behavior changes. Discuss fundamental changes through a lightweight issue or example PR, as described in `CONTRIBUTING.md`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues. For issue operations, read `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+When triaging issues, use the role mapping in `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This repo uses a single context. Before exploring domain concepts or architecture decisions, read `docs/agents/domain.md`.
