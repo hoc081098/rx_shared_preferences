@@ -54,13 +54,12 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 ## Getting Started
 
 Requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
-Upgrading from 4.x? See the [5.0.0 migration guide](https://github.com/hoc081098/rx_shared_preferences/blob/master/MIGRATION.md).
+Upgrading from 4.x? See the [5.0.0 migration guide](MIGRATION.md).
 
 In your Flutter project, add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  [...]
   rx_shared_preferences: ^5.0.0
 ```
 
@@ -79,11 +78,28 @@ import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 ```dart
 final rxPrefs = RxSharedPreferences.getAsyncInstance();
 // Or:
-final rxPrefs = RxSharedPreferences.getWithCacheInstance();
+final rxPrefs = RxSharedPreferences.getCachedInstance(
+  cacheOptions: const SharedPreferencesWithCacheOptions(),
+);
 ```
 
-The experimental `RxSharedPreferences.async` and `RxSharedPreferences.withCache`
-constructors wrap existing instances. The legacy API is also available:
+The async and cached constructors and their singleton factories are experimental.
+Async storage reads from the platform; cached storage reads from a local cache.
+The reactive wrapper returns `Future`s from read methods in either case.
+
+Each singleton keeps its first configuration until disposal. For platform
+settings, use `options` with `getAsyncInstance` or `sharedPreferencesOptions`
+with `getCachedInstance`. The cached factory also accepts a mutable `cache` map,
+which is refilled from storage during initialization.
+
+`RxSharedPreferences.async` wraps an existing `SharedPreferencesAsync` instance.
+`RxSharedPreferences.cached` wraps a `SharedPreferencesWithCache` instance or its
+initialization future. Both accept an optional logger and `onDispose` callback.
+For a custom storage adapter, use `RxSharedPreferences.custom` (see section 8).
+
+The unnamed constructor, `getInstance()`, and `.rx` are deprecated, but remain
+available for legacy `SharedPreferences` storage. The following are alternative
+ways to wrap it:
 
 ```dart
 // via constructor.
@@ -105,11 +121,11 @@ operations and stream events. Two implementations are included:
 -   `RxSharedPreferencesDefaultLogger` prints logs to the console.
 -   `RxSharedPreferencesEmptyLogger` is a no-op logger.
 
-**Default singletons and `.rx`**
+**Default singletons and legacy `.rx`**
 
 Default singletons read `RxSharedPreferencesConfigs.logger` **on first access**.
-The `.rx` extension reads it on first access for each `SharedPreferences`
-instance. Existing wrappers keep their original logger.
+The deprecated `.rx` extension reads it on first access for each
+`SharedPreferences` instance. Existing wrappers keep their original logger.
 
 Add `disposebag` as a direct dependency with `flutter pub add disposebag`,
 then copy this setup into your app entry point:
@@ -141,8 +157,9 @@ loggers disabled in release builds.
 
 **Instances created directly**
 
-`RxSharedPreferences(...)`, `.async(...)`, and `.withCache(...)` use their optional
-logger argument. It defaults to `null`, which disables storage and stream logging:
+The `.async(...)`, `.cached(...)`, and `.custom(...)` constructors use their
+optional logger argument. It defaults to `null`, disabling storage and stream
+logging:
 
 ```dart
 import 'package:flutter/foundation.dart';
@@ -154,14 +171,21 @@ final rxPrefs = RxSharedPreferences.async(
 );
 ```
 
+The deprecated unnamed constructor uses the same logger default.
 `DisposeBagConfigs.logger` controls cleanup logging separately for both cases.
 
 ### 3. Select stream and observe
 
--   Listen to the `Stream`s and transform them with operators such as `map` and `flatMap`.
--   If you need to listen to the `Stream` many times, you can use broadcast operators such as `share`, `shareValue`, `publish`, `publishValue`, etc...
+-   Listen to a `Stream` and transform its events with operators such as `map` and `flatMap`.
+-   To share one stream between multiple listeners, use `share`, `shareValue`,
+    `publish`, `publishValue`, or Dart's `asBroadcastStream`.
+
+For the RxDart operators below, add `rxdart_ext` as a direct dependency with
+`flutter pub add rxdart_ext` and import it:
 
 ```dart
+import 'package:rxdart_ext/rxdart_ext.dart';
+
 // Listen
 rxPrefs.getStringListStream('KEY_LIST').listen(print);                  // [*]
 
@@ -172,38 +196,38 @@ rxPrefs.getStringListStream('KEY_LIST').asBroadcastStream();
 
 // Transform stream
 rxPrefs.getIntStream('KEY_INT')
-  .map((i) => /* Do something cool */)
-  .where((i) => /* Filtering */)
-  ...
+  .map((i) => i ?? 0)
+  .where((i) => i > 0)
+  .listen(print);
 
-// must **use same rxPrefs** instance when set value and select stream
+// Write through the same rxPrefs instance that supplies the stream.
 await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] will print ['Cool']
 ```
 
--   Use the same `RxSharedPreferences` instance for writing values and listening
-    to streams. Changes made elsewhere require `reload()` to notify listeners.
+-   Writes notify streams belonging to the same `RxSharedPreferences` instance.
+    Call `reload()` to notify listeners of changes made elsewhere.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
-        
+
     -   Use a default singleton via `RxSharedPreferences.getAsyncInstance()` or
-        `RxSharedPreferences.getWithCacheInstance()`.
-        
-    -   Use `InheritedWidget`/`Provider` to provide a `RxSharedPreferences` instance (create it in `main` function) for all widgets (recommended). 
-        See [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/95642a7fe8e8e0ad4579d7ae084aec9a10fe6dff/example/lib/main.dart#L17).
+        `RxSharedPreferences.getCachedInstance(cacheOptions: ...)`.
+
+    -   Provide one `RxSharedPreferences` instance to widgets through
+        `InheritedWidget`/`Provider` (recommended). Create it in `main`, as shown
+        in [example/main](example/lib/main.dart).
 
 ```dart
-// An example for wrong usage.
+// Different wrappers do not share stream notifications.
 
 rxPrefs1.getStringListStream('KEY_LIST').listen(print); // [*]
 
-rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print anything,
-                                                        // because rxPrefs1 and rxPrefs2 are different instances.
+await rxPrefs2.setStringList('KEY_LIST', ['Cool']);   // [*] is not notified by this write.
 ```
 
 ### 4. Stream APIs and RxStorage APIs
 
--   All `Stream`s APIs (via extension methods).
+-   Stream and update helpers (via extension methods).
 
 ```dart
   Stream<Object?>              getObjectStream(String key, [Decoder<Object?>? decoder]);
@@ -221,19 +245,23 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
   Future<void>                 updateStringList(String key, Transformer<List<String>?> transformer);
 ```
 
--   All methods from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html) 
-    (because `RxSharedPreferences` implements `RxStorage`).
+-   Methods inherited from [RxStorage](https://pub.dev/documentation/rx_storage/latest/rx_storage/RxStorage-class.html),
+    which `RxSharedPreferences` implements.
 
 ```dart
   Future<void>                 update<T extends Object>({required String key, required Decoder<T?> decoder, required Transformer<T?> transformer, required Encoder<T?> encoder, void options});
-  Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder);
+  Stream<T?>                   observe<T extends Object>(String key, Decoder<T?> decoder, [void options]);
   Stream<Map<String, Object?>> observeAll(EntryDecoder<String> decoder, [void options]);
   Future<void>                 dispose();
 ```
 
+Updates perform a read, transform and write through the wrapper. Transformers
+can return a value or a `Future`; updates remain experimental.
+
 ### 5. Get and set methods like `SharedPreferences`
 
--   Like `SharedPreferences`, `RxSharedPreferences` provides read and write methods (via extension methods).
+-   Like `SharedPreferences`, `RxSharedPreferences` provides typed read and write
+    helpers via extension methods. Passing `null` to a typed setter removes its key.
 
 ```dart
   Future<Object?>              getObject(String key, [Decoder<Object?>? decoder]);
@@ -252,16 +280,16 @@ rxPrefs2.setStringList('KEY_LIST', ['Cool']);           // [*] will not print an
   Future<void>                 setStringList(String key, List<String>? value);
 ```
 
--   All methods from [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html)
-   (because `RxSharedPreferences` implements `Storage`).
+-   For custom encoded values, use the methods inherited from
+    [Storage](https://pub.dev/documentation/rx_storage/latest/rx_storage/Storage-class.html).
 
 ```dart
-  Future<bool>                 containsKey(String key);
-  Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder);
+  Future<bool>                 containsKey(String key, [void options]);
+  Future<T?>                   read<T extends Object>(String key, Decoder<T?> decoder, [void options]);
   Future<Map<String, Object?>> readAll(EntryDecoder<String> decoder, [void options]);
-  Future<void>                 clear();
-  Future<void>                 remove(String key);
-  Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder);
+  Future<void>                 clear([void options]);
+  Future<void>                 remove(String key, [void options]);
+  Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder, [void options]);
 ```
 
 ### 6. Read and observe all entries
@@ -283,19 +311,35 @@ Read or decoder failures complete `readAll` with an error or become stream
 errors in `observeAll`, which keeps listening for later changes.
 
 Call `reload()` to refresh raw values and notify streams of external changes.
-This works with all three adapters; removed keys emit `null` on their key streams.
+Removed keys emit `null` on their key streams.
 
 ### 7. Dispose
 
 Await required writes, then call `await rxPrefs.dispose()`. Disposal closes the
-wrapper's streams and rejects queued mutations and reloads with `StateError`.
-Mutations and reloads already running may finish without further notifications or logs.
+wrapper's streams and rejects new or queued mutations and reloads with
+`StateError`. Mutations and reloads already running may finish without further
+notifications or logs.
 
 ### 8. Custom implementations and loggers
 
 Use `implements` for custom `SharedPreferencesLike`, `RxSharedPreferences`, or
-`RxSharedPreferencesLogger` implementations. To reuse default logging, extend
-`RxSharedPreferencesDefaultLogger` with a `base`, `final`, or `sealed` subclass:
+`RxSharedPreferencesLogger` implementations.
+
+To reuse the default reactive behavior with a custom storage adapter, pass the
+adapter or its initialization future to `RxSharedPreferences.custom`:
+
+```dart
+final rxPrefs = RxSharedPreferences.custom(adapter);
+```
+
+See the [flutter_secure_storage example](example/lib/flutter_secure_storage_snippet.dart)
+for string-only storage. Use string helpers with that adapter, or generic APIs
+with codecs that convert values to and from strings. Add the plugin separately;
+see [example setup](example/README.md) for platform and SDK requirements.
+Keep value logging disabled when storing secrets.
+
+To reuse default logging, extend `RxSharedPreferencesDefaultLogger` with a
+`base`, `final`, or `sealed` subclass:
 
 ```dart
 final class AppLogger extends RxSharedPreferencesDefaultLogger {
