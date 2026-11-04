@@ -5,7 +5,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:shared_preferences_platform_interface/types.dart';
 
 void main() {
-  group('RxSharedPreferences.withCache stream tests', () {
+  group('RxSharedPreferences.cached stream tests', () {
     const kTestValues = <String, Object>{
       'String': 'hello world',
       'bool': true,
@@ -20,7 +20,7 @@ void main() {
       SharedPreferencesAsyncPlatform.instance =
           InMemorySharedPreferencesAsync.withData(kTestValues);
 
-      rxPrefs = RxSharedPreferences.withCache(
+      rxPrefs = RxSharedPreferences.cached(
         SharedPreferencesWithCache.create(
           cacheOptions: const SharedPreferencesWithCacheOptions(),
         ),
@@ -344,12 +344,15 @@ void main() {
       await future;
     });
 
-    test('RxSharedPreferences.getWithCacheInstance', () async {
+    test('RxSharedPreferences.getCachedInstance', () async {
+      const cacheOptions = SharedPreferencesWithCacheOptions();
       RxSharedPreferences rxPrefs1;
       expect(
         identical(
-          RxSharedPreferences.getWithCacheInstance(),
-          rxPrefs1 = RxSharedPreferences.getWithCacheInstance(),
+          RxSharedPreferences.getCachedInstance(cacheOptions: cacheOptions),
+          rxPrefs1 = RxSharedPreferences.getCachedInstance(
+            cacheOptions: cacheOptions,
+          ),
         ),
         isTrue,
       );
@@ -360,8 +363,10 @@ void main() {
       RxSharedPreferences rxPrefs2;
       expect(
         identical(
-          RxSharedPreferences.getWithCacheInstance(),
-          rxPrefs2 = RxSharedPreferences.getWithCacheInstance(),
+          RxSharedPreferences.getCachedInstance(cacheOptions: cacheOptions),
+          rxPrefs2 = RxSharedPreferences.getCachedInstance(
+            cacheOptions: cacheOptions,
+          ),
         ),
         isTrue,
       );
@@ -369,13 +374,17 @@ void main() {
       expect(identical(rxPrefs1, rxPrefs2) && rxPrefs1 != null, isTrue);
 
       // dispose default singleton
-      await RxSharedPreferences.getWithCacheInstance().dispose();
+      await RxSharedPreferences.getCachedInstance(
+        cacheOptions: cacheOptions,
+      ).dispose();
 
       RxSharedPreferences rxPrefs3;
       expect(
         identical(
-          RxSharedPreferences.getWithCacheInstance(),
-          rxPrefs3 = RxSharedPreferences.getWithCacheInstance(),
+          RxSharedPreferences.getCachedInstance(cacheOptions: cacheOptions),
+          rxPrefs3 = RxSharedPreferences.getCachedInstance(
+            cacheOptions: cacheOptions,
+          ),
         ),
         isTrue,
       );

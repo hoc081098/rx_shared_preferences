@@ -30,13 +30,13 @@ final kTestValues2 = <String, Object>{
 /// Fake Shared Preferences Store
 class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
     implements MockPlatformInterfaceMixin {
-  final InMemorySharedPreferencesStore backend;
+  final InMemorySharedPreferencesStore storage;
   final log = <MethodCall>[];
 
   MethodCall? failedMethod;
 
   FakeSharedPreferencesStore(Map<String, Object> data)
-    : backend = InMemorySharedPreferencesStore.withData(data);
+    : storage = InMemorySharedPreferencesStore.withData(data);
 
   @override
   Future<bool> clear() {
@@ -44,7 +44,7 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
       return Future.value(false);
     }
     log.add(const MethodCall('clear'));
-    return backend.clear();
+    return storage.clear();
   }
 
   @override
@@ -55,7 +55,7 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
       );
     }
     log.add(const MethodCall('getAll'));
-    return backend.getAll();
+    return storage.getAll();
   }
 
   @override
@@ -64,7 +64,7 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
       return Future.value(false);
     }
     log.add(MethodCall('remove', key));
-    return backend.remove(key);
+    return storage.remove(key);
   }
 
   @override
@@ -73,6 +73,6 @@ class FakeSharedPreferencesStore extends SharedPreferencesStorePlatform
       return Future.value(false);
     }
     log.add(MethodCall('setValue', [valueType, key, value]));
-    return backend.setValue(valueType, key, value);
+    return storage.setValue(valueType, key, value);
   }
 }

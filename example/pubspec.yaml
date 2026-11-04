@@ -4,8 +4,8 @@ version: 3.0.0+1
 publish_to: none
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
-  flutter: '>=3.35.0'
+  sdk: '>=3.10.3 <4.0.0'
+  flutter: '>=3.38.4'
 
 dependencies:
   flutter:
@@ -15,7 +15,9 @@ dependencies:
   rxdart_ext: ^0.4.0
   rx_shared_preferences:
   shared_preferences: ^2.5.4
+  flutter_secure_storage: ^11.2.0
   collection: ^1.19.1
+
 dependency_overrides:
   rx_shared_preferences:
     path: ../

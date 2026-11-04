@@ -1,4 +1,4 @@
-## 5.0.0 - Oct 27, 2026
+## 5.0.0 - Unreleased
 
 -   Update dependencies:
     -   `shared_preferences` to `^2.5.4`.
@@ -9,9 +9,14 @@
 -   Change `Dart SDK` constraint to `'>=3.9.0 <4.0.0'`.
 
 -   Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`:
-    -   Default singletons: `getAsyncInstance()` and `getWithCacheInstance()`.
-    -   Experimental factories: `RxSharedPreferences.async` and `RxSharedPreferences.withCache`.
-    -   Legacy factories and `.rx` remain available.
+    -   Experimental default singletons: `getAsyncInstance` and `getCachedInstance`.
+        Platform-specific options are supported by both; the cached singleton
+        requires `cacheOptions` and accepts an optional mutable `cache` map.
+    -   Experimental factories: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
+
+-   Add `RxSharedPreferences.custom` to wrap a `SharedPreferencesLike` adapter or its initialization future.
+-   Add a `flutter_secure_storage` adapter example with string encoding and reactive reload support.
+-   Deprecate the unnamed legacy constructor, `getInstance()`, and the legacy `.rx` extension; they keep using the legacy `SharedPreferences` storage.
 
 -   **Breaking changes**:
     -   `readAll` and `observeAll` require an `EntryDecoder<String>` supporting sync and async decoding.

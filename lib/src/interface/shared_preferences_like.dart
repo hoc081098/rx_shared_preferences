@@ -11,7 +11,8 @@ import 'package:rx_storage/rx_storage.dart';
 /// before invoking its decoders. Decoders may run concurrently and return
 /// synchronous or asynchronous values. Null decoding results retain their keys.
 ///
-/// Implement this contract to provide a custom adapter.
+/// Implement this contract to provide a custom adapter, then wrap it with
+/// `RxSharedPreferences.custom`.
 abstract interface class SharedPreferencesLike
     implements Storage<String, void> {
   /// Error code when an error occurs when calling a method from [MethodChannel].

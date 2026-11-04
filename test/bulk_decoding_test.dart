@@ -439,6 +439,7 @@ class _PreferencesFixture {
       final raw = await SharedPreferences.getInstance();
       return _PreferencesFixture(
         await SharedPreferencesAdapter.from(raw),
+        // ignore: deprecated_member_use_from_same_package
         RxSharedPreferences(raw),
         (values) async {
           SharedPreferencesStorePlatform.instance =
@@ -463,7 +464,7 @@ class _PreferencesFixture {
         cacheOptions: const SharedPreferencesWithCacheOptions(),
       );
       adapter = await SharedPreferencesWithCacheAdapter.from(raw);
-      prefs = RxSharedPreferences.withCache(raw);
+      prefs = RxSharedPreferences.cached(raw);
     }
     return _PreferencesFixture(adapter, prefs, (values) async {
       await external.clear();

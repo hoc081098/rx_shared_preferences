@@ -1,3 +1,6 @@
+// Legacy storage compatibility intentionally exercises deprecated members.
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
@@ -377,18 +380,22 @@ void main() {
       expect(() => stream.listen(null), throwsStateError);
     });
 
-    test('rx', () async {
+    test('deprecated rx preserves values and singleton reuse', () async {
       final prefs = await SharedPreferences.getInstance();
 
-      expect(prefs.rx.getStringStream('key'), emits(anything));
-      expect(prefs.rx.getStringListStream('flutter.List'), emits(anything));
-      expect(prefs.rx.getDoubleStream('flutter.double'), emits(anything));
-
       final old = prefs.rx;
+      addTearDown(old.dispose);
+      await expectLater(old.getStringStream('String'), emits('hello world'));
+      await expectLater(old.getStringListStream('List'), emits(['foo', 'bar']));
+      await expectLater(old.getDoubleStream('double'), emits(3.14159));
       expect(identical(old, prefs.rx), true);
 
       await old.dispose();
-      expect(identical(old, prefs.rx), false);
+
+      final replacement = prefs.rx;
+      addTearDown(replacement.dispose);
+      expect(identical(old, replacement), false);
+      expect(await replacement.getString('String'), 'hello world');
     });
 
     test('updateBool', () async {

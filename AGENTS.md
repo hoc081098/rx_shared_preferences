@@ -23,6 +23,8 @@ Inside `example/`, run `flutter pub get`, then `flutter run` to launch the demo.
 
 Use two-space indentation and `dart format`. Name files `snake_case.dart`, types `UpperCamelCase`, and members `lowerCamelCase`. Follow `analysis_options.yaml`, which extends `flutter_lints`: prefer single quotes, final locals, relative imports within the package, explicit return types, and `///` documentation for public APIs. Handle asynchronous calls according to the `unawaited_futures` rule.
 
+In Dartdoc and documentation prose (including `.md` files), prefer short sentences and natural conjunctions. Use semicolons (`;`) and em dashes only when needed for clarity.
+
 ## Testing Guidelines
 
 Use `flutter_test`, descriptive `group`/`test` names, and files ending in `_test.dart`. Run a focused suite with `flutter test test/async_streams_test.dart`.
@@ -34,3 +36,17 @@ Cover new code paths across the relevant legacy, async, and cached adapters. Use
 History mixes Conventional Commits and free-form messages. Use `<type>(<scope>): <summary>`, for example `fix(streams): emit null after removal`.
 
 Keep PRs focused; describe behavior changes, validation performed, and relevant issues. Update `README.md`, `CHANGELOG.md`, and examples when public behavior changes. Discuss fundamental changes through a lightweight issue or example PR, as described in `CONTRIBUTING.md`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues. For issue operations, read `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+When triaging issues, use the role mapping in `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This repo uses a single context. Before exploring domain concepts or architecture decisions, read `docs/agents/domain.md`.
