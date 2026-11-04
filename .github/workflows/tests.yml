@@ -49,7 +49,8 @@ jobs:
         run: flutter --version
 
       - name: Install package dependencies
-        run: flutter pub get
+        # The example requires a newer SDK and is resolved separately below.
+        run: flutter pub get --no-example
 
       - name: Install example dependencies
         if: matrix.name == 'stable'

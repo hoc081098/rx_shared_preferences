@@ -205,6 +205,7 @@ void main() {
 
       await prefs.setString('token', 'updated');
       await _expectNext(iterator, 'updated');
+      // ignore: experimental_member_use
       await prefs.updateString('token', (value) async => '$value again');
       await _expectNext(iterator, 'updated again');
       await prefs.setString('token', null);
