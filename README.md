@@ -84,7 +84,8 @@ final rxPrefs = RxSharedPreferences.getCachedInstance(
 ```
 
 The async and cached constructors and their singleton factories are experimental.
-Async storage reads from the platform; cached storage reads from a local cache.
+Async storage reads from the platform, while cached storage reads from a local
+cache.
 The reactive wrapper returns `Future`s from read methods in either case.
 
 Each singleton keeps its first configuration until disposal. For platform
@@ -255,8 +256,8 @@ await rxPrefs2.setStringList('KEY_LIST', ['Cool']);   // [*] is not notified by 
   Future<void>                 dispose();
 ```
 
-Updates perform a read, transform and write through the wrapper. Transformers
-can return a value or a `Future`; updates remain experimental.
+Experimental update methods read a value, transform it and write the result
+through the wrapper. Transformers can return a value or a `Future`.
 
 ### 5. Get and set methods like `SharedPreferences`
 
@@ -306,7 +307,8 @@ final decoded = await rxPrefs.readAll(
 ```
 
 `observeAll` emits an initial map and rereads after changes through the same
-wrapper. Decoder results of `null` retain their keys; removed keys are omitted.
+wrapper. Decoder results of `null` retain their keys in the map. Removed keys
+are omitted.
 Read or decoder failures complete `readAll` with an error or become stream
 errors in `observeAll`, which keeps listening for later changes.
 
@@ -334,8 +336,8 @@ final rxPrefs = RxSharedPreferences.custom(adapter);
 
 See the [flutter_secure_storage example](example/lib/flutter_secure_storage_snippet.dart)
 for string-only storage. Use string helpers with that adapter, or generic APIs
-with codecs that convert values to and from strings. Add the plugin separately;
-see [example setup](example/README.md) for platform and SDK requirements.
+with codecs that convert values to and from strings. Add the plugin separately
+and follow the [example setup](example/README.md) for platform and SDK requirements.
 Keep value logging disabled when storing secrets.
 
 To reuse default logging, extend `RxSharedPreferencesDefaultLogger` with a
