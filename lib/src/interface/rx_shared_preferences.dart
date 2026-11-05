@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:rx_storage/rx_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +31,6 @@ abstract interface class RxSharedPreferences
   ///
   /// The optional [logger] defaults to `null`, disabling operation and stream
   /// logging. [onDispose] runs once when this wrapper is disposed.
-  @experimental
   factory RxSharedPreferences.async(
     SharedPreferencesAsync prefsAsync, [
     RxSharedPreferencesLogger? logger,
@@ -47,7 +45,6 @@ abstract interface class RxSharedPreferences
   ///
   /// Reads use the adapter's local cache, but still return [Future]s.
   /// Call [reload] to refresh the cache and notify streams of external changes.
-  @experimental
   factory RxSharedPreferences.cached(
     FutureOr<SharedPreferencesWithCache> prefsWithCache, [
     RxSharedPreferencesLogger? logger,
@@ -80,7 +77,6 @@ abstract interface class RxSharedPreferences
   /// Uses [RxSharedPreferencesConfigs.logger] on first access.
   ///
   /// [options] is used only on first access, until the instance is disposed.
-  @experimental
   factory RxSharedPreferences.getAsyncInstance({
     SharedPreferencesOptions options = const SharedPreferencesOptions(),
   }) => _defaultAsyncInstance ??= RxSharedPreferences.async(
@@ -95,7 +91,6 @@ abstract interface class RxSharedPreferences
   /// [sharedPreferencesOptions], [cacheOptions] and [cache] are used
   /// only on first access, until the instance is disposed.
   /// [cache] must be mutable; initialization refreshes its contents from storage.
-  @experimental
   factory RxSharedPreferences.getCachedInstance({
     SharedPreferencesOptions sharedPreferencesOptions =
         const SharedPreferencesOptions(),

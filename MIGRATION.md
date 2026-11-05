@@ -23,10 +23,9 @@ your app shares the wrapper:
 | `sharedPreferences.rx` | Create an async or cached wrapper and share it explicitly |
 
 Create `SharedPreferencesAsync` for `.async` or `SharedPreferencesWithCache` for
-`.cached`. These constructors and their default singleton factories are
-experimental. All wrappers still return `Future`s from reads, including cached
-reads. The [README](README.md#1-import-and-instantiate) covers construction,
-platform options, cache configuration and logging.
+`.cached`. All wrappers still return `Future`s from reads, including cached reads.
+The [README](README.md#1-import-and-instantiate) covers construction, platform
+options, cache configuration and logging.
 
 On Android, adopting `SharedPreferencesAsync` or `SharedPreferencesWithCache`
 can change the underlying storage from SharedPreferences to DataStore

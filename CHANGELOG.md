@@ -9,10 +9,10 @@
 -   Change `Dart SDK` constraint to `'>=3.9.0 <4.0.0'`.
 
 -   Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`:
-    -   Experimental default singletons: `getAsyncInstance` and `getCachedInstance`.
-        Platform-specific options are supported by both; the cached singleton
+    -   Default singletons: `getAsyncInstance` and `getCachedInstance`.
+        Both support platform-specific options. The cached singleton
         requires `cacheOptions` and accepts an optional mutable `cache` map.
-    -   Experimental factories: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
+    -   Factories: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
 
 -   Add `RxSharedPreferences.custom` to wrap a `SharedPreferencesLike` adapter or its initialization future.
 -   Add a `flutter_secure_storage` adapter example with string encoding and reactive reload support.

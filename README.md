@@ -83,10 +83,8 @@ final rxPrefs = RxSharedPreferences.getCachedInstance(
 );
 ```
 
-The async and cached constructors and their singleton factories are experimental.
 Async storage reads from the platform, while cached storage reads from a local
-cache.
-The reactive wrapper returns `Future`s from read methods in either case.
+cache. The reactive wrapper returns `Future`s from read methods in either case.
 
 Each singleton keeps its first configuration until disposal. For platform
 settings, use `options` with `getAsyncInstance` or `sharedPreferencesOptions`
