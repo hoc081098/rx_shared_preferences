@@ -96,6 +96,30 @@ for an adapter example and logger setup.
 Key streams now emit `null` for entries removed since earlier reads or writes
 through the wrapper, including when using async storage.
 
+For custom codecs, pass an optional entry decoder so the returned map and key
+notifications contain logical values:
+
+```dart
+final values = await rxPrefs.reload(
+  (key, raw) => key == 'encoded_count' && raw is String ? int.parse(raw) : raw,
+);
+```
+
+Use the same logical type for each key in writes, key streams and reload
+decoding. Reload notifications do not run per-key stream decoders again.
+Decoded nulls retain their keys in the map. Removed keys emit `null` without
+being passed to the decoder.
+
+Decoder failures publish no reload notifications and preserve removed keys for
+retry. The first error fails the future immediately, while other decoders keep
+running. Underlying caches may already have refreshed. Reloads share a queue
+with `clear`, while per-key writes may interleave. A reload decoder must not
+await `reload` or `clear` on the same instance.
+
+Custom classes implementing `RxSharedPreferences` must update their signature
+to `reload([EntryDecoder<String>? decoder])`. Custom `SharedPreferencesLike`
+adapters keep their existing raw `reload()` contract.
+
 Await required writes before calling `dispose()`. Disposal closes streams and
 rejects new or queued mutations and reloads with `StateError`. Mutations and
 reloads already running may finish without further notifications or logs.

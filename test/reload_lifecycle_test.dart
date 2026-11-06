@@ -22,6 +22,40 @@ void main() {
     tearDown(() => prefs.dispose());
 
     group('async gaps', () {
+      test('includes keys learned while decoding the snapshot', () async {
+        await adapter.setInt('kept', 1);
+        final readStarted = Completer<void>();
+        final finishRead = Completer<Object?>();
+        adapter.onRead = (_) {
+          readStarted.complete();
+          return finishRead.future;
+        };
+        final decodeStarted = Completer<void>();
+        final finishDecode = Completer<Object?>();
+        addTearDown(() {
+          if (!finishRead.isCompleted) finishRead.complete('Ada');
+          if (!finishDecode.isCompleted) finishDecode.complete(1);
+        });
+        final output = expectStreamEvents(prefs.getStringStream('name'), [
+          'Ada',
+          null,
+        ]);
+        await readStarted.future;
+        await adapter.remove('name');
+        final reload = prefs.reload((_, _) {
+          decodeStarted.complete();
+          return finishDecode.future;
+        });
+        await decodeStarted.future;
+        finishRead.complete('Ada');
+        await output.firstEvent;
+        finishDecode.complete(1);
+
+        expect(await reload, {'kept': 1});
+        await prefs.dispose();
+        await output.done;
+      });
+
       for (final phase in _ReloadPhase.values) {
         group(phase.name, () {
           test('includes keys learned by a pending read', () async {
@@ -139,6 +173,24 @@ void main() {
     });
 
     group('failures and logging', () {
+      test('logs decoded values and decoder failures', () async {
+        expect(await prefs.reload((_, raw) => (raw as String).length), {
+          'name': 3,
+        });
+        final success = logger.events.whereType<ReloadSuccessEvent>().single;
+        expect(success.keyAndValues.single.value, 3);
+        final failure = StateError('Cannot decode name');
+        await expectLater(
+          prefs.reload((_, _) => Future<Object?>.error(failure)),
+          throwsA(same(failure)),
+        );
+        expect(
+          logger.events.whereType<ReloadFailureEvent>().single.error.error,
+          same(failure),
+        );
+        expect(logger.events.whereType<ReloadSuccessEvent>(), hasLength(1));
+      });
+
       test('logs raw results, preserves failures and supports retry', () async {
         final output = expectStreamEvents(prefs.getStringStream('name'), [
           'Ada',
@@ -184,6 +236,40 @@ void main() {
     });
 
     group('queue and disposal', () {
+      test(
+        'holds clear in the queue while decoding and disposes silently',
+        () async {
+          final output = expectStreamEvents(prefs.getStringStream('name'), [
+            'Ada',
+          ]);
+          await output.firstEvent;
+          final started = Completer<void>();
+          final finish = Completer<Object?>();
+          addTearDown(() {
+            if (!finish.isCompleted) finish.complete('Grace');
+          });
+          final running = prefs.reload((_, _) {
+            started.complete();
+            return finish.future;
+          });
+          await started.future;
+          final clear = expectLater(prefs.clear(), throwsStateError);
+          final pending = expectLater(prefs.reload(), throwsStateError);
+          await _flushEvents();
+          expect(await prefs.getString('name'), 'Ada');
+
+          await prefs.dispose();
+          await Future.wait([clear, pending]);
+          await output.done;
+          final logCount = logger.events.length;
+          finish.complete('Grace');
+          expect(await running, {'name': 'Grace'});
+          await _flushEvents();
+          expect(logger.events, hasLength(logCount));
+          expect(logger.events.whereType<ReloadSuccessEvent>(), isEmpty);
+        },
+      );
+
       test('shares a queue with clear', () async {
         final started = Completer<void>();
         final finish = Completer<Map<String, Object?>>();

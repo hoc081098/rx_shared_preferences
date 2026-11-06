@@ -4,6 +4,7 @@ import 'package:rx_storage/rx_storage.dart';
 
 import '../interface/shared_preferences_like.dart';
 import '../utils/identity.dart';
+import 'decode_entries.dart';
 
 /// Wraps a preferences adapter and tracks keys for reload notifications.
 ///
@@ -14,8 +15,8 @@ import '../utils/identity.dart';
 /// Reads remember raw keys even if decoding fails. Writes change tracking only
 /// after persistence succeeds, using the encoded value to identify removals.
 ///
-/// [reload] owns key collection and reconciliation together. It returns raw
-/// values and removed keys; the reactive wrapper publishes the notifications.
+/// [reload] owns key collection, decoding and reconciliation together. It returns
+/// values and removed keys for the reactive wrapper to publish.
 final class KeyTrackingSharedPreferences implements Storage<String, void> {
   final SharedPreferencesLike _delegate;
   final _knownKeys = <String>{};
@@ -101,15 +102,19 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
   Future<void> clear([void options]) =>
       _delegate.clear(options).then((_) => _knownKeys.clear());
 
-  /// Reloads raw values and reports keys removed since earlier operations.
+  /// Reloads values and reports keys removed since earlier operations.
   ///
   /// Read cached keys into the live tracked set first. Reads that complete during
-  /// either await add keys; successful local removals delete keys. Reconcile
-  /// only after reload succeeds, without another await between diff and reset.
-  Future<({Map<String, Object?> values, Set<String> removedKeys})>
-  reload() async {
+  /// the awaits add keys, while successful local removals delete keys. Reconcile
+  /// only after reload and decoding succeed, without another await between diff
+  /// and reset. Failed decoding retains removed keys for the next reload.
+  Future<({Map<String, Object?> values, Set<String> removedKeys})> reload([
+    EntryDecoder<String>? decoder,
+  ]) async {
     await readAll(identityEntryDecoder);
-    final values = await _delegate.reload();
+    final values = decoder == null
+        ? await _delegate.reload()
+        : await readAllDecoded(_delegate.reload, decoder);
     final currentKeys = values.keys.toSet();
     final removedKeys = _knownKeys.difference(currentKeys);
     _knownKeys

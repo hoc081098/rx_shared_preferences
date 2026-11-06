@@ -250,6 +250,134 @@ void main() {
       });
 
       group('reload', () {
+        test('does not decode an empty snapshot or removed keys', () async {
+          final output = expectStreamEvents(prefs.getStringStream('name'), [
+            'Ada',
+            null,
+          ]);
+          await output.firstEvent;
+          await fixture.replaceExternal({});
+          expect(
+            await prefs.reload((_, _) => fail('No entries to decode')),
+            isEmpty,
+          );
+          await prefs.dispose();
+          await output.done;
+        });
+
+        test(
+          'waits for async decoding before publishing the snapshot',
+          () async {
+            final seenCounts = <int?>[];
+            final count = expectStreamEvents(
+              prefs.getIntStream('count').map((value) {
+                seenCounts.add(value);
+                return value;
+              }),
+              [1, 2],
+            );
+            final seenNames = <String?>[];
+            final name = expectStreamEvents(
+              prefs.getStringStream('name').map((value) {
+                seenNames.add(value);
+                return value;
+              }),
+              ['Ada', 'Grace'],
+            );
+            await Future.wait([count.firstEvent, name.firstEvent]);
+            await fixture.replaceExternal({
+              'count': '2',
+              'name': 'Grace',
+              'tags': ['two'],
+            });
+            final started = Completer<void>();
+            final finish = Completer<Object?>();
+            addTearDown(() {
+              if (!finish.isCompleted) finish.complete(2);
+            });
+            final decodedKeys = <String>[];
+            final reload = prefs.reload((key, raw) {
+              decodedKeys.add(key);
+              if (key == 'count') {
+                started.complete();
+                return finish.future;
+              }
+              return key == 'tags' ? null : raw;
+            });
+            await started.future;
+            await _flushEvents();
+            expect(decodedKeys, unorderedEquals(['count', 'name', 'tags']));
+            expect(seenCounts, [1]);
+            expect(seenNames, ['Ada']);
+
+            finish.complete(2);
+            expect(await reload, {'count': 2, 'name': 'Grace', 'tags': null});
+            await prefs.dispose();
+            await Future.wait([count.done, name.done]);
+          },
+        );
+
+        test(
+          'preserves removed keys when decoding fails before retry',
+          () async {
+            final seenCounts = <int?>[];
+            final count = expectStreamEvents(
+              prefs.getIntStream('count').map((value) {
+                seenCounts.add(value);
+                return value;
+              }),
+              [1, 2],
+            );
+            final seenNames = <String?>[];
+            final name = expectStreamEvents(
+              prefs.getStringStream('name').map((value) {
+                seenNames.add(value);
+                return value;
+              }),
+              ['Ada', null],
+            );
+            await Future.wait([count.firstEvent, name.firstEvent]);
+            await fixture.replaceExternal({'count': 2, 'bad': 'invalid'});
+            final failure = StateError('Cannot decode bad');
+
+            await expectLater(
+              prefs.reload((key, raw) {
+                if (key == 'bad') throw failure;
+                return raw;
+              }),
+              throwsA(same(failure)),
+            );
+            await _flushEvents();
+            expect(seenCounts, [1]);
+            expect(seenNames, ['Ada']);
+
+            expect(
+              await prefs.reload((key, raw) => key == 'bad' ? null : raw),
+              {'count': 2, 'bad': null},
+            );
+            await prefs.dispose();
+            await Future.wait([count.done, name.done]);
+          },
+        );
+
+        test('decodes values before notifying a custom key stream', () async {
+          await prefs.clear();
+          await prefs.write<int>('encoded', 1, (value) => value?.toString());
+          int? decode(Object? raw) =>
+              raw == null ? null : int.parse(raw as String);
+          final output = expectStreamEvents(
+            prefs.observe<int>('encoded', decode),
+            [1, 2],
+          );
+          await output.firstEvent;
+
+          await fixture.replaceExternal({'encoded': '2'});
+          expect(await prefs.reload((_, raw) => decode(raw)), {'encoded': 2});
+
+          await prefs.dispose();
+          await output.done;
+        });
+
         test(
           'notifies key, keys and bulk streams of external changes',
           () async {
@@ -298,6 +426,55 @@ void main() {
 
         for (final asynchronous in [false, true]) {
           group('${asynchronous ? 'async' : 'sync'} codecs', () {
+            test(
+              'reports reload errors before other decoders finish',
+              () async {
+                final output = expectStreamEvents(
+                  prefs.getStringStream('name'),
+                  [
+                    'Ada',
+                    'Grace',
+                  ],
+                );
+                await output.firstEvent;
+                await fixture.replaceExternal({'count': 2, 'name': 'Grace'});
+                final pending = Completer<Object?>();
+                final failure = StateError('Cannot decode name');
+                final stackTrace = StackTrace.current;
+                Object? observedError;
+                StackTrace? observedStackTrace;
+                final handled = prefs
+                    .reload((key, raw) {
+                      if (key == 'count') return pending.future;
+                      if (asynchronous) {
+                        return Future<Object?>.error(failure, stackTrace);
+                      }
+                      Error.throwWithStackTrace(failure, stackTrace);
+                    })
+                    .then<void>(
+                      (_) => fail('Failed decoding must not return a map'),
+                      onError: (Object error, StackTrace trace) {
+                        observedError = error;
+                        observedStackTrace = trace;
+                      },
+                    );
+                try {
+                  await _flushEvents();
+                  expect(observedError, same(failure));
+                  expect(observedStackTrace.toString(), stackTrace.toString());
+                  expect(pending.isCompleted, isFalse);
+                  // Retry can run while the earlier decoder is still pending.
+                  expect(await prefs.reload(), {'count': 2, 'name': 'Grace'});
+                } finally {
+                  pending.completeError(StateError('Late decoder failure'));
+                  await handled;
+                  await _flushEvents();
+                }
+                await prefs.dispose();
+                await output.done;
+              },
+            );
+
             test('encoder errors preserve existing and missing keys', () async {
               await prefs.clear();
               await prefs.setString('name', 'Ada');

@@ -107,6 +107,36 @@ abstract interface class RxSharedPreferences
   );
 
   //////////////////////////////////////////////////////////////////////////////
+  // Reload
+  //////////////////////////////////////////////////////////////////////////////
+
+  /// Refreshes storage and returns the snapshot used to notify key streams.
+  ///
+  /// Without [decoder], the returned map and notifications contain raw values.
+  /// Otherwise, [decoder] converts each `(key, raw)` entry to its logical value,
+  /// synchronously or asynchronously. Use the same logical type for each key as
+  /// its writes and key streams. Per-key [observe] decoders are not reapplied to
+  /// reload notifications.
+  ///
+  /// Entries are captured before invoking decoders, which may run concurrently.
+  /// A decoded `null` retains its key in the returned map. Keys removed since
+  /// earlier reads or writes through this wrapper emit `null` on their key
+  /// streams and are not passed to [decoder].
+  ///
+  /// Notifications are published only after all entries decode successfully.
+  /// The first decoder error completes the future with that error while other
+  /// decoders keep running. No reload notifications are published on failure,
+  /// and removed keys remain tracked for retry. The underlying cache may already
+  /// have refreshed and is not rolled back.
+  ///
+  /// Reloads run in order with [clear], while per-key writes may interleave.
+  /// A reload snapshot can therefore notify streams after a newer local write.
+  /// A decoder must not await [reload] or [clear] on this same instance because
+  /// those operations wait for the current reload to finish.
+  @override
+  Future<Map<String, Object?>> reload([EntryDecoder<String>? decoder]);
+
+  //////////////////////////////////////////////////////////////////////////////
   // Legacy API
   //////////////////////////////////////////////////////////////////////////////
 

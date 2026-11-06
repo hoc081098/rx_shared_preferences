@@ -82,6 +82,12 @@ Future<void> main() async {
     );
     print('Raw: $raw');
     print('Decoded: $decoded');
+
+    // Reload notifications must use the same logical types as key streams.
+    final refreshed = await rxPrefs.reload(
+      (key, raw) => key == userKey ? toUserOrNull(raw) : raw,
+    );
+    print('Reloaded: $refreshed');
   } finally {
     await subscriptions.dispose();
     await rxPrefs.dispose();
