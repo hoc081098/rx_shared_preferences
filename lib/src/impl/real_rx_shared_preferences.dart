@@ -23,12 +23,12 @@ final class RealRxSharedPreferences
        );
 
   @override
-  Future<Map<String, Object?>> reload() {
+  Future<Map<String, Object?>> reload([EntryDecoder<String>? decoder]) {
     // Upstream maps null to this wrapper instance, sharing clear()'s queue.
     // Per-key writes and updates use separate queues.
     return enqueueWritingTask(null, () async {
       final result = await useStorageWithHandlers(
-        (s) => s.reload(),
+        (s) => s.reload(decoder),
         (result, _) {
           sendChange({
             for (final entry in result.values.entries)

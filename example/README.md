@@ -32,7 +32,16 @@ storage logging disabled because those events include stored values.
 The adapter accepts encoded strings and treats encoded nulls as removals. Use
 the string helpers, or generic `read`/`write`/`observe`/`update` methods with codecs
 that convert values to and from strings. Direct changes through
-`FlutterSecureStorage` need `rxPrefs.reload()` to notify streams.
+`FlutterSecureStorage` need `rxPrefs.reload()` to notify string-valued key streams.
+If a key stream uses a logical type such as `int`, pass a matching entry decoder:
+
+```dart
+await rxPrefs.reload(
+  (key, raw) => key == 'encoded_count' && raw is String ? int.parse(raw) : raw,
+);
+```
+
+The [API snippets](lib/snippet.dart) also show reload decoding for a custom `User`.
 
 Run the adapter and reactive integration tests with the plugin's in-memory store:
 

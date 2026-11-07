@@ -15,11 +15,16 @@
     -   Factories: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
 
 -   Add `RxSharedPreferences.custom` to wrap a `SharedPreferencesLike` adapter or its initialization future.
+-   Add an optional entry decoder to `RxSharedPreferences.reload` for custom codecs.
+    The returned map and key notifications use decoded values. Failed decoding
+    publishes no reload notifications and preserves removed keys for retry.
 -   Add a `flutter_secure_storage` adapter example with string encoding and reactive reload support.
 -   Deprecate the unnamed legacy constructor, `getInstance()`, and the legacy `.rx` extension; they keep using the legacy `SharedPreferences` storage.
 
 -   **Breaking changes**:
     -   `readAll` and `observeAll` require an `EntryDecoder<String>` supporting sync and async decoding.
+    -   Custom `RxSharedPreferences` implementations must accept the optional
+        entry decoder in `reload`. `SharedPreferencesLike.reload()` stays raw.
     -   Remove `executeUpdate*`; use `update*`. Generic `update` uses named arguments.
     -   Contracts are interfaces, the default logger is `base`, and the empty logger
         and reload events are `final`. Re-exported `rx_storage` types also enforce Dart 3 modifiers.

@@ -21,8 +21,12 @@ class User {
   Map<String, dynamic> toJson() => {'id': id, 'username': username};
 }
 
-final toUserOrNull = (Object? s) =>
+User? toUserOrNull(Object? s) =>
     s == null ? null : User.fromJson(jsonDecode(s as String));
+
+Object? decodeEntry(String key, Object? raw) =>
+    key == userKey ? toUserOrNull(raw) : raw;
+
 const idsKey = 'ids';
 const userKey = 'user';
 
@@ -49,7 +53,7 @@ Future<void> main() async {
       .listen((values) => print('Raw: $values'))
       .addTo(subscriptions);
   rxPrefs
-      .observeAll((key, raw) => key == userKey ? toUserOrNull(raw) : raw)
+      .observeAll(decodeEntry)
       .listen((values) => print('Decoded: $values'))
       .addTo(subscriptions);
 
@@ -77,11 +81,13 @@ Future<void> main() async {
 
     // Read all entries with an identity or key-specific decoder.
     final raw = await rxPrefs.readAll((_, raw) => raw);
-    final decoded = await rxPrefs.readAll(
-      (key, raw) => key == userKey ? toUserOrNull(raw) : raw,
-    );
+    final decoded = await rxPrefs.readAll(decodeEntry);
     print('Raw: $raw');
     print('Decoded: $decoded');
+
+    // Reload notifications must use the same logical types as key streams.
+    final refreshed = await rxPrefs.reload(decodeEntry);
+    print('Reloaded: $refreshed');
   } finally {
     await subscriptions.dispose();
     await rxPrefs.dispose();

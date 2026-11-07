@@ -271,7 +271,7 @@ through the wrapper. Transformers can return a value or a `Future`.
   Future<String?>              getString(String key);
   Future<List<String>?>        getStringList(String key);
 
-  Future<Map<String, Object?>> reload();
+  Future<Map<String, Object?>> reload([EntryDecoder<String>? decoder]);
   Future<void>                 setBool(String key, bool? value);
   Future<void>                 setDouble(String key, double? value);
   Future<void>                 setInt(String key, int? value);
@@ -312,6 +312,27 @@ errors in `observeAll`, which keeps listening for later changes.
 
 Call `reload()` to refresh raw values and notify streams of external changes.
 Removed keys emit `null` on their key streams.
+
+If key streams use custom codecs, pass an entry decoder to `reload` so its
+returned map and key notifications use the same logical values:
+
+```dart
+final values = await rxPrefs.reload(
+  (key, raw) => key == 'encoded_count' && raw is String ? int.parse(raw) : raw,
+);
+```
+
+Keep each key's logical type consistent across writes, key streams and reload
+decoding. Per-key stream decoders are only used for their initial reads.
+Reload decoders may run concurrently. Notifications are published only after
+every entry succeeds. A decoder error fails the future immediately and keeps
+removed keys tracked for retry, while other decoders continue running. The
+underlying cache may already have refreshed.
+
+Reloads run in order with `clear`, but per-key writes can interleave and a reload
+may publish an older snapshot after a newer write. A reload decoder must not
+await `reload` or `clear` on the same instance because they would wait for the
+current reload to finish.
 
 ### 7. Dispose
 
