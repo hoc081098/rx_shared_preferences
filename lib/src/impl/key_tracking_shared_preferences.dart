@@ -112,10 +112,12 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
     EntryDecoder<String>? decoder,
   ]) async {
     await readAll(identityEntryDecoder);
+
     final values = decoder == null
         ? await _delegate.reload()
         : await readAllDecoded(_delegate.reload, decoder);
     final currentKeys = values.keys.toSet();
+
     final removedKeys = _knownKeys.difference(currentKeys);
     _knownKeys
       ..clear()
