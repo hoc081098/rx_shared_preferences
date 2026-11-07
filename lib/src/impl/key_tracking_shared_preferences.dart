@@ -104,10 +104,9 @@ final class KeyTrackingSharedPreferences implements Storage<String, void> {
 
   /// Reloads values and reports keys removed since earlier operations.
   ///
-  /// Read cached keys into the live tracked set first. Reads that complete during
-  /// the awaits add keys, while successful local removals delete keys. Reconcile
-  /// only after reload and decoding succeed, without another await between diff
-  /// and reset. Failed decoding retains removed keys for the next reload.
+  /// Collect cached keys first. Reads and successful removals update tracking
+  /// during awaits. Once reload and decoding succeed, find removed keys and reset
+  /// tracking without another await. Failures preserve tracking for retry.
   Future<({Map<String, Object?> values, Set<String> removedKeys})> reload([
     EntryDecoder<String>? decoder,
   ]) async {
