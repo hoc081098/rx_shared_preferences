@@ -5,35 +5,50 @@
     -   `rx_storage` to `^4.0.0`.
     -   `rxdart_ext` to `^0.4.0` in the example.
 
--   Change `Flutter` constraint to `'>=3.35.0'`.
--   Change `Dart SDK` constraint to `'>=3.9.0 <4.0.0'`.
+-   Update SDK constraints:
+    -   Flutter: `>=3.35.0`.
+    -   Dart: `>=3.9.0 <4.0.0`.
 
--   Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`:
-    -   Default singletons: `getAsyncInstance` and `getCachedInstance`.
-        Both support platform-specific options. The cached singleton
+-   **Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`**:
+    -   **Default singletons**: `getAsyncInstance` and `getCachedInstance`.
+        Both accept platform-specific options. The cached singleton
         requires `cacheOptions` and accepts an optional mutable `cache` map.
-    -   Factories: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
+    -   **Factories**: `RxSharedPreferences.async` and `RxSharedPreferences.cached`.
 
--   Add `RxSharedPreferences.custom` to wrap a `SharedPreferencesLike` adapter or its initialization future.
--   Add an optional entry decoder to `RxSharedPreferences.reload` for custom codecs.
-    The returned map and key notifications use decoded values. Failed decoding
-    publishes no reload notifications and preserves removed keys for retry.
--   Add a `flutter_secure_storage` adapter example with string encoding and reactive reload support.
--   Deprecate the unnamed legacy constructor, `getInstance()`, and the legacy `.rx` extension; they keep using the legacy `SharedPreferences` storage.
+-   **Add `RxSharedPreferences.custom`** to wrap a `SharedPreferencesLike` adapter
+    or its initialization future.
+
+-   **Add an optional entry decoder to `RxSharedPreferences.reload`** for custom codecs.
+    With a decoder, the returned map and per-key stream notifications use decoded
+    values. If decoding fails, no reload notifications are emitted. A later
+    successful reload still notifies key streams of removed keys with `null`.
+
+-   **Deprecate the unnamed legacy constructor**, `getInstance()`, and the legacy
+    `.rx` extension. These entry points remain available and keep using legacy
+    `SharedPreferences` storage.
 
 -   **Breaking changes**:
-    -   `readAll` and `observeAll` require an `EntryDecoder<String>` supporting sync and async decoding.
-    -   Custom `RxSharedPreferences` implementations must accept the optional
-        entry decoder in `reload`. `SharedPreferencesLike.reload()` stays raw.
-    -   Remove `executeUpdate*`; use `update*`. Generic `update` uses named arguments.
-    -   Contracts are interfaces, the default logger is `base`, and the empty logger
-        and reload events are `final`. Re-exported `rx_storage` types also enforce Dart 3 modifiers.
+    -   `readAll` and `observeAll` require an `EntryDecoder<String>` that supports
+        synchronous and asynchronous decoding.
+    -   Custom `RxSharedPreferences` implementations must support
+        `reload([EntryDecoder<String>? decoder])`. `SharedPreferencesLike.reload()`
+        continues to return raw values.
+    -   Remove `executeUpdate*` methods. Use `update*` instead. Generic `update`
+        now uses named arguments.
+    -   `SharedPreferencesLike`, `RxSharedPreferences`, and
+        `RxSharedPreferencesLogger` are now interfaces. The default logger is
+        `base`, while the empty logger and reload events are `final`.
+        Re-exported `rx_storage` types also enforce Dart 3 class modifiers.
 
--   Fixes:
+-   **Fixes**:
     -   `reload()` now emits `null` on key streams for externally removed keys.
-    -   Queued mutations and reloads now fail with `StateError` on disposal.
+    -   Queued mutations and reloads now fail with `StateError` when the wrapper
+        is disposed.
 
--   Update docs and examples. See the [5.0.0 migration guide](MIGRATION.md).
+-   **Add a `flutter_secure_storage` adapter example** demonstrating string
+    encoding and reload notifications.
+
+-   **Update docs and examples**. See the [5.0.0 migration guide](MIGRATION.md).
 
 ## 4.0.0 - Jul 20, 2024
 
