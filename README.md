@@ -204,7 +204,7 @@ await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] w
 ```
 
 -   Writes notify streams belonging to the same `RxSharedPreferences` instance.
-    Call `reload()` to notify listeners of changes made elsewhere.
+    Use [`reload`](#6-read-observe-and-reload-entries) for changes made elsewhere.
 
 -   In a Flutter app, you can:
     -   Create a global `RxSharedPreferences` instance.
@@ -291,48 +291,38 @@ through the wrapper. Transformers can return a value or a `Future`.
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder, [void options]);
 ```
 
-### 6. Read and observe all entries
+### 6. Read, observe, and reload entries
 
-Pass a `(key, raw)` decoder to `readAll` and `observeAll`. It can return a value
-or a `Future`:
+`readAll` and `observeAll` take a `(key, raw)` decoder that can return a value
+or a `Future`. Use `(_, raw) => raw` for raw values. `observeAll` emits an
+initial snapshot and rereads when the wrapper notifies streams.
 
-```dart
-final raw = await rxPrefs.readAll((_, raw) => raw);
-final changes = rxPrefs.observeAll((_, raw) => raw);
-final decoded = await rxPrefs.readAll(
-  (key, raw) => key == 'name' && raw is String ? raw.toUpperCase() : raw,
-);
-```
-
-`observeAll` emits an initial map and rereads after changes through the same
-wrapper. Decoder results of `null` retain their keys in the map. Removed keys
-are omitted.
-Read or decoder failures complete `readAll` with an error or become stream
-errors in `observeAll`, which keeps listening for later changes.
-
-Call `reload()` to refresh raw values and notify streams of external changes.
-Removed keys emit `null` on their key streams.
-
-If key streams use custom codecs, pass an entry decoder to `reload` so its
-returned map and key notifications use the same logical values:
+`reload()` returns raw values and notifies streams of external changes. If
+key streams expect decoded values, reuse the entry decoder from bulk reads:
 
 ```dart
-final values = await rxPrefs.reload(
-  (key, raw) => key == 'encoded_count' && raw is String ? int.parse(raw) : raw,
-);
+Object? decodeEntry(String key, Object? raw) =>
+    key == 'encoded_count' && raw is String ? int.parse(raw) : raw;
+
+final decoded = await rxPrefs.readAll(decodeEntry);
+final decodedChanges = rxPrefs.observeAll(decodeEntry);
+final refreshed = await rxPrefs.reload(decodeEntry);
 ```
 
-Keep each key's logical type consistent across writes, key streams and reload
-decoding. Per-key stream decoders are only used for their initial reads.
-Reload decoders may run concurrently. Notifications are published only after
-every entry succeeds. A decoder error fails the future immediately and keeps
-removed keys tracked for retry, while other decoders continue running. The
-underlying cache may already have refreshed.
+`reload` sends its returned map values directly to key streams. Match the
+types used in writes and `observe`, whose decoder runs only on the initial
+read. Decoded `null` values keep their keys. Removed keys skip decoding and
+are omitted. Reload emits `null` for removed keys the wrapper knew about.
 
-Reloads run in order with `clear`, but per-key writes can interleave and a reload
-may publish an older snapshot after a newer write. A reload decoder must not
-await `reload` or `clear` on the same instance because they would wait for the
-current reload to finish.
+Read or decoder errors fail `readAll` or become error events in `observeAll`,
+which keeps listening. Reload can run decoders concurrently and only notifies
+streams after all entries decode successfully. The first error fails the
+future while other decoders keep running. The cache may already have refreshed.
+A later successful reload still reports removals.
+
+`reload` shares a queue with `clear`, so its decoder must not await either on
+the same instance. Per-key writes can interleave, so reload may publish an
+older snapshot after a newer write.
 
 ### 7. Dispose
 

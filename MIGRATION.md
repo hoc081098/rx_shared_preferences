@@ -2,19 +2,15 @@
 
 ## Update SDK and dependencies
 
-Version 5.0.0 requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`, and uses
-`rx_storage ^4.0.0`. Set `rx_shared_preferences: ^5.0.0` in `pubspec.yaml`, then
-run `flutter pub get`. If your app depends directly on `rxdart_ext`, update it
-to `^0.4.0` too.
+Version 5.0.0 requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`. It uses
+`rx_storage ^4.0.0`. Set `rx_shared_preferences: ^5.0.0` in `pubspec.yaml` and
+update any direct `rxdart_ext` dependency to `^0.4.0`. Then run `flutter pub get`.
 
 ## Choose your storage
 
-The unnamed `RxSharedPreferences(...)` constructor, `getInstance()`, and the
-legacy `.rx` extension are deprecated. They remain available and keep using
-legacy `SharedPreferences` storage.
-
-When adopting the new storage types, choose an entry point that matches how
-your app shares the wrapper:
+The unnamed constructor, `getInstance()`, and `.rx` are deprecated and still
+use legacy `SharedPreferences` storage. If you switch to async or cached storage,
+choose an entry point based on how you share the wrapper:
 
 | Existing entry point | Entry point for new code |
 | --- | --- |
@@ -22,45 +18,57 @@ your app shares the wrapper:
 | `RxSharedPreferences.getInstance()` | `getAsyncInstance()` or `getCachedInstance(cacheOptions: ...)` |
 | `sharedPreferences.rx` | Create an async or cached wrapper and share it explicitly |
 
-Create `SharedPreferencesAsync` for `.async` or `SharedPreferencesWithCache` for
-`.cached`. All wrappers still return `Future`s from reads, including cached reads.
-The [README](README.md#1-import-and-instantiate) covers construction, platform
-options, cache configuration and logging.
+Wrap `SharedPreferencesAsync` with `.async` and `SharedPreferencesWithCache`
+with `.cached`. Reads through either wrapper return `Future`s. See the
+[README](README.md#1-import-and-instantiate) for options, caching and logging.
 
-On Android, adopting `SharedPreferencesAsync` or `SharedPreferencesWithCache`
-can change the underlying storage from SharedPreferences to DataStore
-Preferences. Migrate existing values with the plugin's
+On Android, async and cached storage can use DataStore Preferences. Migrate
+existing values with the plugin's
 [data migration utility](https://pub.dev/packages/shared_preferences#migrating-from-sharedpreferences-to-sharedpreferencesasyncwithcache)
-before switching your app to the new storage.
+before switching from legacy storage.
 
-## Pass a decoder to bulk reads and streams
+## Decode bulk reads and reloads
 
-Replace calls to `readAll()` and `observeAll()` with an entry decoder. To keep
-stored representations, use an identity decoder:
+`readAll` and `observeAll` now require an `EntryDecoder<String>`. It receives
+`(key, raw)` and can return a value or a `Future`. Use `(_, raw) => raw` to keep
+raw values.
+
+`observeAll` decodes each snapshot, including the first. It emits read or decoder
+errors and keeps listening.
+
+`reload()` still returns raw values and notifies streams of external changes.
+When key streams expect decoded values, reuse the entry decoder from bulk reads:
 
 ```dart
-final raw = await rxPrefs.readAll((_, raw) => raw);
-final changes = rxPrefs.observeAll((_, raw) => raw);
+Object? decodeEntry(String key, Object? raw) =>
+    key == 'encoded_count' && raw is String ? int.parse(raw) : raw;
+
+final decoded = await rxPrefs.readAll(decodeEntry);
+final decodedChanges = rxPrefs.observeAll(decodeEntry);
+final refreshed = await rxPrefs.reload(decodeEntry);
 ```
 
-`EntryDecoder<String>` receives `(key, raw)` and can return a value or a `Future`.
-It applies to every entry, including the initial `observeAll` snapshot. A decoded
-`null` retains its key; removed entries are omitted. Bulk stream errors are
-emitted as error events, and the stream keeps listening for later changes.
+`reload` sends the map values directly to key streams, so match the types used
+by writes and `observe`. A per-key `observe` decoder runs only on the initial
+read.
 
-Custom `SharedPreferencesLike` adapters must implement this decoding contract
-in `readAll`. Custom `RxSharedPreferences` implementations must also support it
-in `observeAll`.
+Decoding to `null` keeps the key in the map. Removed keys skip decoding and are
+omitted. Reload emits `null` for previously known keys that are now missing,
+including on async storage.
+
+`reload` fails on the first decoder error and emits no notifications. Other
+decoders keep running, and the cache may already have refreshed. A later
+successful reload still reports removals.
 
 ## Replace removed update methods
 
-Replace typed `executeUpdate*` helpers with their `update*` equivalents:
+Use `update*` in place of typed `executeUpdate*` helpers:
 
 ```dart
 await rxPrefs.updateInt('count', (current) => (current ?? 0) + 1);
 ```
 
-Replace generic `executeUpdate` with `update`, using named arguments:
+The generic `update` replaces `executeUpdate` and takes named arguments:
 
 ```dart
 await rxPrefs.update<int>(
@@ -75,53 +83,30 @@ Transformers can return a value or a `Future`. Updates remain experimental.
 
 ## Adapt custom implementations
 
-Version 5.0.0 uses Dart class modifiers for its public contracts:
+In custom `SharedPreferencesLike` adapters, accept an entry decoder in `readAll`
+and keep `reload()` raw. Custom `RxSharedPreferences` implementations also need
+a decoder in `observeAll` and the signature `reload([EntryDecoder<String>? decoder])`.
+
+Dart 3 class modifiers also affect custom implementations:
 
 - Use `implements` for `SharedPreferencesLike`, `RxSharedPreferences`, and
-  `RxSharedPreferencesLogger`; each is an `abstract interface class`.
+  `RxSharedPreferencesLogger`. Each is an `abstract interface class`.
 - Extend `RxSharedPreferencesDefaultLogger` with a `base`, `final`, or `sealed`
   subclass, or implement `RxSharedPreferencesLogger` for custom logging.
 - `RxSharedPreferencesEmptyLogger`, `ReloadSuccessEvent`, and
   `ReloadFailureEvent` are `final` and cannot be extended or implemented.
 - Re-exported `rx_storage` types also enforce Dart 3 class modifiers.
 
-A custom storage adapter can be passed directly, or as an initialization future,
-to `RxSharedPreferences.custom`. See the
-[custom implementation guide](README.md#8-custom-implementations-and-loggers)
+Pass the adapter or its initialization future to `RxSharedPreferences.custom`.
+See the [custom implementation guide](README.md#8-custom-implementations-and-loggers)
 for an adapter example and logger setup.
 
-## Account for reload and disposal behavior
+## Manage reload and disposal
 
-`reload()` returns raw stored values and notifies streams of external changes.
-Key streams now emit `null` for entries removed since earlier reads or writes
-through the wrapper, including when using async storage.
+`reload` shares a queue with `clear`, so its decoder must not await either
+operation on the same instance. Per-key writes can interleave with reload.
 
-For custom codecs, pass an optional entry decoder so the returned map and key
-notifications contain logical values:
-
-```dart
-final values = await rxPrefs.reload(
-  (key, raw) => key == 'encoded_count' && raw is String ? int.parse(raw) : raw,
-);
-```
-
-Use the same logical type for each key in writes, key streams and reload
-decoding. Reload notifications do not run per-key stream decoders again.
-Decoded nulls retain their keys in the map. Removed keys emit `null` without
-being passed to the decoder.
-
-Decoder failures publish no reload notifications and preserve removed keys for
-retry. The first error fails the future immediately, while other decoders keep
-running. Underlying caches may already have refreshed. Reloads share a queue
-with `clear`, while per-key writes may interleave. A reload decoder must not
-await `reload` or `clear` on the same instance.
-
-Custom classes implementing `RxSharedPreferences` must update their signature
-to `reload([EntryDecoder<String>? decoder])`. Custom `SharedPreferencesLike`
-adapters keep their existing raw `reload()` contract.
-
-Await required writes before calling `dispose()`. Disposal closes streams and
-rejects new or queued mutations and reloads with `StateError`. Mutations and
-reloads already running may finish without further notifications or logs.
-Disposing a default singleton lets its factory create a new instance on the next
-call.
+Await required writes before `dispose()`. Disposal closes streams and rejects
+new or queued mutations and reloads with `StateError`. Running work can finish
+without further notifications or logs. The next factory call after disposing a
+default singleton creates a new instance.
