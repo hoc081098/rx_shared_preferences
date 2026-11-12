@@ -1,7 +1,7 @@
 import 'package:example/home.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_provider/flutter_provider.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 void main() {
