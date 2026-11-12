@@ -33,10 +33,13 @@
     -   Storage and logger contracts are interfaces. The default logger is
         `base`, and the empty logger and reload events are `final`. Re-exported
         `rx_storage` types also use Dart 3 class modifiers.
+    -   Stop exporting the internal `legacyRxSharedPreferencesApi` marker.
 
 -   **Reject queued mutations and reloads** with `StateError` on disposal.
 
 -   **Update docs and examples**:
+    -   Fix README links in generated API documentation and clarify custom codec
+        write notifications.
     -   Add a `flutter_secure_storage` adapter for `RxSharedPreferences.custom`.
         See the [5.0.0 migration guide](MIGRATION.md).
     -   Update the example for Flutter 3.50 with `material_ui` and a compatible

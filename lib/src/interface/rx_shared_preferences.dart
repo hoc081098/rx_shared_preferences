@@ -16,9 +16,15 @@ class _LegacyRxSharedPreferencesApi {
 }
 
 /// This is used to mark legacy API methods in the `RxSharedPreferences` class.
+///
+/// @nodoc
 const legacyRxSharedPreferencesApi = _LegacyRxSharedPreferencesApi();
 
 /// Get [Stream]s by key from persistent storage.
+///
+/// After a successful [write], existing key streams emit the original input.
+/// The encoder controls the stored value. An encoded `null` removes the key,
+/// but the write notification still carries the input value.
 ///
 /// Implement this contract to provide a custom reactive implementation.
 abstract interface class RxSharedPreferences

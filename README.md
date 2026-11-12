@@ -54,7 +54,7 @@ Since version `1.3.4`, this package is an extension of [rx_storage](https://gith
 ## Getting Started
 
 Requires Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
-Upgrading from 4.x? See the [5.0.0 migration guide](MIGRATION.md).
+Upgrading from 4.x? See the [5.0.0 migration guide](https://github.com/hoc081098/rx_shared_preferences/blob/master/MIGRATION.md).
 
 In your Flutter project, add the dependency to your `pubspec.yaml`:
 
@@ -214,7 +214,7 @@ await rxPrefs.setStringList('KEY_LIST', ['Cool']);                      // [*] w
 
     -   Provide one `RxSharedPreferences` instance to widgets through
         `InheritedWidget`/`Provider` (recommended). Create it in `main`, as shown
-        in [example/main](example/lib/main.dart).
+        in [example/main](https://github.com/hoc081098/rx_shared_preferences/blob/master/example/lib/main.dart).
 
 ```dart
 // Different wrappers do not share stream notifications.
@@ -291,6 +291,10 @@ through the wrapper. Transformers can return a value or a `Future`.
   Future<void>                 write<T extends Object>(String key, T? value, Encoder<T?> encoder, [void options]);
 ```
 
+For custom codecs, the encoder controls the stored value. An encoded `null`
+removes the key. After a successful write, existing key streams emit the original
+input value, even when encoding removes the key or stores a different value.
+
 ### 6. Read, observe, and reload entries
 
 `readAll` and `observeAll` take a `(key, raw)` decoder that can return a value
@@ -343,10 +347,10 @@ adapter or its initialization future to `RxSharedPreferences.custom`:
 final rxPrefs = RxSharedPreferences.custom(adapter);
 ```
 
-See the [flutter_secure_storage example](example/lib/flutter_secure_storage_snippet.dart)
+See the [flutter_secure_storage example](https://github.com/hoc081098/rx_shared_preferences/blob/master/example/lib/flutter_secure_storage_snippet.dart)
 for string-only storage. Use string helpers with that adapter, or generic APIs
 with codecs that convert values to and from strings. Add the plugin separately
-and follow the [example setup](example/README.md) for platform and SDK requirements.
+and follow the [example setup](https://github.com/hoc081098/rx_shared_preferences/blob/master/example/README.md) for platform and SDK requirements.
 Keep value logging disabled when storing secrets.
 
 To reuse default logging, extend `RxSharedPreferencesDefaultLogger` with a
