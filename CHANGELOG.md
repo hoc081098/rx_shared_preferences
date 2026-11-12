@@ -7,10 +7,6 @@
 
 -   Require Flutter `>=3.35.0` and Dart `>=3.9.0 <4.0.0`.
 
--   Update the example for Flutter 3.50 with `material_ui` and a compatible
-    Android toolchain. The example requires Flutter `>=3.47.0` and Dart
-    `>=3.13.0 <4.0.0`.
-
 -   **Add support for `SharedPreferencesAsync` and `SharedPreferencesWithCache`**:
     -   **Default singletons**: `getAsyncInstance` and `getCachedInstance`.
         Both accept platform-specific options. The cached singleton
@@ -40,8 +36,12 @@
 
 -   **Reject queued mutations and reloads** with `StateError` on disposal.
 
--   **Update docs and examples**, including a `flutter_secure_storage` adapter
-    for `RxSharedPreferences.custom`. See the [5.0.0 migration guide](MIGRATION.md).
+-   **Update docs and examples**:
+    -   Add a `flutter_secure_storage` adapter for `RxSharedPreferences.custom`.
+        See the [5.0.0 migration guide](MIGRATION.md).
+    -   Update the example for Flutter 3.50 with `material_ui` and a compatible
+        Android toolchain. The example requires Flutter `>=3.47.0` and Dart
+        `>=3.13.0 <4.0.0`.
 
 ## 4.0.0 - Jul 20, 2024
 
