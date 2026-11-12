@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:example/dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_provider/flutter_provider.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 import 'package:rxdart_ext/rxdart_ext.dart';
 

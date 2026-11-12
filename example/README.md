@@ -1,8 +1,12 @@
 # RxSharedPreferences examples
 
-Requires Flutter `>=3.38.4` and Dart `>=3.10.3 <4.0.0` for the example's
+Requires Flutter `>=3.47.0` and Dart `>=3.13.0 <4.0.0` for the example's
 dependencies. The package itself still supports Flutter `>=3.35.0` and Dart
 `>=3.9.0 <4.0.0`.
+
+The ListView demo uses the standalone `material_ui` package. Android builds use
+Java 17, AGP 9.3.1, and Gradle 9.5.0. Built-in Kotlin and the new AGP DSL remain
+disabled while the locked Android plugins use the Kotlin Gradle Plugin.
 
 Run commands from this directory:
 
