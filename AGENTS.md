@@ -9,15 +9,17 @@
 
 ## Build, Test, and Development Commands
 
-Use Flutter 3.35.0 or newer with Dart `>=3.9.0 <4.0.0`. Run these commands from the repository root:
+Package-only commands require Flutter 3.35.0 or newer with Dart `>=3.9.0 <4.0.0`. The example and combined `lib test example` checks require Flutter `>=3.47.0` and Dart `>=3.13.0 <4.0.0`. Run these commands from the repository root:
 
-- `flutter pub get`: resolve package dependencies.
+- `flutter pub get --no-example`: resolve package dependencies separately from the example.
 - `dart format --output=none --set-exit-if-changed lib test example`: check Dart formatting without modifying files, matching CI.
-- `flutter analyze lib test example`: check analyzer and lint rules.
-- `flutter test`: run package tests.
-- `flutter test --coverage --coverage-path=coverage/lcov.info`: generate the coverage report used by CI.
+- `flutter analyze --no-pub lib test example`: check analyzer and lint rules.
+- `flutter test --no-pub`: run package tests.
+- `flutter test --no-pub --coverage --coverage-path=coverage/lcov.info`: generate the coverage report used by CI.
+- `dart doc --validate-links`: generate API documentation and fail on broken links or unresolved references.
+- `dart pub publish --dry-run`: validate package contents without publishing. Inspect the file list and resolve all warnings.
 
-Inside `example/`, run `flutter pub get`, then `flutter run` to launch the demo. `flutter build apk --release --no-pub` builds the Android example as CI does; use Java 17 and an Android SDK.
+Inside `example/`, run `flutter pub get` before the combined formatting and analysis checks. Run `flutter test --no-pub` for example tests or `flutter run` to launch the demo. `flutter build apk --release --no-pub` builds the Android example as CI does; use Java 17 and an Android SDK.
 
 ## Coding Style & Naming Conventions
 
@@ -27,7 +29,7 @@ In Dartdoc and documentation prose (including `.md` files), prefer short sentenc
 
 ## Testing Guidelines
 
-Use `flutter_test`, descriptive `group`/`test` names, and files ending in `_test.dart`. Run a focused suite with `flutter test test/async_streams_test.dart`.
+Use `flutter_test`, descriptive `group`/`test` names, and files ending in `_test.dart`. Run a focused suite with `flutter test --no-pub test/async_streams_test.dart`.
 
 Cover new code paths across the relevant legacy, async, and cached adapters. Use existing fake or in-memory platform stores and stream matchers such as `emitsInOrder`. Verify initial emissions, updates, null/removal behavior, type errors, and reload notifications when affected. CI uploads coverage to Codecov; no numeric coverage threshold is configured here.
 

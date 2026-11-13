@@ -3,10 +3,8 @@ name: Flutter CI
 on:
   push:
     branches: [master]
-    paths-ignore: ['**.md']
   pull_request:
     branches: [master]
-    paths-ignore: ['**.md']
   workflow_dispatch:
   schedule:
     - cron: '0 2 */2 * *'
@@ -84,3 +82,11 @@ jobs:
         with:
           files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Validate API documentation
+        if: matrix.name == 'stable'
+        run: dart doc --validate-links
+
+      - name: Validate package contents
+        if: matrix.name == 'stable'
+        run: dart pub publish --dry-run

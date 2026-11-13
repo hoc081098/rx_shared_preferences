@@ -526,7 +526,7 @@ void main() {
                 () async {
                   final output = expectStreamEvents(
                     prefs.getStringStream('name'),
-                    ['Ada', anything],
+                    ['Ada', input],
                   );
                   await output.firstEvent;
                   var encoderCalls = 0;
@@ -548,7 +548,7 @@ void main() {
               await prefs.clear();
               final output = expectStreamEvents(
                 prefs.getStringStream('added'),
-                [null, anything, null],
+                [null, null, null],
               );
               await output.firstEvent;
               var encoderCalls = 0;
