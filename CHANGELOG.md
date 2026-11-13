@@ -33,7 +33,6 @@
     -   Storage and logger contracts are interfaces. The default logger is
         `base`, and the empty logger and reload events are `final`. Re-exported
         `rx_storage` types also use Dart 3 class modifiers.
-    -   Stop exporting the internal `legacyRxSharedPreferencesApi` marker.
 
 -   **Reject queued mutations and reloads** with `StateError` on disposal.
 
